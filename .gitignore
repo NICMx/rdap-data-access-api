@@ -1,0 +1,11 @@
+*.class
+
+# Eclipse
+/bin/
+.settings
+.classpath
+.project
+
+# Files containing passwords
+*database.properties
+
