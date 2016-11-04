@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 
 import mx.nic.rdap.core.db.Domain;
 import mx.nic.rdap.core.db.Entity;
+import mx.nic.rdap.core.exception.UnprocessableEntityException;
 import mx.nic.rdap.db.DomainDAO;
 import mx.nic.rdap.db.IpAddressDAO;
 import mx.nic.rdap.db.QueryGroup;
@@ -159,12 +160,20 @@ public class DomainModel {
 	 * @throws SQLException
 	 * @throws InvalidValueException
 	 * @throws IOException
+	 * @throws UnprocessableEntityException
 	 */
-	public static List<DomainDAO> searchByName(String name, String zone,Integer resultLimit,  Connection connection)
-			throws SQLException, IOException, InvalidValueException {
-		DomainModel.validateDomainZone(name + "." + zone);
-		name.replace("*", "%");
+	public static List<DomainDAO> searchByName(String name, String zone, Integer resultLimit, Connection connection)
+			throws SQLException, IOException, InvalidValueException, UnprocessableEntityException {
 
+		DomainModel.validateDomainZone(name + "." + zone);
+
+		if (name.contains("*") && !name.endsWith("*")) {
+			throw new UnprocessableEntityException("Partial search can have wild card only at the end.");
+		}
+		if (zone.contains("*")) {
+			throw new UnprocessableEntityException("Partial search can´t have wildcard in zone.");
+		}
+		name = name.replaceAll("\\*", "%");
 		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("searchByNameWZone"))) {
 			Integer zoneId = ZoneModel.getIdByZoneName(zone);
 
@@ -198,8 +207,15 @@ public class DomainModel {
 	 * @throws SQLException
 	 * @throws InvalidValueException
 	 * @throws IOException
+	 * @throws UnprocessableEntityException
 	 */
-	public static List<DomainDAO> searchByName(String name,Integer resultLimit,  Connection connection) throws SQLException, IOException {
+	public static List<DomainDAO> searchByName(String name, Integer resultLimit, Connection connection)
+			throws SQLException, IOException, UnprocessableEntityException {
+
+		if (name.contains("*") && !name.endsWith("*")) {
+			throw new UnprocessableEntityException("Partial search can have wild card only at the end.");
+		}
+
 		name = name.replaceAll("\\*", "%");
 		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("searchByNameWOutZone"))) {
 			statement.setString(1, name);
@@ -230,8 +246,10 @@ public class DomainModel {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public static List<DomainDAO> searchByNsLdhName(String name, Integer resultLimit, Connection connection) throws SQLException, IOException {
-		name = name.replace("\\*", "%");
+	public static List<DomainDAO> searchByNsLdhName(String name, Integer resultLimit, Connection connection)
+			throws SQLException, IOException {
+
+		name = name.replace("*", "%");
 		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("searchByNsLdhName"))) {
 			statement.setString(1, name);
 			statement.setInt(2, resultLimit);
@@ -260,7 +278,8 @@ public class DomainModel {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public static List<DomainDAO> searchByNsIp(String ip,Integer resultLimit,  Connection connection) throws SQLException, IOException {
+	public static List<DomainDAO> searchByNsIp(String ip, Integer resultLimit, Connection connection)
+			throws SQLException, IOException {
 		IpAddressDAO ipAddress = new IpAddressDAO();
 		InetAddress address = InetAddress.getByName(ip);
 		ipAddress.setAddress(address);
@@ -283,11 +302,11 @@ public class DomainModel {
 			}
 			List<DomainDAO> domains = new ArrayList<DomainDAO>();
 			do {
-				DomainDAO domain = new DomainDAO();
+				DomainDAO domain = new DomainDAO(resultSet);
 				loadNestedObjects(domain, connection);
 				domains.add(domain);
 			} while (resultSet.next());
-			return null;
+			return domains;
 		}
 
 	}
