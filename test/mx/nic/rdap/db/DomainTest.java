@@ -14,9 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import mx.nic.rdap.core.db.Domain;
@@ -50,23 +48,9 @@ import mx.nix.rdap.core.catalog.VariantRelation;
  * @author dhfelix
  *
  */
-public class DomainTest  {
+public class DomainTest extends DatabaseTest {
 
-	/**
-	 * Connection for this tests
-	 */
-	private static Connection connection = null;
-
-	@Before
-	public void before() throws SQLException, IOException {
-		connection = DatabaseSession.getRdapConnection();
-	}
-
-	@After
-	public void after() throws SQLException {
-		connection.rollback();
-		connection.close();
-	}
+	
 
 	@Test
 	public void insertAndGetSimpleDomain() {

@@ -3,15 +3,12 @@ package mx.nic.rdap.db;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import mx.nic.rdap.core.db.Domain;
@@ -28,23 +25,7 @@ import mx.nic.rdap.db.model.ZoneModel;
 import mx.nix.rdap.core.catalog.EventAction;
 import mx.nix.rdap.core.catalog.Rol;
 
-public class SecureDnsTest  {
-
-	/**
-	 * Connection for this tests
-	 */
-	private static Connection connection = null;
-
-	@Before
-	public void before() throws SQLException, IOException {
-		connection = DatabaseSession.getRdapConnection();
-	}
-
-	@After
-	public void after() throws SQLException {
-		connection.rollback();
-		connection.close();
-	}
+public class SecureDnsTest extends DatabaseTest {
 
 	@Test
 	public void insertAndGetMinimum() {

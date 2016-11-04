@@ -1,14 +1,10 @@
 package mx.nic.rdap.db;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.junit.Test;
 
-import mx.nic.rdap.db.DatabaseSession;
-import mx.nic.rdap.db.RdapUserDAO;
-import mx.nic.rdap.db.RdapUserRoleDAO;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 import mx.nic.rdap.db.model.RdapUserModel;
 
@@ -18,7 +14,7 @@ import mx.nic.rdap.db.model.RdapUserModel;
  * @author dalpuche
  *
  */
-public class RdapUserTest  {
+public class RdapUserTest extends DatabaseTest {
 
 	private String userName = "Test2";
 	private String pass = "12345678A";
@@ -28,17 +24,14 @@ public class RdapUserTest  {
 	@Test
 	public void storeToDatabase() {
 		try {
-			try (Connection connection = DatabaseSession.getRdapConnection()) {
-				RdapUserDAO user = new RdapUserDAO();
-				user.setName(userName);
-				user.setPass(pass);
-				user.setMaxSearchResults(maxSearchResult);
-				RdapUserRoleDAO role = new RdapUserRoleDAO();
-				role.setRoleName(roleName);
-				user.setUserRole(role);
-				RdapUserModel.storeToDatabase(user, connection);
-				connection.commit();
-			}
+			RdapUserDAO user = new RdapUserDAO();
+			user.setName(userName);
+			user.setPass(pass);
+			user.setMaxSearchResults(maxSearchResult);
+			RdapUserRoleDAO role = new RdapUserRoleDAO();
+			role.setRoleName(roleName);
+			user.setUserRole(role);
+			RdapUserModel.storeToDatabase(user, connection);
 			assert true;
 		} catch (RequiredValueNotFoundException | SQLException | IOException e) {
 			e.printStackTrace();
@@ -49,11 +42,18 @@ public class RdapUserTest  {
 	@Test
 	public void getByName() {
 		try {
-			try (Connection connection = DatabaseSession.getRdapConnection()) {
-				RdapUserModel.getByName(userName, connection);
-			}
+			RdapUserDAO user = new RdapUserDAO();
+			user.setName(userName);
+			user.setPass(pass);
+			user.setMaxSearchResults(maxSearchResult);
+			RdapUserRoleDAO role = new RdapUserRoleDAO();
+			role.setRoleName(roleName);
+			user.setUserRole(role);
+			RdapUserModel.storeToDatabase(user, connection);
+			RdapUserModel.getByName(userName, connection);
+			connection.close();
 			assert true;
-		} catch (SQLException | IOException e) {
+		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
 			e.printStackTrace();
 			assert false;
 		}
@@ -62,10 +62,9 @@ public class RdapUserTest  {
 	@Test
 	public void cleanUsersTableTest() throws IOException {
 		try {
-			try (Connection connection = DatabaseSession.getRdapConnection()) {
-				RdapUserModel.cleanRdapUserDatabase(connection);
-				connection.commit();
-			}
+			RdapUserModel.cleanRdapUserDatabase(connection);
+			connection.commit();
+			connection.close();
 			assert true;
 		} catch (SQLException e) {
 			e.printStackTrace();

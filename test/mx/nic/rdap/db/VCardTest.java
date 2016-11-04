@@ -2,23 +2,16 @@ package mx.nic.rdap.db;
 
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import mx.nic.rdap.core.db.VCard;
 import mx.nic.rdap.core.db.VCardPostalInfo;
-import mx.nic.rdap.db.DatabaseSession;
-import mx.nic.rdap.db.VCardDAO;
-import mx.nic.rdap.db.VCardPostalInfoDAO;
 import mx.nic.rdap.db.model.VCardModel;
 
 /**
@@ -27,23 +20,7 @@ import mx.nic.rdap.db.model.VCardModel;
  * @author dhfelix
  *
  */
-public class VCardTest  {
-
-	/**
-	 * Connection for this tests
-	 */
-	private static Connection connection = null;
-
-	@Before
-	public void before() throws SQLException, IOException {
-		connection = DatabaseSession.getRdapConnection();
-	}
-
-	@After
-	public void after() throws SQLException {
-		connection.rollback();
-		connection.close();
-	}
+public class VCardTest extends DatabaseTest {
 
 	/**
 	 * Creates a new instance with no objects nested to it and stores it in the

@@ -112,26 +112,23 @@ DELETE  FROM rdap.registrar_asn;
 #37_delete_registrar_networks
 DELETE  FROM rdap.registrar_networks;
 
-#38_delete_relation
-DELETE  FROM rdap.relation;
-
-#39_delete_event_links
+#38_delete_event_links
 DELETE  FROM rdap.event_links;
 
-#40_delete_remark_links
+#39_delete_remark_links
 DELETE  FROM rdap.remark_links;
 
-#41_delete_event
+#40_delete_event
 DELETE  FROM rdap.event;
 
-#42_delete_link
+#41_delete_link
 DELETE  FROM rdap.link;
 
-#43_delete_public_id
+#42_delete_public_id
 DELETE  FROM rdap.public_id;
 
-#44_delete_remark_description
+#43_delete_remark_description
 DELETE  FROM rdap.remark_description;
 
-#45_delete_remark
+#44_delete_remark
 DELETE  FROM rdap.remark;

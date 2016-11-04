@@ -1,7 +1,6 @@
 package mx.nic.rdap.db;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +10,6 @@ import org.junit.Test;
 import mx.nic.rdap.core.db.Link;
 import mx.nic.rdap.core.db.Remark;
 import mx.nic.rdap.core.db.RemarkDescription;
-import mx.nic.rdap.db.DatabaseSession;
-import mx.nic.rdap.db.LinkDAO;
-import mx.nic.rdap.db.RemarkDAO;
-import mx.nic.rdap.db.RemarkDescriptionDAO;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 import mx.nic.rdap.db.model.RemarkModel;
 
@@ -24,7 +19,7 @@ import mx.nic.rdap.db.model.RemarkModel;
  * @author dalpuche
  *
  */
-public class RemarkTest  {
+public class RemarkTest extends DatabaseTest {
 
 	@Test
 	/**
@@ -65,10 +60,8 @@ public class RemarkTest  {
 			links.add(link2);
 
 			remark.setLinks(links);
-			try (Connection connection = DatabaseSession.getRdapConnection()) {
-				RemarkModel.storeToDatabase(remark, connection);
-				System.out.println(remark);
-			}
+			RemarkModel.storeToDatabase(remark, connection);
+			System.out.println(remark);
 			assert true;
 		} catch (RequiredValueNotFoundException | SQLException | IOException e) {
 			e.printStackTrace();
@@ -80,12 +73,11 @@ public class RemarkTest  {
 	@Test
 	public void getAll() {
 		try {
-			try (Connection connection = DatabaseSession.getRdapConnection()) {
-				List<Remark> remarks = RemarkModel.getAll(connection);
-				for (Remark remark : remarks) {
-					System.out.println(remark.toString());				}
-				assert true;
+			List<Remark> remarks = RemarkModel.getAll(connection);
+			for (Remark remark : remarks) {
+				System.out.println(remark.toString());
 			}
+			assert true;
 		} catch (SQLException | IOException e) {
 			e.printStackTrace();
 			assert false;
