@@ -11,19 +11,10 @@ import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 
 public class DatabaseSession {
 
-	public static final String RDAP_DB = "database";
+	private static BasicDataSource rdapDataSource;
+	private static BasicDataSource originDataSource;
 
-	private static BasicDataSource getEnvironmentDataSource(Properties config) throws SQLException {
-		BasicDataSource ds;
-		ds = new BasicDataSource();
-		ds.setDriverClassName(config.getProperty("driverClassName"));
-		ds.setUrl(config.getProperty("url"));
-		ds.setUsername(config.getProperty("userName"));
-		ds.setPassword(config.getProperty("password"));
-		ds.setDefaultAutoCommit(false);
-		testDatabase(ds);
-		return ds;
-	}
+
 
 	private static void testDatabase(BasicDataSource ds) throws SQLException {
 		// http://stackoverflow.com/questions/3668506
@@ -42,17 +33,43 @@ public class DatabaseSession {
 	}
 
 	public static Connection getRdapConnection() throws SQLException, IOException {
-		return getEnvironmentDataSource(Util.loadProperties(RDAP_DB)).getConnection();
+		return rdapDataSource.getConnection();
 	}
-
+	
 	/**
 	 * Return a connection to the origin database
 	 * 
 	 * @param migrationDBProperties
 	 *            Information about the database origin of the migration data
 	 */
-	public static Connection getMigrationConnection(Properties migrationDBProperties) throws SQLException, IOException {
-		return getEnvironmentDataSource(migrationDBProperties).getConnection();
+	public static Connection getMigrationConnection() throws SQLException, IOException {
+		return originDataSource.getConnection();
 	}
-
+	public static void initRdapConnection(Properties config) throws SQLException{
+		rdapDataSource = new BasicDataSource();
+		rdapDataSource.setDriverClassName(config.getProperty("driverClassName"));
+		rdapDataSource.setUrl(config.getProperty("url"));
+		rdapDataSource.setUsername(config.getProperty("userName"));
+		rdapDataSource.setPassword(config.getProperty("password"));
+		rdapDataSource.setDefaultAutoCommit(false);
+		testDatabase(rdapDataSource);
+	}
+	
+	public static void initOriginConnection(Properties config) throws SQLException{
+		originDataSource = new BasicDataSource();
+		originDataSource.setDriverClassName(config.getProperty("driverClassName"));
+		originDataSource.setUrl(config.getProperty("url"));
+		originDataSource.setUsername(config.getProperty("userName"));
+		originDataSource.setPassword(config.getProperty("password"));
+		originDataSource.setDefaultAutoCommit(false);
+		testDatabase(originDataSource);
+	}
+	
+	public static void closeRdapDataSource() throws SQLException{
+		rdapDataSource.close();
+	}
+	
+	public static void closeOriginDataSource() throws SQLException{
+		originDataSource.close();
+	}
 }

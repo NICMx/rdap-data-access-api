@@ -5,7 +5,6 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,13 +19,6 @@ import mx.nic.rdap.core.db.Nameserver;
 import mx.nic.rdap.core.db.Remark;
 import mx.nic.rdap.core.db.RemarkDescription;
 import mx.nic.rdap.core.db.struct.NameserverIpAddressesStruct;
-import mx.nic.rdap.db.DatabaseSession;
-import mx.nic.rdap.db.EventDAO;
-import mx.nic.rdap.db.IpAddressDAO;
-import mx.nic.rdap.db.LinkDAO;
-import mx.nic.rdap.db.NameserverDAO;
-import mx.nic.rdap.db.RemarkDAO;
-import mx.nic.rdap.db.RemarkDescriptionDAO;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 import mx.nic.rdap.db.model.NameserverModel;
 import mx.nix.rdap.core.catalog.EventAction;
@@ -38,20 +30,18 @@ import mx.nix.rdap.core.catalog.Status;
  * @author dalpuche
  *
  */
-public class NameserverTest  {
+public class NameserverTest extends DatabaseTest {
 
 	@Test
 	public void insertMinimunNameServer() {
 
 		try {
-			try (Connection connection = DatabaseSession.getRdapConnection()) {
-				// Nameserver base data
-				Nameserver nameserver = new NameserverDAO();
-				nameserver.setPunycodeName("ns.xn--test-minumun.example");
-				NameserverModel.storeToDatabase(nameserver, connection);
-				System.out.println(nameserver);
+			// Nameserver base data
+			Nameserver nameserver = new NameserverDAO();
+			nameserver.setPunycodeName("ns.xn--test-minumun.example");
+			NameserverModel.storeToDatabase(nameserver, connection);
+			System.out.println(nameserver);
 
-			}
 			assert true;
 		} catch (RequiredValueNotFoundException | SQLException | IOException e) {
 			e.printStackTrace();
@@ -161,7 +151,7 @@ public class NameserverTest  {
 		events.add(event1);
 		events.add(event2);
 		nameserver.setEvents(events);
-		try (Connection connection = DatabaseSession.getRdapConnection()) {
+		try {
 			NameserverModel.storeToDatabase(nameserver, connection);
 		} catch (IOException | SQLException | RequiredValueNotFoundException e) {
 			e.printStackTrace();
@@ -174,11 +164,9 @@ public class NameserverTest  {
 	@Test
 	public void getAll() {
 		try {
-			try (Connection connection = DatabaseSession.getRdapConnection()) {
-				List<Nameserver> nameservers = NameserverModel.getAll(connection);
-				for (Nameserver nameserver : nameservers) {
-					System.out.println(nameserver.toString());
-				}
+			List<Nameserver> nameservers = NameserverModel.getAll(connection);
+			for (Nameserver nameserver : nameservers) {
+				System.out.println(nameserver.toString());
 			}
 			assert true;
 		} catch (SQLException | IOException e) {

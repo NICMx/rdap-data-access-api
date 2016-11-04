@@ -10,9 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import mx.nic.rdap.core.db.Entity;
@@ -32,26 +30,9 @@ import mx.nix.rdap.core.catalog.Status;
 /**
  * Tests for the {@link EntityModel}
  * 
- * @author dhfelix
- *
  */
-public class EntityTest  {
+public class EntityTest extends DatabaseTest {
 
-	/**
-	 * Connection for this tests
-	 */
-	private static Connection connection = null;
-
-	@Before
-	public void before() throws SQLException, IOException {
-		connection = DatabaseSession.getRdapConnection();
-	}
-
-	@After
-	public void after() throws SQLException {
-		connection.rollback();
-		connection.close();
-	}
 
 	/**
 	 * Creates a simple entity object and store it in the database, then get the
