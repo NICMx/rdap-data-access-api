@@ -346,20 +346,20 @@ public class EntityModel {
 		return;
 	}
 
-	public static List<EntityDAO> searchByHandle(String handle,Integer resultLimit, Connection connection)
-			throws  SQLException, IOException {
-		return searchBy(handle,resultLimit, connection, queryGroup.getQuery("searchByPartialHandle"),
+	public static List<EntityDAO> searchByHandle(String handle, Integer resultLimit, Connection connection)
+			throws SQLException, IOException {
+		return searchBy(handle, resultLimit, connection, queryGroup.getQuery("searchByPartialHandle"),
 				queryGroup.getQuery("searchByHandle"));
 	}
 
-	public static List<EntityDAO> searchByVCardName(String handle,Integer resultLimit, Connection connection)
-			throws  SQLException, IOException {
-		return searchBy(handle,resultLimit, connection, queryGroup.getQuery("searchByPartialName"),
+	public static List<EntityDAO> searchByVCardName(String handle, Integer resultLimit, Connection connection)
+			throws SQLException, IOException {
+		return searchBy(handle, resultLimit, connection, queryGroup.getQuery("searchByPartialName"),
 				queryGroup.getQuery("searchByName"));
 	}
 
-	private static List<EntityDAO> searchBy(String handle,Integer resultLimit, Connection connection, String searchByPartialQuery,
-			String getByQuery) throws  SQLException, IOException {
+	private static List<EntityDAO> searchBy(String handle, Integer resultLimit, Connection connection,
+			String searchByPartialQuery, String getByQuery) throws SQLException, IOException {
 		String query;
 		String criteria;
 		List<EntityDAO> entities = new ArrayList<EntityDAO>();
@@ -374,16 +374,20 @@ public class EntityModel {
 
 		try (PreparedStatement statement = connection.prepareStatement(query);) {
 			statement.setString(1, criteria);
-			statement.setInt(2,resultLimit);
+			statement.setInt(2, resultLimit);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			ResultSet rs = statement.executeQuery();
 
-			while (rs.next()) {
+			if (!rs.next()) {
+				throw new ObjectNotFoundException("Object not found.");
+			}
+
+			do {
 				EntityDAO ent = new EntityDAO();
 				ent.loadFromDatabase(rs);
 				getNestedObjects(ent, connection);
 				entities.add(ent);
-			}
+			} while (rs.next());
 		}
 
 		return entities;
