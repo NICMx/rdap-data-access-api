@@ -163,7 +163,7 @@ public class DomainModel {
 	 * @throws UnprocessableEntityException
 	 */
 	public static List<DomainDAO> searchByName(String name, String zone, Integer resultLimit, Connection connection)
-			throws SQLException, IOException, InvalidValueException, UnprocessableEntityException {
+			throws SQLException, IOException, InvalidValueException {
 
 		DomainModel.validateDomainZone(name + "." + zone);
 
@@ -204,7 +204,7 @@ public class DomainModel {
 	 * @throws UnprocessableEntityException
 	 */
 	public static List<DomainDAO> searchByName(String name, Integer resultLimit, Connection connection)
-			throws SQLException, IOException, UnprocessableEntityException {
+			throws SQLException, IOException {
 
 		name = name.replaceAll("\\*", "%");
 		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("searchByNameWOutZone"))) {
