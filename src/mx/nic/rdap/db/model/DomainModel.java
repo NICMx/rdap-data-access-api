@@ -167,12 +167,6 @@ public class DomainModel {
 
 		DomainModel.validateDomainZone(name + "." + zone);
 
-		if (name.contains("*") && !name.endsWith("*")) {
-			throw new UnprocessableEntityException("Partial search can have wild card only at the end.");
-		}
-		if (zone.contains("*")) {
-			throw new UnprocessableEntityException("Partial search can´t have wildcard in zone.");
-		}
 		name = name.replaceAll("\\*", "%");
 		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("searchByNameWZone"))) {
 			Integer zoneId = ZoneModel.getIdByZoneName(zone);
@@ -211,10 +205,6 @@ public class DomainModel {
 	 */
 	public static List<DomainDAO> searchByName(String name, Integer resultLimit, Connection connection)
 			throws SQLException, IOException, UnprocessableEntityException {
-
-		if (name.contains("*") && !name.endsWith("*")) {
-			throw new UnprocessableEntityException("Partial search can have wild card only at the end.");
-		}
 
 		name = name.replaceAll("\\*", "%");
 		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("searchByNameWOutZone"))) {
