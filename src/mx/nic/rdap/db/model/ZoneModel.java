@@ -44,7 +44,6 @@ public class ZoneModel {
 			throw new RuntimeException("Error loading query group", e);
 		}
 
-
 	}
 
 	/**
@@ -74,7 +73,6 @@ public class ZoneModel {
 		} while (rs.next());
 
 	}
-
 
 	/**
 	 * Stores a zone into the database
@@ -158,7 +156,6 @@ public class ZoneModel {
 
 	}
 
-
 	/**
 	 * @return the zoneById
 	 */
@@ -166,14 +163,13 @@ public class ZoneModel {
 		return zoneById;
 	}
 
-
 	/**
-	 * @param zoneById the zoneById to set
+	 * @param zoneById
+	 *            the zoneById to set
 	 */
 	public static void setZoneById(Map<Integer, String> zoneById) {
 		ZoneModel.zoneById = zoneById;
 	}
-
 
 	/**
 	 * @return the idByZone
@@ -182,13 +178,18 @@ public class ZoneModel {
 		return idByZone;
 	}
 
-
 	/**
-	 * @param idByZone the idByZone to set
+	 * @param idByZone
+	 *            the idByZone to set
 	 */
 	public static void setIdByZone(Map<String, Integer> idByZone) {
 		ZoneModel.idByZone = idByZone;
 	}
-	
-	
+
+	public static String getValidZoneIds() {
+		String string = zoneById.keySet().toString();
+		// remove "[" and "]"
+		return string.substring(1, string.length() - 1);
+	}
+
 }

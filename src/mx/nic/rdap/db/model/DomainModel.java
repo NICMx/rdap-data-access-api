@@ -165,15 +165,45 @@ public class DomainModel {
 	public static List<DomainDAO> searchByName(String name, String zone, Integer resultLimit, Connection connection)
 			throws SQLException, IOException, InvalidValueException {
 
-		DomainModel.validateDomainZone(name + "." + zone);
+		boolean isPartialZone = zone.contains("*");
+		boolean isPartialName = name.contains("*");
+		String query = null;
 
-		name = name.replaceAll("\\*", "%");
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("searchByNameWZone"))) {
-			Integer zoneId = ZoneModel.getIdByZoneName(zone);
+		if (isPartialZone) {
+			zone = zone.replaceAll("\\*", "%");
+			if (isPartialName) {
+				name = name.replaceAll("\\*", "%");
+				query = queryGroup.getQuery("searchByPartialNameWPartialZone");
+			} else {
+				query = queryGroup.getQuery("searchByNameWPartialZone");
+			}
+		} else {
 
-			statement.setString(1, name);
-			statement.setInt(2, zoneId);
-			statement.setInt(3, resultLimit);
+			if (!ZoneModel.existsZone(zone)) {
+				throw new ObjectNotFoundException("Zone not found.");
+			}
+
+			if (isPartialName) {
+				name = name.replaceAll("\\*", "%");
+				query = queryGroup.getQuery("searchByPartialNameWZone");
+			} else {
+				query = queryGroup.getQuery("searchByNameWZone");
+			}
+		}
+
+		try (PreparedStatement statement = connection.prepareStatement(query);) {
+
+			if (isPartialZone) {
+				statement.setString(1, ZoneModel.getValidZoneIds());
+				statement.setString(2, name);
+				statement.setString(3, zone);
+				statement.setInt(4, resultLimit);
+			} else {
+				statement.setString(1, name);
+				Integer zoneId = ZoneModel.getIdByZoneName(zone);
+				statement.setInt(2, zoneId);
+				statement.setInt(3, resultLimit);
+			}
 
 			logger.log(Level.INFO, "Executing query" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
@@ -195,7 +225,7 @@ public class DomainModel {
 	/**
 	 * Searches a domain by it's name when user don´t care about the TLD
 	 * 
-	 * @param name
+	 * @param domainName
 	 * @param connection
 	 * @return
 	 * @throws SQLException
@@ -203,12 +233,19 @@ public class DomainModel {
 	 * @throws IOException
 	 * @throws UnprocessableEntityException
 	 */
-	public static List<DomainDAO> searchByName(String name, Integer resultLimit, Connection connection)
+	public static List<DomainDAO> searchByName(String domainName, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
 
-		name = name.replaceAll("\\*", "%");
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("searchByNameWOutZone"))) {
-			statement.setString(1, name);
+		String query = null;
+		if (domainName.contains("*")) {
+			domainName = domainName.replaceAll("\\*", "%");
+			query = queryGroup.getQuery("searchByPartialNameWOutZone");
+		} else {
+			query = queryGroup.getQuery("searchByNameWOutZone");
+		}
+
+		try (PreparedStatement statement = connection.prepareStatement(query);) {
+			statement.setString(1, domainName);
 			statement.setInt(2, resultLimit);
 			logger.log(Level.INFO, "Executing query" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();

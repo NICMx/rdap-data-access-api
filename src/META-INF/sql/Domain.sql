@@ -10,10 +10,22 @@ SELECT * FROM rdap.domain WHERE dom_ldh_name=?;
 #getDomainById
 SELECT * FROM rdap.domain WHERE dom_id=?;
 
-#searchByNameWZone
+#searchByPartialNameWZone
 SELECT domain.* FROM rdap.domain WHERE domain.dom_ldh_name LIKE ? AND domain.zone_id = ? ORDER BY 1 LIMIT ?;
 
+#searchByNameWZone
+SELECT domain.* FROM rdap.domain WHERE domain.dom_ldh_name = ? AND domain.zone_id = ? ORDER BY 1 LIMIT ?;
+
+#searchByPartialNameWPartialZone
+SELECT DISTINCT(d.dom_id), d.dom_handle, d.dom_ldh_name, d.dom_port43, d.zone_id FROM rdap.domain d JOIN rdap.zone z on d.zone_id = z.zone_id AND z.zone_id IN (?) WHERE d.dom_ldh_name LIKE ? AND z.zone_name like ? LIMIT ?;
+
+#searchByNameWPartialZone
+SELECT DISTINCT(d.dom_id), d.dom_handle, d.dom_ldh_name, d.dom_port43, d.zone_id FROM rdap.domain d JOIN rdap.zone z on d.zone_id = z.zone_id AND z.zone_id IN (?) WHERE d.dom_ldh_name = ? AND z.zone_name like ? LIMIT ?;
+
 #searchByNameWOutZone
+SELECT domain.* FROM rdap.domain WHERE domain.dom_ldh_name = ? ORDER BY 1 LIMIT ?;
+
+#searchByPartialNameWOutZone
 SELECT domain.* FROM rdap.domain WHERE domain.dom_ldh_name LIKE ? ORDER BY 1 LIMIT ?;
 
 #searchByNsLdhName
