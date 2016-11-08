@@ -1,4 +1,4 @@
-	package mx.nic.rdap.db;
+package mx.nic.rdap.db;
 
 import static org.junit.Assert.fail;
 
@@ -49,8 +49,6 @@ import mx.nix.rdap.core.catalog.VariantRelation;
  *
  */
 public class DomainTest extends DatabaseTest {
-
-	
 
 	@Test
 	public void insertAndGetSimpleDomain() {
@@ -112,7 +110,7 @@ public class DomainTest extends DatabaseTest {
 		try {
 			domainById = DomainModel.getDomainById(domId, connection);
 			try {
-				findByLdhName = DomainModel.findByLdhName(dom.getLdhName(), connection);
+				findByLdhName = DomainModel.findByLdhName(dom.getLdhName(), zoneId, connection);
 			} catch (InvalidValueException e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -313,7 +311,7 @@ public class DomainTest extends DatabaseTest {
 		try {
 			domainById = DomainModel.getDomainById(domainId, connection);
 			try {
-				findByLdhName = DomainModel.findByLdhName(domain.getLdhName(), connection);
+				findByLdhName = DomainModel.findByLdhName(domain.getLdhName(), zoneId, connection);
 			} catch (InvalidValueException e) {
 				e.printStackTrace();
 				fail(e.getMessage());

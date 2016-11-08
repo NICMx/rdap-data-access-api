@@ -153,7 +153,30 @@ public class ZoneModel {
 	 */
 	public static boolean isReverseAddress(String address) {
 		return address.trim().endsWith(REVERSE_IP_V4) || address.trim().endsWith(REVERSE_IP_V6);
+	}
 
+	public static String getAddressWithoutArpaZone(String address) {
+		if (address.endsWith(REVERSE_IP_V4)) {
+			return address.substring(0, address.length() - (REVERSE_IP_V4.length() + 2));
+		}
+
+		if (address.endsWith(REVERSE_IP_V6)) {
+			return address.substring(0, address.length() - (REVERSE_IP_V6.length() + 2));
+		}
+
+		return address;
+	}
+
+	public static Integer getZoneIdForArpaZone(String address) {
+		if (address.endsWith(REVERSE_IP_V4)) {
+			return getIdByZoneName(REVERSE_IP_V4);
+		}
+
+		if (address.endsWith(REVERSE_IP_V6)) {
+			return getIdByZoneName(REVERSE_IP_V6);
+		}
+
+		return null;
 	}
 
 	/**

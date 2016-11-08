@@ -5,7 +5,7 @@ INSERT INTO rdap.domain VALUES (null,?,?,?,?);
 INSERT INTO rdap.domain_entity_roles VALUES (?,?,?);
 
 #getByLdhName
-SELECT * FROM rdap.domain WHERE dom_ldh_name=?;
+SELECT * FROM rdap.domain WHERE dom_ldh_name=? AND zone_id = ?;
 
 #getDomainById
 SELECT * FROM rdap.domain WHERE dom_id=?;

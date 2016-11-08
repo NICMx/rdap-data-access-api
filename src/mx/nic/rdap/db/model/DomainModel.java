@@ -108,13 +108,12 @@ public class DomainModel {
 	 * @throws IOException
 	 * @throws InvalidValueException
 	 */
-	public static DomainDAO findByLdhName(String name, Connection connection)
+	public static DomainDAO findByLdhName(String name, Integer zoneId, Connection connection)
 			throws SQLException, IOException, InvalidValueException {
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getByLdhName"))) {
-			// if is a reverse address,dont validate the zone
-			if (!ZoneModel.isReverseAddress(name))
-				validateDomainZone(name);
+		String query = queryGroup.getQuery("getByLdhName");
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, IDN.toASCII(name));
+			statement.setInt(2, zoneId);
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
 			try (ResultSet resultSet = statement.executeQuery()) {
 				if (!resultSet.next()) {
@@ -414,13 +413,18 @@ public class DomainModel {
 	 * @throws ObjectNotFoundException
 	 */
 	public static void validateDomainZone(String domainName) throws InvalidValueException, ObjectNotFoundException {
-		String[] domainData = domainName.split("\\.");
-		String domainZone = "";
-		try {
-			domainZone = domainName.substring(domainData[0].length() + 1);
-		} catch (IndexOutOfBoundsException iobe) {
+		if (ZoneModel.isReverseAddress(domainName)) {
+			return;
+		}
+
+		int indexOf = domainName.indexOf('.');
+
+		if (indexOf <= 0) {
 			throw new InvalidValueException("Zone", "ZoneModel", "Domain");
 		}
+
+		String domainZone = domainName.substring(indexOf + 1, domainName.length());
+
 		if (!ZoneModel.existsZone(domainZone)) {
 			throw new ObjectNotFoundException("Zone not found.");
 		}
