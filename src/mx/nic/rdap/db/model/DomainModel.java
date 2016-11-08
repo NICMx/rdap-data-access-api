@@ -246,7 +246,8 @@ public class DomainModel {
 
 		try (PreparedStatement statement = connection.prepareStatement(query);) {
 			statement.setString(1, domainName);
-			statement.setInt(2, resultLimit);
+			statement.setString(2, ZoneModel.getValidZoneIds());
+			statement.setInt(3, resultLimit);
 			logger.log(Level.INFO, "Executing query" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
 
