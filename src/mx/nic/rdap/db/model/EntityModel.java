@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mx.nic.rdap.core.catalog.Rol;
+import mx.nic.rdap.core.catalog.Status;
 import mx.nic.rdap.core.db.Entity;
 import mx.nic.rdap.core.db.Event;
 import mx.nic.rdap.core.db.PublicId;
@@ -20,8 +22,6 @@ import mx.nic.rdap.db.EntityDAO;
 import mx.nic.rdap.db.QueryGroup;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
-import mx.nix.rdap.core.catalog.Rol;
-import mx.nix.rdap.core.catalog.Status;
 
 /**
  * Model for the Entity Object

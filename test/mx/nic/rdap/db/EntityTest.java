@@ -13,6 +13,9 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
 
+import mx.nic.rdap.core.catalog.EventAction;
+import mx.nic.rdap.core.catalog.Rol;
+import mx.nic.rdap.core.catalog.Status;
 import mx.nic.rdap.core.db.Entity;
 import mx.nic.rdap.core.db.Event;
 import mx.nic.rdap.core.db.Link;
@@ -23,16 +26,12 @@ import mx.nic.rdap.core.db.VCard;
 import mx.nic.rdap.core.db.VCardPostalInfo;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.model.EntityModel;
-import mx.nix.rdap.core.catalog.EventAction;
-import mx.nix.rdap.core.catalog.Rol;
-import mx.nix.rdap.core.catalog.Status;
 
 /**
  * Tests for the {@link EntityModel}
  * 
  */
 public class EntityTest extends DatabaseTest {
-
 
 	/**
 	 * Creates a simple entity object and store it in the database, then get the

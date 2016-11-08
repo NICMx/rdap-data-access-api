@@ -10,6 +10,7 @@ import java.util.Random;
 
 import org.junit.Test;
 
+import mx.nic.rdap.core.catalog.Rol;
 import mx.nic.rdap.core.db.Domain;
 import mx.nic.rdap.core.db.Entity;
 import mx.nic.rdap.core.db.PublicId;
@@ -18,7 +19,6 @@ import mx.nic.rdap.db.model.DomainModel;
 import mx.nic.rdap.db.model.EntityModel;
 import mx.nic.rdap.db.model.PublicIdModel;
 import mx.nic.rdap.db.model.ZoneModel;
-import mx.nix.rdap.core.catalog.Rol;
 
 public class PublicIdTest extends DatabaseTest {
 

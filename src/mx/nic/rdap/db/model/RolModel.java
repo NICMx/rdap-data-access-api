@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mx.nic.rdap.core.catalog.Rol;
 import mx.nic.rdap.core.db.Entity;
 import mx.nic.rdap.db.QueryGroup;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
-import mx.nix.rdap.core.catalog.Rol;
 
 /**
  * Model for roles of nested entities of main objects.

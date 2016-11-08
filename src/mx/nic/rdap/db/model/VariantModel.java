@@ -12,12 +12,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mx.nic.rdap.core.catalog.VariantRelation;
 import mx.nic.rdap.core.db.Variant;
 import mx.nic.rdap.core.db.VariantName;
 import mx.nic.rdap.db.QueryGroup;
 import mx.nic.rdap.db.VariantDAO;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
-import mx.nix.rdap.core.catalog.VariantRelation;
 
 /**
  * Model for the Variant Object

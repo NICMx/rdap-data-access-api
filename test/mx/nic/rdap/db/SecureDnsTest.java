@@ -11,6 +11,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
+import mx.nic.rdap.core.catalog.EventAction;
+import mx.nic.rdap.core.catalog.Rol;
 import mx.nic.rdap.core.db.Domain;
 import mx.nic.rdap.core.db.DsData;
 import mx.nic.rdap.core.db.Entity;
@@ -22,8 +24,6 @@ import mx.nic.rdap.db.model.DomainModel;
 import mx.nic.rdap.db.model.EntityModel;
 import mx.nic.rdap.db.model.SecureDNSModel;
 import mx.nic.rdap.db.model.ZoneModel;
-import mx.nix.rdap.core.catalog.EventAction;
-import mx.nix.rdap.core.catalog.Rol;
 
 public class SecureDnsTest extends DatabaseTest {
 

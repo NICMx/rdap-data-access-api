@@ -7,11 +7,11 @@ import java.util.List;
 
 import org.junit.Test;
 
+import mx.nic.rdap.core.catalog.EventAction;
 import mx.nic.rdap.core.db.Event;
 import mx.nic.rdap.core.db.Link;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 import mx.nic.rdap.db.model.EventModel;
-import mx.nix.rdap.core.catalog.EventAction;
 
 /**
  * Test for the class Event

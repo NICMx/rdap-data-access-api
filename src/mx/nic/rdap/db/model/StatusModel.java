@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mx.nic.rdap.core.catalog.Status;
 import mx.nic.rdap.db.QueryGroup;
-import mx.nix.rdap.core.catalog.Status;
 
 /**
  * Model for the {@link Status}

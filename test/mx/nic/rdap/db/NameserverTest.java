@@ -12,6 +12,8 @@ import java.util.List;
 
 import org.junit.Test;
 
+import mx.nic.rdap.core.catalog.EventAction;
+import mx.nic.rdap.core.catalog.Status;
 import mx.nic.rdap.core.db.Event;
 import mx.nic.rdap.core.db.IpAddress;
 import mx.nic.rdap.core.db.Link;
@@ -21,8 +23,6 @@ import mx.nic.rdap.core.db.RemarkDescription;
 import mx.nic.rdap.core.db.struct.NameserverIpAddressesStruct;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 import mx.nic.rdap.db.model.NameserverModel;
-import mx.nix.rdap.core.catalog.EventAction;
-import mx.nix.rdap.core.catalog.Status;
 
 /**
  * Test for the Nameserver object

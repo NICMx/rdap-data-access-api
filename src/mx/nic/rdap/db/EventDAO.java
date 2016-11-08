@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import mx.nic.rdap.core.catalog.EventAction;
 import mx.nic.rdap.core.db.Event;
-import mx.nix.rdap.core.catalog.EventAction;
 
 /**
  * DAO for the Event object.This data structure represents events that have
@@ -16,7 +16,7 @@ import mx.nix.rdap.core.catalog.EventAction;
  * @author dalpuche
  *
  */
-public class EventDAO extends Event implements DatabaseObject  {
+public class EventDAO extends Event implements DatabaseObject {
 
 	/**
 	 * Constructor Default

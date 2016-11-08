@@ -17,6 +17,10 @@ import java.util.Random;
 import org.junit.Assert;
 import org.junit.Test;
 
+import mx.nic.rdap.core.catalog.EventAction;
+import mx.nic.rdap.core.catalog.Rol;
+import mx.nic.rdap.core.catalog.Status;
+import mx.nic.rdap.core.catalog.VariantRelation;
 import mx.nic.rdap.core.db.Domain;
 import mx.nic.rdap.core.db.DsData;
 import mx.nic.rdap.core.db.Entity;
@@ -37,10 +41,6 @@ import mx.nic.rdap.db.model.DomainModel;
 import mx.nic.rdap.db.model.EntityModel;
 import mx.nic.rdap.db.model.NameserverModel;
 import mx.nic.rdap.db.model.ZoneModel;
-import mx.nix.rdap.core.catalog.EventAction;
-import mx.nix.rdap.core.catalog.Rol;
-import mx.nix.rdap.core.catalog.Status;
-import mx.nix.rdap.core.catalog.VariantRelation;
 
 /**
  * Test for {@link DomainModel}

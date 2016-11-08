@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mx.nic.rdap.core.catalog.Rol;
 import mx.nic.rdap.core.db.Entity;
 import mx.nic.rdap.core.db.Nameserver;
 import mx.nic.rdap.core.exception.UnprocessableEntityException;
@@ -25,7 +26,6 @@ import mx.nic.rdap.db.QueryGroup;
 import mx.nic.rdap.db.exception.InvalidValueException;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
-import mx.nix.rdap.core.catalog.Rol;
 
 /**
  * Model for the Nameserver Object
@@ -163,8 +163,8 @@ public class NameserverModel {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public static List<NameserverDAO> searchByName(String namePattern,Integer resultLimit, Connection connection)
-			throws  SQLException, IOException {
+	public static List<NameserverDAO> searchByName(String namePattern, Integer resultLimit, Connection connection)
+			throws SQLException, IOException {
 		String query = "";
 		String criteria = "";
 		List<NameserverDAO> nameservers = new ArrayList<NameserverDAO>();
@@ -204,10 +204,10 @@ public class NameserverModel {
 	 * @throws UnprocessableEntityException
 	 * @throws SQLException
 	 * @throws IOException
-	 * @throws InvalidValueException 
+	 * @throws InvalidValueException
 	 */
 	public static List<NameserverDAO> searchByIp(String ipaddressPattern, Integer resultLimit, Connection connection)
-			throws  SQLException, IOException, InvalidValueException {
+			throws SQLException, IOException, InvalidValueException {
 		String query = "";
 		List<NameserverDAO> nameservers = new ArrayList<NameserverDAO>();
 		try {
@@ -218,7 +218,7 @@ public class NameserverModel {
 				query = queryGroup.getQuery("searchByIp4");
 			}
 		} catch (UnknownHostException e) {
-			throw new InvalidValueException("Requested ip is invalid.","Ip","Nameserver");
+			throw new InvalidValueException("Requested ip is invalid.", "Ip", "Nameserver");
 		}
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, ipaddressPattern);
