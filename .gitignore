@@ -6,6 +6,9 @@
 .classpath
 .project
 
+# Maven
+/target/
+
 # Files containing passwords
 *database.properties
 
