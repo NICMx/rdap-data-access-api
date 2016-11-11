@@ -9,6 +9,6 @@
 # Maven
 /target/
 
-# Files containing passwords
-*database.properties
+# Files potentially containing passwords
+/src/test/resources/config/*.properties
 

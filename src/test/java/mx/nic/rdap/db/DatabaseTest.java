@@ -35,7 +35,7 @@ public class DatabaseTest {
 
 	@BeforeClass
 	public static void init() throws SQLException, IOException {
-			DatabaseSession.initRdapConnection(Util.loadProperties(rdapDatabaseConfigurationFile));
+			DatabaseSession.initRdapConnection(TestUtil.loadProperties(rdapDatabaseConfigurationFile));
 	}
 
 

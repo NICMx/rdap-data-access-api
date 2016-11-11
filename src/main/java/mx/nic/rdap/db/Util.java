@@ -1,11 +1,8 @@
 package mx.nic.rdap.db;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Properties;
 import java.util.regex.Pattern;
 
 import mx.nic.rdap.db.exception.InvalidValueException;;
@@ -32,29 +29,6 @@ public class Util {
 	private static final BigInteger THIRD_OCTECT_LIMIT = new BigInteger(0xFFFF + "");// 65535
 	private static final BigInteger FOURTH_OCTECT_LIMIT = new BigInteger(0xFF + ""); // 255
 	private static final int IP_ADDRESS_ARRAY_SIZE = 4;
-
-
-	/**
-	 * Loads the properties configuration file
-	 * <code>META-INF/fileName.properties</code> and returns it.
-	 * 
-	 * @param fileName
-	 *            name of the configuration file you want to load.
-	 * @return configuration requested.
-	 * @throws IOException
-	 *             Error attempting to read the configuration out of the
-	 *             classpath.
-	 */
-	public static Properties loadProperties(String fileName) throws IOException {
-		fileName = "META-INF/" + fileName + ".properties";
-		Properties result = new Properties();
-		try (InputStream configStream = Util.class.getClassLoader().getResourceAsStream(fileName)) {
-			result.load(configStream);
-		}
-		return result;
-	}
-
-
 
 
 	/**
