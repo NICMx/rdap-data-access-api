@@ -1,10 +1,8 @@
 package mx.nic.rdap.db.exception;
 
 /**
- * Invalidad structure found 
+ * Invalidad structure found
  * 
- * @author dalpuche
- *
  */
 public class InvalidadDataStructure extends Exception {
 

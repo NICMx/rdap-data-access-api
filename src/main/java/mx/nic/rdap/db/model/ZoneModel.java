@@ -19,9 +19,6 @@ import mx.nic.rdap.db.QueryGroup;
 /**
  * Model for the Zone table, read all zones in the zone_table and keeps it in
  * memory for quickly access.
- * 
- * @author evaldes
- * @author dhfelix
  *
  */
 public class ZoneModel {
@@ -96,7 +93,8 @@ public class ZoneModel {
 			statement.executeUpdate();
 			ResultSet resultSet = statement.getGeneratedKeys();
 			resultSet.next();
-			Integer zoneId = resultSet.getInt(1);// Inserted Zone's Id
+			// Inserted Zone's Id
+			Integer zoneId = resultSet.getInt(1);
 			zoneById.put(zoneId, zoneName);
 			idByZone.put(zoneName, zoneId);
 

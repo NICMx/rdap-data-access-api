@@ -18,8 +18,6 @@ import mx.nic.rdap.db.model.ZoneModel;
 /**
  * Tests for the {@link ZoneModel}
  * 
- * @author evaldes
- *
  */
 public class ZoneTest extends DatabaseTest {
 

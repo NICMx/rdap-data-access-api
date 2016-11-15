@@ -8,8 +8,6 @@ import java.sql.SQLException;
  * DAO for the RDAPUserRole. The object is a data structure of an rdap user role
  * information
  * 
- * @author dalpuche
- *
  */
 public class RdapUserRoleDAO implements DatabaseObject {
 
@@ -17,13 +15,13 @@ public class RdapUserRoleDAO implements DatabaseObject {
 	private String roleName;
 
 	/**
-	 * Default contructor
+	 * Default constructor
 	 */
 	public RdapUserRoleDAO() {
 	}
 
 	/**
-	 * Construct a RdapUserRole from a resulset
+	 * Construct a RdapUserRole from a resultSet
 	 * 
 	 * @throws SQLException
 	 */

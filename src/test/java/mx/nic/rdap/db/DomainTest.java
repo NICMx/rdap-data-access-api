@@ -45,8 +45,6 @@ import mx.nic.rdap.db.model.ZoneModel;
 /**
  * Test for {@link DomainModel}
  * 
- * @author dhfelix
- *
  */
 public class DomainTest extends DatabaseTest {
 

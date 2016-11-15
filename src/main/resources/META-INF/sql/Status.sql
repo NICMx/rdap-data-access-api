@@ -10,6 +10,9 @@ SELECT sta_id FROM rdap.entity_status WHERE ent_id=?;
 #getByRegistrarId
 SELECT sta_id FROM rdap.registrar_status WHERE rar_id=?;
 
+#getByAutnumid
+SELECT sta_id FROM rdap.asn_status WHERE rar_id=?;
+
 #storeNameserverStatusToDatabase
 INSERT INTO rdap.nameserver_status VALUES (?,?);
 
@@ -21,3 +24,6 @@ INSERT INTO rdap.entity_status VALUES (?,?);
 
 #storeRegistrarStatusToDatabase
 INSERT INTO rdap.registrar_status VALUES (?,?);
+
+#storeAutnumStatusToDatabase
+INSERT INTO rdap.asn_status VALUES (?,?);

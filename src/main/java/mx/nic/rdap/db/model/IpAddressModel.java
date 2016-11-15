@@ -18,10 +18,8 @@ import mx.nic.rdap.db.QueryGroup;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 
 /**
- * Model for the IpAddress Object
+ * Model for the {@link IpAddress} Object
  * 
- * @author dalpuche
- *
  */
 public class IpAddressModel {
 

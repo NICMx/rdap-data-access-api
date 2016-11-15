@@ -7,14 +7,12 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.Entity;
 
 /**
- * DAO for the Entity Object.This object class represents the information of
- * organizations, corporations, governments, non-profits, clubs, individual
- * persons, and informal groups of people.
+ * DAO for the {@link Entity} Object.This object class represents the
+ * information of organizations, corporations, governments, non-profits, clubs,
+ * individual persons, and informal groups of people.
  * 
- * @author dhfelix
- *
  */
-public class EntityDAO extends Entity implements DatabaseObject  {
+public class EntityDAO extends Entity implements DatabaseObject {
 
 	/**
 	 * Default Constructor
@@ -33,6 +31,7 @@ public class EntityDAO extends Entity implements DatabaseObject  {
 		super();
 		loadFromDatabase(resultSet);
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -58,6 +57,5 @@ public class EntityDAO extends Entity implements DatabaseObject  {
 		preparedStatement.setString(1, getHandle());
 		preparedStatement.setString(2, getPort43());
 	}
-
 
 }

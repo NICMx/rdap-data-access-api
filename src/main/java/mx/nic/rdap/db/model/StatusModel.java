@@ -17,9 +17,6 @@ import mx.nic.rdap.db.QueryGroup;
 /**
  * Model for the {@link Status}
  * 
- * @author dalpuche
- * @author dhfelix
- *
  */
 public class StatusModel {
 
@@ -33,11 +30,13 @@ public class StatusModel {
 	private static final String DOMAIN_STORE_QUERY = "storeDomainStatusToDatabase";
 	private static final String ENTITY_STORE_QUERY = "storeEntityStatusToDatabase";
 	private static final String REGISTRAR_STORE_QUERY = "storeRegistrarStatusToDatabase";
+	private static final String AUTNUM_STORE_QUERY = "storeAutnumStatusToDatabase";
 
 	private static final String NS_GET_QUERY = "getByNameServerId";
 	private static final String DOMAIN_GET_QUERY = "getByDomainId";
 	private static final String ENTITY_GET_QUERY = "getByEntityId";
 	private static final String REGISTRAR_GET_QUERY = "getByRegistrarId";
+	private static final String AUTNUM_GET_QUERY = "getByAutnumid";
 
 	static {
 		try {
@@ -86,6 +85,20 @@ public class StatusModel {
 	public static void storeEntityStatusToDatabase(List<Status> statusList, Long entityId, Connection connection)
 			throws IOException, SQLException {
 		storeRelationStatusToDatabase(statusList, entityId, connection, ENTITY_STORE_QUERY);
+	}
+
+	/**
+	 * Stores an array of status in the relational table asn_status.
+	 * 
+	 * @param statusList
+	 * @param autnumId
+	 * @param connection
+	 * @throws SQLException
+	 */
+	public static void storeAutnumStatusToDatabase(List<Status> statusList, Long autnumId, Connection connection)
+			throws SQLException {
+		storeRelationStatusToDatabase(statusList, autnumId, connection, AUTNUM_STORE_QUERY);
+
 	}
 
 	/**
@@ -145,12 +158,29 @@ public class StatusModel {
 	}
 
 	/**
-	 * 
 	 * Get all status from an entityId.
 	 * 
+	 * @param entityId
+	 * @param connection
+	 * @return
+	 * @throws IOException
+	 * @throws SQLException
 	 */
 	public static List<Status> getByEntityId(Long entityId, Connection connection) throws IOException, SQLException {
 		return getByRelationsId(entityId, connection, ENTITY_GET_QUERY);
+	}
+
+	/**
+	 * Get all status with an autnums Id
+	 * 
+	 * @param autnumId
+	 * @param connection
+	 * @return
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	public static List<Status> getByAutnumId(Long autnumId, Connection connection) throws IOException, SQLException {
+		return getByRelationsId(autnumId, connection, AUTNUM_GET_QUERY);
 	}
 
 	/**

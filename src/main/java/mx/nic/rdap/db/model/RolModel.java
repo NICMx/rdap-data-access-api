@@ -18,11 +18,8 @@ import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 
 /**
- * Model for roles of nested entities of main objects.
+ * Model for the {@link Rol} objects of nested entities of main objects.
  * 
- * @author dhfelix
- * @author evaldez
- *
  */
 public class RolModel {
 
@@ -33,10 +30,12 @@ public class RolModel {
 	private static final String STORE_DOMAIN_ROLES = "storeDomainsEntityRol";
 	private static final String STORE_ENTITY_ROLES = "storeEntitiesEntityRol";
 	private static final String STORE_NS_ROLES = "storeNSEntityRol";
+	private static final String STORE_AUTNUM_ROLES = "storeAutnumEntityRol";
 
 	private static final String GET_DOMAIN_ROLES = "getDomainRol";
 	private static final String GET_ENTITY_ROLES = "getEntityRol";
 	private static final String GET_NS_ROLES = "getNSRol";
+	private static final String GET_AUTNUM_ROLES = "getAutnumRol";
 
 	private static QueryGroup queryGroup = null;
 
@@ -61,6 +60,10 @@ public class RolModel {
 	public static List<Rol> getEntityEntityRol(Long mainEntityId, Long nestedEntityId, Connection connection)
 			throws SQLException {
 		return getNestedEntityRol(mainEntityId, nestedEntityId, connection, GET_ENTITY_ROLES);
+	}
+
+	public static List<Rol> getAutnumEntityRol(Long autnumId, Long id, Connection connection) throws SQLException {
+		return getNestedEntityRol(autnumId, id, connection, GET_AUTNUM_ROLES);
 	}
 
 	private static List<Rol> getNestedEntityRol(Long ownerId, Long nestedEntityId, Connection connection,
@@ -115,6 +118,11 @@ public class RolModel {
 	public static void storeDomainEntityRoles(List<Entity> entities, Long domainId, Connection connection)
 			throws SQLException {
 		storeEntitiesRoles(entities, domainId, connection, STORE_DOMAIN_ROLES);
+	}
+
+	public static void storeAutnumEntityRoles(List<Entity> entities, Long autnumId, Connection connection)
+			throws SQLException {
+		storeEntitiesRoles(entities, autnumId, connection, STORE_AUTNUM_ROLES);
 	}
 
 	private static void storeEntitiesRoles(List<Entity> entities, Long ownerId, Connection connection,

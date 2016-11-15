@@ -16,10 +16,8 @@ import mx.nic.rdap.db.RemarkDescriptionDAO;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 
 /**
- * Model for the RemarkDescription object
+ * Model for the {@link RemarkDescription} object
  * 
- * @author dalpuche
- *
  */
 public class RemarkDescriptionModel {
 

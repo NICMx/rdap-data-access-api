@@ -11,23 +11,21 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.IpAddress;
 
 /**
- * DAO for the IpAddress Object.Object representig an IpAddress, different to
- * {@link IpNetwork}
+ * DAO for the {@link IpAddress} Object.Object representig an IpAddress,
+ * different to {@link IpNetwork}
  * 
- * @author dalpuche
- *
  */
 public class IpAddressDAO extends IpAddress implements DatabaseObject {
 
 	/**
-	 * Constructor
+	 * Default Constructor
 	 */
 	public IpAddressDAO() {
 		super();
 	}
 
 	/**
-	 * Constructor that create a IpAddressDao from a resulset
+	 * Constructor that creates an IpAddressDAO from a resultSet
 	 * 
 	 * @throws SQLException
 	 */

@@ -16,8 +16,6 @@ import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 /**
  * Model for RdapUserData
  * 
- * @author dalpuche
- *
  */
 public class RdapUserModel {
 

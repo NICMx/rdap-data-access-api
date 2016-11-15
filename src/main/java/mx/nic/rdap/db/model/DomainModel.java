@@ -25,10 +25,8 @@ import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 
 /**
- * Model for the Domain Object
+ * Model for the {@link Domain} Object
  * 
- * @author evaldes
- *
  */
 public class DomainModel {
 

@@ -7,12 +7,10 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.Variant;
 
 /**
- * Data access class for the Variant object.
+ * Data access class for the {@link Variant} object.
  * 
- * @author evaldes
- *
  */
-public class VariantDAO extends Variant implements DatabaseObject  {
+public class VariantDAO extends Variant implements DatabaseObject {
 
 	/**
 	 * Default constructor
@@ -56,6 +54,5 @@ public class VariantDAO extends Variant implements DatabaseObject  {
 		preparedStatement.setString(1, this.getIdnTable());
 		preparedStatement.setLong(2, this.getDomainId());
 	}
-
 
 }

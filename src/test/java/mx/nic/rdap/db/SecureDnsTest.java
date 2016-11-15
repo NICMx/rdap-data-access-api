@@ -25,6 +25,9 @@ import mx.nic.rdap.db.model.EntityModel;
 import mx.nic.rdap.db.model.SecureDNSModel;
 import mx.nic.rdap.db.model.ZoneModel;
 
+/**
+ * Test for the class SecureDNS
+ */
 public class SecureDnsTest extends DatabaseTest {
 
 	@Test

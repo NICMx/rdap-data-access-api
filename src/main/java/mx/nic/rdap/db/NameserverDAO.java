@@ -7,13 +7,10 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.Nameserver;
 
 /**
- * DAO for the Nameserver object.The nameserver object class represents
- * information regarding DNS nameservers used in both forward and reverse DNS
+ * DAO for the {@link Nameserver} object.
  * 
- * @author dalpuche
- *
  */
-public class NameserverDAO extends Nameserver implements DatabaseObject  {
+public class NameserverDAO extends Nameserver implements DatabaseObject {
 
 	/**
 	 * Constructor default
@@ -59,6 +56,5 @@ public class NameserverDAO extends Nameserver implements DatabaseObject  {
 		preparedStatement.setString(2, this.getLdhName());
 		preparedStatement.setString(3, this.getPort43());
 	}
-
 
 }

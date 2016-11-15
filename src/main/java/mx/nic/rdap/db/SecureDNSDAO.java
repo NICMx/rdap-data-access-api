@@ -8,13 +8,10 @@ import java.sql.Types;
 import mx.nic.rdap.core.db.SecureDNS;
 
 /**
- * Data access class for the SecureDNS object. It represents secure DNS
- * information about domain names.
+ * Data access class for the {@link SecureDNS} object.
  * 
- * @author evaldes
- *
  */
-public class SecureDNSDAO extends SecureDNS implements DatabaseObject  {
+public class SecureDNSDAO extends SecureDNS implements DatabaseObject {
 
 	/**
 	 * Default constructor
@@ -69,6 +66,5 @@ public class SecureDNSDAO extends SecureDNS implements DatabaseObject  {
 		preparedStatement.setLong(4, this.getDomainId());
 
 	}
-
 
 }

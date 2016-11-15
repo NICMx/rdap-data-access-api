@@ -11,8 +11,6 @@ import mx.nic.rdap.db.model.RdapUserModel;
 /**
  * Test for the rdapuserDAO class
  * 
- * @author dalpuche
- *
  */
 public class RdapUserTest extends DatabaseTest {
 

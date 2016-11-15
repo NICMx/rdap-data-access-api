@@ -17,8 +17,6 @@ import mx.nic.rdap.db.model.VCardModel;
 /**
  * Tests for the {@link VCardModel}
  * 
- * @author dhfelix
- *
  */
 public class VCardTest extends DatabaseTest {
 

@@ -18,11 +18,8 @@ import mx.nic.rdap.db.QueryGroup;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 
 /**
- * Model for the DsData Object
+ * Model for the {@link DsData} Object
  * 
- * @author evaldes
- * @author dhfelix
- *
  */
 public class DsDataModel {
 

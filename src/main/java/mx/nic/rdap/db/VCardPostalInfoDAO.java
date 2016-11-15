@@ -9,8 +9,6 @@ import mx.nic.rdap.core.db.VCardPostalInfo;
 /**
  * DAO for {@link VCardPostalInfo}
  * 
- * @author dhfelix
- *
  */
 public class VCardPostalInfoDAO extends VCardPostalInfo implements DatabaseObject {
 

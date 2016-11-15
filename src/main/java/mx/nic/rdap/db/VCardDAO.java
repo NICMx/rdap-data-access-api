@@ -9,8 +9,6 @@ import mx.nic.rdap.core.db.VCard;
 /**
  * DAO for {@link VCard}.
  * 
- * @author dhfelix
- *
  */
 public class VCardDAO extends VCard implements DatabaseObject {
 

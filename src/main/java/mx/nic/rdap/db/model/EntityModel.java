@@ -24,10 +24,8 @@ import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 
 /**
- * Model for the Entity Object
+ * Model for the {@link Entity} Object
  * 
- * @author dhfelix
- *
  */
 public class EntityModel {
 
@@ -40,6 +38,7 @@ public class EntityModel {
 	private final static String GET_ENTITY_ENTITY_QUERY = "getEntitysEntitiesQuery";
 	private final static String GET_DOMAIN_ENTITY_QUERY = "getDomainsEntitiesQuery";
 	private final static String GET_NS_ENTITY_QUERY = "getNameserversEntitiesQuery";
+	private final static String GET_ANS_ENTITY_QUERY = "getAutnumEntitiesQuery";
 
 	static {
 		try {
@@ -291,6 +290,16 @@ public class EntityModel {
 		List<Entity> entitiesById = getEntitiesById(nameserverId, connection, GET_NS_ENTITY_QUERY);
 		for (Entity ent : entitiesById) {
 			List<Rol> entityEntityRol = RolModel.getNameserverEntityRol(nameserverId, ent.getId(), connection);
+			ent.getRoles().addAll(entityEntityRol);
+		}
+		return entitiesById;
+	}
+
+	public static List<Entity> getEntitiesByAutnumId(Long autnumId, Connection connection)
+			throws SQLException, IOException {
+		List<Entity> entitiesById = getEntitiesById(autnumId, connection, GET_ANS_ENTITY_QUERY);
+		for (Entity ent : entitiesById) {
+			List<Rol> entityEntityRol = RolModel.getAutnumEntityRol(autnumId, ent.getId(), connection);
 			ent.getRoles().addAll(entityEntityRol);
 		}
 		return entitiesById;

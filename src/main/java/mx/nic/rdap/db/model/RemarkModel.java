@@ -27,17 +27,19 @@ import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
  */
 public class RemarkModel {
 
-	private final static Logger logger = Logger.getLogger(RemarkModel.class.getName());
+	private static final Logger logger = Logger.getLogger(RemarkModel.class.getName());
 
-	private final static String QUERY_GROUP = "Remark";
+	private static final String QUERY_GROUP = "Remark";
 
-	private final static String NAMESERVER_STORE_QUERY = "storeNameserverRemarksToDatabase";
-	private final static String DOMAIN_STORE_QUERY = "storeDomainRemarksToDatabase";
-	private final static String ENTITY_STORE_QUERY = "storeEntityRemarksToDatabase";
+	private static final String NAMESERVER_STORE_QUERY = "storeNameserverRemarksToDatabase";
+	private static final String DOMAIN_STORE_QUERY = "storeDomainRemarksToDatabase";
+	private static final String ENTITY_STORE_QUERY = "storeEntityRemarksToDatabase";
+	private static final String AUTNUM_STORE_QUERY = "storeAutnumRemarksToDatabase";
 
 	private static final String NAMESERVER_GET_QUERY = "getByNameserverId";
 	private static final String DOMAIN_GET_QUERY = "getByDomainId";
 	private static final String ENTITY_GET_QUERY = "getByEntityId";
+	private static final String AUTNUM_GET_QUERY = "getByAutnumId";
 
 	protected static QueryGroup queryGroup = null;
 
@@ -60,13 +62,11 @@ public class RemarkModel {
 	 */
 	public static long storeToDatabase(Remark remark, Connection connection)
 			throws IOException, SQLException, RequiredValueNotFoundException {
+
+		// The Remark's id is autoincremental, Statement.RETURN_GENERATED_KEYS
+		// give us the id generated for the object stored
 		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("storeToDatabase"),
-				Statement.RETURN_GENERATED_KEYS)) {// The Remark's id is
-													// autoincremental,
-													// Statement.RETURN_GENERATED_KEYS
-													// give us the id
-													// generated for the
-													// object stored
+				Statement.RETURN_GENERATED_KEYS)) {
 			((RemarkDAO) remark).storeToDatabase(statement);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			statement.executeUpdate();
@@ -126,6 +126,11 @@ public class RemarkModel {
 		storeRelationRemarksToDatabase(remarks, domainId, connection, DOMAIN_STORE_QUERY);
 	}
 
+	public static void storeAutnumRemarksToDatabase(List<Remark> remarks, Long autnumId, Connection connection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		storeRelationRemarksToDatabase(remarks, autnumId, connection, AUTNUM_STORE_QUERY);
+	}
+
 	/**
 	 * 
 	 * Stores the Entity's remarks
@@ -177,6 +182,10 @@ public class RemarkModel {
 		return getByRelationId(entityId, connection, ENTITY_GET_QUERY);
 	}
 
+	public static List<Remark> getByAutnumId(Long autnumId, Connection connection) throws IOException, SQLException {
+		return getByRelationId(autnumId, connection, AUTNUM_GET_QUERY);
+	}
+
 	/**
 	 * Unused. Get all Remarks from DB
 	 * 
@@ -209,17 +218,10 @@ public class RemarkModel {
 		List<Remark> remarks = new ArrayList<Remark>();
 		do {
 			RemarkDAO remark = new RemarkDAO(resultSet);
-			remark.setDescriptions(RemarkDescriptionModel.findByRemarkId(remark.getId(), connection));// load
-																										// the
-																										// remark
-																										// descriptions
-																										// of
-																										// the
-																										// remark
-			remark.getLinks().addAll(LinkModel.getByRemarkId(remark.getId(), connection));// load
-																					// the
-																					// remark's
-																					// links
+			// load the remark descriptions of the remark
+			remark.setDescriptions(RemarkDescriptionModel.findByRemarkId(remark.getId(), connection));
+			// Load the remark's links
+			remark.getLinks().addAll(LinkModel.getByRemarkId(remark.getId(), connection));
 			remarks.add(remark);
 		} while (resultSet.next());
 		return remarks;

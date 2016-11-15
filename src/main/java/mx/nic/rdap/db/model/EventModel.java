@@ -21,9 +21,6 @@ import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 /**
  * The model for the Event object
  * 
- * @author dalpuche
- * @author dhfelix
- *
  */
 public class EventModel {
 
@@ -37,11 +34,13 @@ public class EventModel {
 	private static final String DS_DATA_GET_QUERY = "getByDsDataId";
 	private static final String DOMAIN_GET_QUERY = "getByDomainId";
 	private static final String ENTITY_GET_QUERY = "getByEntityId";
+	private static final String AUTNUM_GET_QUERY = "getByAutnumId";
 
 	private static final String NS_STORE_QUERY = "storeNameserverEventsToDatabase";
 	private static final String DS_DATA_STORE_QUERY = "storeDsDataEventsToDatabase";
 	private static final String DOMAIN_STORE_QUERY = "storeDomainEventsToDatabase";
 	private static final String ENTITY_STORE_QUERY = "storeEntityEventsToDatabase";
+	private static final String AUTNUM_STORE_QUERY = "storeAutnumEventsToDatabase";
 
 	static {
 		try {
@@ -125,6 +124,11 @@ public class EventModel {
 		storeRelationEventsToDatabase(events, domainId, connection, DOMAIN_STORE_QUERY);
 	}
 
+	public static void storeAutnumEventsToDatabase(List<Event> events, Long autnumId, Connection connection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		storeRelationEventsToDatabase(events, autnumId, connection, AUTNUM_STORE_QUERY);
+	}
+
 	/**
 	 * Store the DsData events
 	 * 
@@ -194,6 +198,10 @@ public class EventModel {
 		return getByRelationId(domainId, connection, DOMAIN_GET_QUERY);
 	}
 
+	public static List<Event> getByAutnumId(Long autnumId, Connection connection) throws SQLException, IOException {
+		return getByRelationId(autnumId, connection, AUTNUM_GET_QUERY);
+	}
+
 	/**
 	 * Get all events for an Entity
 	 */
@@ -254,4 +262,5 @@ public class EventModel {
 
 		return result;
 	}
+
 }

@@ -7,13 +7,10 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.PublicId;
 
 /**
- * Data access class for the PublicId object. This data structure maps a public
- * identifier to an object class.
+ * Data access class for the {@link PublicId} object.
  * 
- * @author evaldes
- *
  */
-public class PublicIdDAO extends PublicId implements DatabaseObject  {
+public class PublicIdDAO extends PublicId implements DatabaseObject {
 
 	/**
 	 * Default Constructor
@@ -58,6 +55,5 @@ public class PublicIdDAO extends PublicId implements DatabaseObject  {
 		preparedStatement.setString(1, this.getType());
 		preparedStatement.setString(2, this.getPublicId());
 	}
-
 
 }

@@ -10,20 +10,18 @@ import mx.nic.rdap.core.db.Remark;
  * DAO for the remark Object.A remark structure denotes information about the
  * object class that contains it
  * 
- * @author dalpuche
- *
  */
-public class RemarkDAO extends Remark implements DatabaseObject  {
+public class RemarkDAO extends Remark implements DatabaseObject {
 
 	/**
-	 * Constructor default
+	 * Default constructor
 	 */
 	public RemarkDAO() {
 		super();
 	}
 
 	/**
-	 * Construct the Remark from a resulset
+	 * Construct the {@link Remark} from a resultSet
 	 * 
 	 * @param resultSet
 	 * @throws SQLException

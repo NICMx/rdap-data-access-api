@@ -28,10 +28,8 @@ import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 
 /**
- * Model for the Nameserver Object
+ * Model for the {@link Nameserver} Object
  * 
- * @author dalpuche
- *
  */
 public class NameserverModel {
 

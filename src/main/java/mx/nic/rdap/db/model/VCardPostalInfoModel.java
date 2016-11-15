@@ -20,8 +20,6 @@ import mx.nic.rdap.db.exception.ObjectNotFoundException;
 /**
  * Model for the {@link VCardPostalInfo}.
  * 
- * @author dhfelix
- *
  */
 public class VCardPostalInfoModel {
 	private static final Logger logger = Logger.getLogger(VCardPostalInfoModel.class.getName());

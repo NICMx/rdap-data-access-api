@@ -12,8 +12,7 @@ import java.util.logging.Logger;
 import mx.nic.rdap.db.QueryGroup;
 
 /**
- * @author L00000185
- *
+ * Model which cleans the RDAP database
  */
 public class CleanDatabaseModel {
 
@@ -30,7 +29,7 @@ public class CleanDatabaseModel {
 			throw new RuntimeException("Error loading query group");
 		}
 	}
-	
+
 	/**
 	 * Clean the database of the server
 	 * 
@@ -38,11 +37,12 @@ public class CleanDatabaseModel {
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	public static void cleanServerDatabase(Boolean migrateUser,Connection rdapConnection) throws IOException, SQLException {
+	public static void cleanServerDatabase(Boolean migrateUser, Connection rdapConnection)
+			throws IOException, SQLException {
 		logger.log(Level.INFO, "******CLEANING RDAP DATABASE******");
 		SortedSet<String> keys = new TreeSet<String>(queryGroup.getQueries().keySet());// Order
-																				// the
-																				// querys
+		// the
+		// querys
 		for (String queryName : keys) {
 			try (PreparedStatement statement = rdapConnection.prepareStatement(queryGroup.getQuery(queryName));) {
 				logger.log(Level.INFO, "Excuting QUERY" + queryName);

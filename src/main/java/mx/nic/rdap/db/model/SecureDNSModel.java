@@ -16,11 +16,8 @@ import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 
 /**
- * Model for the SecureDNS object
+ * Model for the {@link SecureDNS} object
  * 
- * @author evaldes
- * @author dhfelix
- *
  */
 public class SecureDNSModel {
 

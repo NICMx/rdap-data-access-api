@@ -7,12 +7,8 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.DsData;
 
 /**
- * Data access class for the DsData Object. The DsData is one of the
- * representations of the SecureDNS information that is not stored in the
- * registration database.
+ * Data access class for the {@link DsData} Object.
  * 
- * @author evaldes
- *
  */
 public class DsDataDAO extends DsData implements DatabaseObject {
 
@@ -65,6 +61,5 @@ public class DsDataDAO extends DsData implements DatabaseObject {
 		preparedStatement.setInt(5, this.getDigestType());
 
 	}
-
 
 }

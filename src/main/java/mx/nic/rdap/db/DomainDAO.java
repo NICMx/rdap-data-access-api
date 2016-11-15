@@ -7,8 +7,7 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.Domain;
 
 /**
- * Data access class for the Domain object. The domain object class represents a
- * DNS name and point of delegation.
+ * Data access class for the {@link Domain} object.
  * 
  */
 public class DomainDAO extends Domain implements DatabaseObject {
@@ -23,7 +22,8 @@ public class DomainDAO extends Domain implements DatabaseObject {
 	/**
 	 * Construct Domain from a ResultSet
 	 * 
-	 * @param resultSet Information from a select statement on database
+	 * @param resultSet
+	 *            Information from a select statement on database
 	 */
 	public DomainDAO(ResultSet resultSet) throws SQLException {
 		super();

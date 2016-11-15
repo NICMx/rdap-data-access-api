@@ -13,6 +13,9 @@ SELECT eve.eve_id,eve.eac_id,eve.eve_actor,eve.eve_date FROM rdap.event eve JOIN
 #getByEntityId
 SELECT eve.eve_id,eve.eac_id,eve.eve_actor,eve.eve_date FROM rdap.event eve JOIN rdap.entity_events ent ON ent.eve_id=eve.eve_id WHERE ent.ent_id=?;
 
+#getByAutnumId
+SELECT eve.eve_id, eve.eac_id, eve.eve_actor, eve.eve_date FROM rdap.event eve JOIN rdap.asn_events asn ON asn.eve_id WHERE asn.asn_id=?;
+
 #storeNameserverEventsToDatabase
 INSERT INTO rdap.nameserver_events values (?,?);
 
@@ -24,6 +27,9 @@ INSERT INTO rdap.ds_events values (?,?);
 
 #storeEntityEventsToDatabase
 INSERT INTO rdap.entity_events values (?,?);
+
+#storeAutnumEventsToDatabase
+INSERT INTO rdap.asn_events VALUES (?,?);
 
 #getAll
 SELECT * FROM rdap.event;

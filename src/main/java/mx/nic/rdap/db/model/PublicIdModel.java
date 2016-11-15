@@ -17,10 +17,8 @@ import mx.nic.rdap.db.PublicIdDAO;
 import mx.nic.rdap.db.QueryGroup;
 
 /**
- * Model for the PublicId Object
+ * Model for the {@link PublicId} Object
  * 
- * @author evaldes
- *
  */
 public class PublicIdModel {
 
@@ -73,7 +71,8 @@ public class PublicIdModel {
 			statement.executeUpdate();
 			ResultSet result = statement.getGeneratedKeys();
 			result.next();
-			Long resultId = result.getLong(1);// The id of the link inserted
+			// The id of the link inserted
+			Long resultId = result.getLong(1);
 			publicId.setId(resultId);
 
 			return publicId.getId();
@@ -183,7 +182,7 @@ public class PublicIdModel {
 	 */
 	private static List<PublicId> processResultSet(ResultSet resultSet) throws SQLException {
 		if (!resultSet.next()) {
-			// couldn't have no public ids.
+			// Did not retrieve any public Ids
 			return Collections.emptyList();
 		}
 		List<PublicId> publicIds = new ArrayList<PublicId>();

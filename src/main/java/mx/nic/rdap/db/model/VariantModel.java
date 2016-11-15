@@ -20,11 +20,8 @@ import mx.nic.rdap.db.VariantDAO;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 
 /**
- * Model for the Variant Object
+ * Model for the {@link Variant} Object
  * 
- * @author evaldes
- * @author dhfelix
- *
  */
 public class VariantModel {
 

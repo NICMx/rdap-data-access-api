@@ -10,16 +10,14 @@ import mx.nic.rdap.core.catalog.EventAction;
 import mx.nic.rdap.core.db.Event;
 
 /**
- * DAO for the Event object.This data structure represents events that have
- * occurred on an instance of an object class
+ * DAO for the {@link Event} object. This data structure represents events that
+ * have occurred on an instance of an object class
  * 
- * @author dalpuche
- *
  */
 public class EventDAO extends Event implements DatabaseObject {
 
 	/**
-	 * Constructor Default
+	 * Default Constructor
 	 */
 	public EventDAO() {
 		super();

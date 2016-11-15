@@ -16,8 +16,6 @@ import mx.nic.rdap.db.model.RemarkModel;
 /**
  * Test for the class Remark
  * 
- * @author dalpuche
- *
  */
 public class RemarkTest extends DatabaseTest {
 

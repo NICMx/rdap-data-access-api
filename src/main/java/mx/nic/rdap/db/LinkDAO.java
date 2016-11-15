@@ -7,23 +7,20 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.Link;
 
 /**
- * DAO for the Link object.The object is a data structure that signify link an
- * object to other resources on the Internet.
+ * DAO for the {@link Link} object.
  * 
- * @author dalpuche
- *
  */
-public class LinkDAO extends Link implements DatabaseObject  {
+public class LinkDAO extends Link implements DatabaseObject {
 
 	/**
-	 * Contructor default
+	 * Default Constructor
 	 */
 	public LinkDAO() {
 		super();
 	}
 
 	/**
-	 * Construct a Link from a resulset
+	 * Construct a Link from a resultSet
 	 * 
 	 * @throws SQLException
 	 */
@@ -32,7 +29,6 @@ public class LinkDAO extends Link implements DatabaseObject  {
 		loadFromDatabase(resultSet);
 	}
 
-	
 	/**
 	 * Construct a "self" Link
 	 * 
@@ -82,6 +78,5 @@ public class LinkDAO extends Link implements DatabaseObject  {
 		preparedStatement.setString(6, this.getMedia());
 		preparedStatement.setString(7, this.getType());
 	}
-
 
 }

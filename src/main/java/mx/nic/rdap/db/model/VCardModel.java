@@ -20,8 +20,6 @@ import mx.nic.rdap.db.exception.ObjectNotFoundException;
 /**
  * Model for the {@link VCard}
  * 
- * @author dhfelix
- *
  */
 public class VCardModel {
 

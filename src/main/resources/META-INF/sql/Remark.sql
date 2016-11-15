@@ -10,6 +10,9 @@ SELECT rem.* FROM rdap.remark rem JOIN rdap.domain_remarks dom ON dom.rem_id=rem
 #getByEntityId
 SELECT rem.* FROM rdap.remark rem JOIN rdap.entity_remarks ent ON ent.rem_id=rem.rem_id WHERE ent.ent_id=?;
 
+#getByAutnumId
+SELECT rem.* FROM rdap.remark rem JOIN rdap.asn_remarks asn ON asn.rem_id=rem.rem_id WHERE asn.asn_id=?;
+
 #storeNameserverRemarksToDatabase
 INSERT INTO rdap.nameserver_remarks VALUES(?,?);
 
@@ -18,6 +21,9 @@ INSERT INTO rdap.domain_remarks VALUES (?,?);
 
 #storeEntityRemarksToDatabase
 INSERT INTO rdap.entity_remarks VALUES (?, ?);
+
+#storeAutnumRemarksToDatabase
+INSERT INTO rdap.asn_remarks VALUES (?,?);
 
 #getAll
 SELECT * FROM rdap.remark ORDER BY 1 ASC;

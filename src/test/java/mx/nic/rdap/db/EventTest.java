@@ -15,14 +15,13 @@ import mx.nic.rdap.db.model.EventModel;
 
 /**
  * Test for the class Event
- * 
  *
  */
 public class EventTest extends DatabaseTest {
 
 	@Test
 	/**
-	 * Store am event in the database
+	 * Store an event in the database
 	 */
 	public void insert() {
 		try {

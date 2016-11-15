@@ -27,8 +27,6 @@ import mx.nic.rdap.db.model.NameserverModel;
 /**
  * Test for the Nameserver object
  * 
- * @author dalpuche
- *
  */
 public class NameserverTest extends DatabaseTest {
 

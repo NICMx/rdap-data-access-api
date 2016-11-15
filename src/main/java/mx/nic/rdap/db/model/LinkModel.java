@@ -38,6 +38,7 @@ public class LinkModel {
 	private static final String DOMAIN_GET_QUERY = "getByDomainId";
 	private static final String REMARK_GET_QUERY = "getByRemarkId";
 	private static final String ENTITY_GET_QUERY = "getByEntityId";
+	private static final String AUTNUM_GET_QUERY = "getByAutnumId";
 
 	private static final String NS_STORE_QUERY = "storeNameserverLinksToDatabase";
 	private static final String EVENT_STORE_QUERY = "storeEventLinksToDatabase";
@@ -45,6 +46,7 @@ public class LinkModel {
 	private static final String DS_DATA_STORE_QUERY = "storeDsDataLinksToDatabase";
 	private static final String DOMAIN_STORE_QUERY = "storeDomainLinksToDatabase";
 	private static final String ENTITY_STORE_QUERY = "storeEntityLinksToDatabase";
+	private static final String AUTNUM_STORE_QUERY = "storeAutnumLinksToDatabase";
 
 	static {
 		try {
@@ -154,6 +156,12 @@ public class LinkModel {
 	public static void storeRemarkLinksToDatabase(List<Link> links, Long remarkId, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		storeLinkRelationToDatabase(links, remarkId, connection, REMARK_STORE_QUERY);
+	}
+
+	public static void storeAutnumLinksToDatabase(List<Link> links, Long autnumId, Connection connection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		storeLinkRelationToDatabase(links, autnumId, connection, AUTNUM_STORE_QUERY);
+
 	}
 
 	/**
@@ -269,6 +277,10 @@ public class LinkModel {
 		return getByRelationId(entityId, connection, ENTITY_GET_QUERY);
 	}
 
+	public static List<LinkDAO> getByAutnumId(Long autnumId, Connection connection) throws SQLException {
+		return getByRelationId(autnumId, connection, AUTNUM_GET_QUERY);
+	}
+
 	/**
 	 * @param id
 	 *            Id of the owner of the links
@@ -279,7 +291,8 @@ public class LinkModel {
 	 * @return
 	 * @throws SQLException
 	 */
-	private static List<LinkDAO> getByRelationId(Long id, Connection connection, String queryGetId) throws SQLException {
+	private static List<LinkDAO> getByRelationId(Long id, Connection connection, String queryGetId)
+			throws SQLException {
 		String query = queryGroup.getQuery(queryGetId);
 		List<LinkDAO> result = null;
 
@@ -330,4 +343,5 @@ public class LinkModel {
 
 		return result;
 	}
+
 }

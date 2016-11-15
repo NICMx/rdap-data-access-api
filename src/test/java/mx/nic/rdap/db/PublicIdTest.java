@@ -20,6 +20,10 @@ import mx.nic.rdap.db.model.EntityModel;
 import mx.nic.rdap.db.model.PublicIdModel;
 import mx.nic.rdap.db.model.ZoneModel;
 
+/**
+ * Test for the PublicId object
+ * 
+ */
 public class PublicIdTest extends DatabaseTest {
 
 	@Test

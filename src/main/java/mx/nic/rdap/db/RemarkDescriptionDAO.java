@@ -4,18 +4,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import mx.nic.rdap.core.db.Remark;
 import mx.nic.rdap.core.db.RemarkDescription;
 
 /**
- * A description of the remark
+ * A description of the {@link Remark}
  * 
- * @author dalpuche
- *
  */
 public class RemarkDescriptionDAO extends RemarkDescription implements DatabaseObject {
 
 	/**
-	 * Constructor default
+	 * Default constructor
 	 */
 	public RemarkDescriptionDAO() {
 		super();

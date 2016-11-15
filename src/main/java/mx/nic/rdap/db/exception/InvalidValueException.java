@@ -3,8 +3,6 @@ package mx.nic.rdap.db.exception;
 /**
  * Generic problems with the validation of the objects
  * 
- * @author dalpuche
- *
  */
 public class InvalidValueException extends Exception {
 
