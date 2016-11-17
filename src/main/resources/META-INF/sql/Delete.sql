@@ -1,5 +1,3 @@
-#01_delete_entity_asn
-DELETE  FROM rdap.entity_asn;
 
 #02_delete_entity_contact
 DELETE  FROM rdap.entity_contact;
@@ -106,11 +104,7 @@ DELETE  FROM rdap.domain;
 #35_delete_zone
 DELETE  FROM rdap.zone;
 
-#36_delete_registrar_asn
-DELETE  FROM rdap.registrar_asn;
 
-#37_delete_registrar_networks
-DELETE  FROM rdap.registrar_networks;
 
 #38_delete_event_links
 DELETE  FROM rdap.event_links;
