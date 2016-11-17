@@ -1,8 +1,11 @@
 #storeToDatabase
-INSERT INTO rdap.domain VALUES (null,?,?,?,?);
+INSERT INTO rdap.domain(dom_handle,dom_ldh_name,dom_port43,zone_id) VALUES (?,?,?,?);
+
+#getByHandle
+SELECT * FROM rdap.domain WHERE dom_handle=?;
 
 #storeDomainEntityRoles 
-INSERT INTO rdap.domain_entity_roles VALUES (?,?,?);
+INSERT INTO rdap.domain_entity_roles(dom_id,ent_id,rol_id) VALUES (?,?,?);
 
 #getByLdhName
 SELECT * FROM rdap.domain WHERE dom_ldh_name=? AND zone_id = ?;

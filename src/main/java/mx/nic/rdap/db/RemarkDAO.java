@@ -58,4 +58,13 @@ public class RemarkDAO extends Remark implements DatabaseObject {
 		preparedStatement.setString(2, this.getType());
 		preparedStatement.setString(3, this.getLanguage());
 	}
+
+	/* (non-Javadoc)
+	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.PreparedStatement)
+	 */
+	@Override
+	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
 }

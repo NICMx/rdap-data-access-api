@@ -116,4 +116,13 @@ public class RdapUserRoleDAO implements DatabaseObject {
 		this.roleName = roleName;
 	}
 
+	/* (non-Javadoc)
+	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.PreparedStatement)
+	 */
+	@Override
+	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -58,4 +58,13 @@ public class RemarkDescriptionDAO extends RemarkDescription implements DatabaseO
 
 	}
 
+	/* (non-Javadoc)
+	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.PreparedStatement)
+	 */
+	@Override
+	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

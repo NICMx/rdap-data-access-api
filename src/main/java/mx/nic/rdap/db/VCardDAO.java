@@ -49,4 +49,13 @@ public class VCardDAO extends VCard implements DatabaseObject {
 		preparedStatement.setString(8, getJobTitle());
 	}
 
+	/* (non-Javadoc)
+	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.PreparedStatement)
+	 */
+	@Override
+	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

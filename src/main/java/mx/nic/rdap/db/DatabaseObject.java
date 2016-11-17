@@ -26,4 +26,9 @@ public interface DatabaseObject {
 	 *            PreparedStatement where all the information is saved
 	 */
 	public void storeToDatabase(PreparedStatement preparedStatement) throws SQLException;
+	
+	/**
+	 * Same as storeToDatabase,but using different order and should use the object id as criteria
+	 */
+	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException;
 }
