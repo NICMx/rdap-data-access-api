@@ -1,6 +1,12 @@
 #storeToDatabase
 INSERT INTO rdap.nameserver VALUES(null,?,?,?);
 
+#updateInDatabase
+UPDATE rdap.nameserver SET nse_ldh_name=?,nse_port43=? WHERE nse_id=?;
+
+#getByHandle
+SELECT * FROM rdap.nameserver WHERE nse_handle=?;
+
 #storeDomainNameserversToDatabase
 INSERT INTO rdap.domain_nameservers VALUES(?,?);
 

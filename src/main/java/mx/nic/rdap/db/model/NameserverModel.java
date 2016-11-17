@@ -54,6 +54,25 @@ public class NameserverModel {
 	 * @throws RequiredValueNotFoundException
 	 */
 	private static void isValidForStore(Nameserver nameserver) throws RequiredValueNotFoundException {
+		if (nameserver.getHandle() == null || nameserver.getHandle().isEmpty())
+			throw new RequiredValueNotFoundException("handle", "Nameserver");
+		if (nameserver.getPunycodeName() == null || nameserver.getPunycodeName().isEmpty())
+			throw new RequiredValueNotFoundException("ldhName", "Nameserver");
+	}
+
+	/**
+	 * Validate the required attributes for the nameserver
+	 * 
+	 * @param nameserver
+	 * @throws RequiredValueNotFoundException
+	 */
+	private static void isValidForUpdate(Nameserver nameserver) throws RequiredValueNotFoundException {
+		if (nameserver.getId() == null)
+			throw new RequiredValueNotFoundException("id", "Nameserver");
+		if (nameserver.getPunycodeName() == null || nameserver.getPunycodeName().isEmpty())
+			throw new RequiredValueNotFoundException("ldhName", "Nameserver");
+		if (nameserver.getHandle() == null || nameserver.getHandle().isEmpty())
+			throw new RequiredValueNotFoundException("handle", "Nameserver");
 		if (nameserver.getPunycodeName() == null || nameserver.getPunycodeName().isEmpty())
 			throw new RequiredValueNotFoundException("ldhName", "Nameserver");
 	}
@@ -81,6 +100,12 @@ public class NameserverModel {
 												// inserted
 			nameserver.setId(nameserverId);
 		}
+		storeNestedObjects(nameserver, connection);
+	}
+
+	public static void storeNestedObjects(Nameserver nameserver, Connection connection)
+			throws IOException, SQLException, RequiredValueNotFoundException {
+		Long nameserverId = nameserver.getId();
 		IpAddressModel.storeToDatabase(nameserver.getIpAddresses(), nameserverId, connection);
 		StatusModel.storeNameserverStatusToDatabase(nameserver.getStatus(), nameserverId, connection);
 		RemarkModel.storeNameserverRemarksToDatabase(nameserver.getRemarks(), nameserverId, connection);
@@ -367,12 +392,82 @@ public class NameserverModel {
 		}
 	}
 
+	private static NameserverDAO getByHandle(String handle, Connection rdapConnection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		if (handle == null || handle.isEmpty()) {
+			throw new RequiredValueNotFoundException("handle", "Nameserver");
+		}
+		String query = queryGroup.getQuery("getByHandle");
+		try (PreparedStatement statement = rdapConnection.prepareStatement(query)) {
+			statement.setString(1, handle);
+			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
+			try (ResultSet resultSet = statement.executeQuery()) {
+				if (!resultSet.next()) {
+					throw new ObjectNotFoundException("Object not found.");
+				}
+				NameserverDAO nameserver = new NameserverDAO(resultSet);
+				loadNestedObjects(nameserver, rdapConnection);
+				return nameserver;
+			}
+		}
+	}
+
+	private static void update(Nameserver nameserver, Connection rdapConnection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		isValidForUpdate(nameserver);
+		String query = queryGroup.getQuery("updateInDatabase");
+		try (PreparedStatement statement = rdapConnection.prepareStatement(query)) {
+			((NameserverDAO) nameserver).updateInDatabase(statement);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+		updatedNestedObjects(nameserver, rdapConnection);
+	}
+
+	public static void updatedNestedObjects(Nameserver nameserver, Connection connection) throws SQLException {
+		// Long nameserverId=nameserver.getId();
+		// IpAddressModel.updateInDatabase(nameserver.getIpAddresses(),
+		// nameserverId, connection);
+		// StatusModel.updateNameserverStatusinDatabase(nameserver.getStatus(),
+		// nameserverId, connection);
+		// RemarkModel.updateNameserverRemarksinDatabase(nameserver.getRemarks(),
+		// nameserverId, connection);
+		// LinkModel.updateNameserverLinksinDatabase(nameserver.getLinks(),
+		// nameserverId, connection);
+		// EventModel.updateNameserverEventsinDatabase(nameserver.getEvents(),
+		// nameserverId, connection);
+		// if (nameserver.getEntities().size() > 0) {
+		// for (Entity entity : nameserver.getEntities()) {
+		// Long entityId = EntityModel.existsByHandle(entity.getHandle(),
+		// connection);
+		// if (entityId == null) {
+		// throw new NullPointerException(
+		// "Entity: " + entity.getHandle() + " was not insert previously to the
+		// database");
+		// }
+		// entity.setId(entityId);
+		// }
+		// RolModel.updateNameserverEntityRoles(nameserver.getEntities(),
+		// nameserverId, connection);
+		// }
+	}
+
 	/**
-	 * @param nameserver
-	 * @param rdapConnection
+	 * Can't use a regular upsert sql statement, because nameserver table has multiple unique constraints, instead will check if the nameserver exist,then update it on insert it,if not exist.
 	 */
-	public static void upsertToDatabase(NameserverDAO nameserver, Connection rdapConnection) {
-		// TODO Auto-generated method stub
-		
+	public static void upsertToDatabase(Nameserver nameserver, Connection rdapConnection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		try {
+			NameserverDAO previusNameserver = getByHandle(nameserver.getHandle(), rdapConnection);
+			// validate if the main object had changed, if not, only update
+			// nestedObjects
+			if (nameserver.equals(previusNameserver)) {
+				updatedNestedObjects(previusNameserver, rdapConnection);
+			} else {
+				update(nameserver, rdapConnection);
+			}
+		} catch (ObjectNotFoundException onfe) {
+			storeToDatabase(nameserver, rdapConnection);
+		}
 	}
 }

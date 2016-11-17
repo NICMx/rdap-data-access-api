@@ -36,10 +36,34 @@ public class NameserverTest extends DatabaseTest {
 		try {
 			// Nameserver base data
 			Nameserver nameserver = new NameserverDAO();
+			nameserver.setHandle("xx1");
 			nameserver.setPunycodeName("ns.xn--test-minumun.example");
 			NameserverModel.storeToDatabase(nameserver, connection);
 			System.out.println(nameserver);
 
+			assert true;
+		} catch (RequiredValueNotFoundException | SQLException | IOException e) {
+			e.printStackTrace();
+			assert false;
+		}
+	}
+	
+	@Test
+	public void upsertMinimunNameServer() {
+
+		try {
+			// Nameserver base data
+			Nameserver nameserver = new NameserverDAO();
+			nameserver.setHandle("xx2");
+			nameserver.setPunycodeName("ns.xn--test-minumun.example");
+			NameserverModel.storeToDatabase(nameserver, connection);
+			//fist and update on the object
+			nameserver.setPunycodeName("ns.test-minimun.example");
+			NameserverModel.upsertToDatabase(nameserver, connection);
+			//second a create 
+			nameserver.setHandle("xx3");
+			nameserver.setPunycodeName("ns.test-minimun2.example");
+			NameserverModel.upsertToDatabase(nameserver, connection);
 			assert true;
 		} catch (RequiredValueNotFoundException | SQLException | IOException e) {
 			e.printStackTrace();
