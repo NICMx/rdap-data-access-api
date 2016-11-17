@@ -402,4 +402,13 @@ public class EntityModel {
 		return entities;
 	}
 
+	/**
+	 * @param entity
+	 * @param rdapConnection
+	 */
+	public static void upsertToDatabase(EntityDAO entity, Connection rdapConnection) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -137,4 +137,9 @@ public class RdapUserModel {
 
 		}
 	}
+
+	public static void upsertToDatabase(RdapUserDAO user, Connection rdapConnection) {
+		// TODO Auto-generated method stub
+		
+	}
 }

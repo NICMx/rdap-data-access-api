@@ -427,4 +427,13 @@ public class DomainModel {
 			throw new ObjectNotFoundException("Zone not found.");
 		}
 	}
+
+	/**
+	 * @param domain
+	 * @param rdapConnection
+	 */
+	public static void upsertToDatabase(DomainDAO domain, Connection rdapConnection) {
+		// TODO Auto-generated method stub
+		
+	}
 }

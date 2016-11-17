@@ -366,4 +366,13 @@ public class NameserverModel {
 			}
 		}
 	}
+
+	/**
+	 * @param nameserver
+	 * @param rdapConnection
+	 */
+	public static void upsertToDatabase(NameserverDAO nameserver, Connection rdapConnection) {
+		// TODO Auto-generated method stub
+		
+	}
 }
