@@ -83,7 +83,7 @@ public class AutnumModel {
 		return autnumId;
 	}
 
-	public static Autnum getAutnumById(Long autnumId, Connection connection) throws SQLException {
+	public static AutnumDAO getAutnumById(Long autnumId, Connection connection) throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getAutnumById"))) {
 			statement.setLong(1, autnumId);
 			logger.log(Level.INFO, "Executing query: " + statement.toString());
@@ -91,14 +91,14 @@ public class AutnumModel {
 				if (!resultSet.next()) {
 					throw new ObjectNotFoundException("Object not found");
 				}
-				Autnum autnum = new AutnumDAO(resultSet);
+				AutnumDAO autnum = new AutnumDAO(resultSet);
 				loadNestedObjects(autnum, connection);
 				return autnum;
 			}
 		}
 	}
 
-	public static Autnum getByRange(Long autnumValue, Connection connection) throws SQLException {
+	public static AutnumDAO getByRange(Long autnumValue, Connection connection) throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getByRange"))) {
 			statement.setLong(1, autnumValue);
 			statement.setLong(2, autnumValue);
@@ -107,7 +107,7 @@ public class AutnumModel {
 				if (!resultSet.next()) {
 					throw new ObjectNotFoundException("Object not found.");
 				}
-				Autnum autnum = new AutnumDAO(resultSet);
+				AutnumDAO autnum = new AutnumDAO(resultSet);
 				loadNestedObjects(autnum, connection);
 				return autnum;
 			}

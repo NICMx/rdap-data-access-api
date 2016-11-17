@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import mx.nic.rdap.db.QueryGroup;
@@ -52,7 +51,6 @@ public class CountryCodeModel {
 		String query = queryGroup.getQuery("getAll");
 
 		PreparedStatement statement = con.prepareStatement(query);
-		logger.log(Level.INFO, "executing query: " + query);
 		ResultSet rs = statement.executeQuery();
 		if (!rs.next()) {
 			return;
