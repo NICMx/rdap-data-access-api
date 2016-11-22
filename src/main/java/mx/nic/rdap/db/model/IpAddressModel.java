@@ -129,4 +129,24 @@ public class IpAddressModel {
 			return addresses;
 		}
 	}
+
+	
+	private static void deleteByNameserverId(Long nameserverId,Connection connection) throws SQLException{
+		String query = queryGroup.getQuery("deleteByNameserverId");
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setLong(1, nameserverId);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+	}
+	
+	/**
+	 * To avoid a complete search on a likely small data,erase the previous data and insert the new
+	 */
+	public static void updateInDatabase(NameserverIpAddressesStruct ipAddresses, Long nameserverId,
+			Connection connection) throws SQLException, IOException {
+		deleteByNameserverId(nameserverId, connection);
+		storeToDatabase(ipAddresses, nameserverId, connection);
+		
+	}
 }

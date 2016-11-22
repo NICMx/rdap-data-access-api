@@ -54,10 +54,10 @@ public class NameserverTest extends DatabaseTest {
 		try {
 			// Nameserver base data
 			Nameserver nameserver = new NameserverDAO();
-			nameserver.setHandle("xx2");
+			nameserver.setHandle("xx4");
 			nameserver.setPunycodeName("ns.xn--test-minumun.example");
 			NameserverModel.storeToDatabase(nameserver, connection);
-			//fist and update on the object
+			//first and update on the object
 			nameserver.setPunycodeName("ns.test-minimun.example");
 			NameserverModel.upsertToDatabase(nameserver, connection);
 			//second a create 
@@ -181,6 +181,78 @@ public class NameserverTest extends DatabaseTest {
 		}
 
 		assert true;
+	}
+	
+	@Test
+	public void upsert(){
+		//insert a new nameserver
+//		insert();
+		// Nameserver base data
+				Nameserver nameserver = new NameserverDAO();
+				nameserver.setHandle("XXX8");
+				nameserver.setPunycodeName("updatedInfo.example");
+				nameserver.setPort43("whois.example.net");
+
+				// IpAddressStruct data
+				NameserverIpAddressesStruct ipAddresses = new NameserverIpAddressesStruct();
+
+				IpAddress ipv41 = new IpAddressDAO();
+				try {
+					ipv41.setAddress(InetAddress.getByName("127.0.0.1"));
+				} catch (UnknownHostException e1) {
+					e1.printStackTrace();
+				}
+				ipv41.setType(4);
+				ipAddresses.getIpv4Adresses().add(ipv41);
+				nameserver.setIpAddresses(ipAddresses);
+
+				// Status data
+				List<Status> statusList = new ArrayList<Status>();
+				statusList.add(Status.DELETE_PROHIBITED);
+				nameserver.setStatus(statusList);
+
+				// Remarks data
+				List<Remark> remarks = new ArrayList<Remark>();
+				Remark remark = new RemarkDAO();
+				remark.setLanguage("EN");
+				remark.setTitle("TEST");
+				
+				List<RemarkDescription> descriptions = new ArrayList<RemarkDescription>();
+				RemarkDescription description1 = new RemarkDescriptionDAO();
+				description1.setOrder(1);
+				description1.setDescription("kings are dying like flies");
+
+
+				descriptions.add(description1);
+				remark.setDescriptions(descriptions);
+				remarks.add(remark);
+				nameserver.setRemarks(remarks);
+
+
+				// Events Data
+				List<Event> events = new ArrayList<Event>();
+				Event event1 = new EventDAO();
+				event1.setEventAction(EventAction.DELETION);
+				event1.setEventDate(new Date());
+
+				// event links data
+				List<Link> eventLinks = new ArrayList<Link>();
+				Link eventLink = new LinkDAO();
+				eventLink.setValue("eventLink1");
+				eventLink.setRel("eventlink");
+				eventLink.setHref("http://example.net/eventlink/xxxx");
+				eventLink.setType("application/rdap+json");
+				eventLinks.add(eventLink);
+
+				events.add(event1);
+				nameserver.setEvents(events);
+				try {
+					NameserverModel.upsertToDatabase(nameserver, connection);
+					connection.commit();
+				} catch (IOException | SQLException | RequiredValueNotFoundException e) {
+					e.printStackTrace();
+					fail();
+				}
 	}
 
 	@Test

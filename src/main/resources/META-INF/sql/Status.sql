@@ -1,6 +1,7 @@
 #getByNameServerId
 SELECT sta_id FROM rdap.nameserver_status WHERE nse_id=?;
 
+
 #getByDomainId
 SELECT sta_id FROM rdap.domain_status WHERE dom_id=?;
 
@@ -27,3 +28,6 @@ INSERT INTO rdap.registrar_status VALUES (?,?);
 
 #storeAutnumStatusToDatabase
 INSERT INTO rdap.asn_status VALUES (?,?);
+
+#deleteByNameserverId
+DELETE FROM rdap.nameserver_status  WHERE nse_id=?;

@@ -25,6 +25,10 @@ public class RemarkDescriptionModel {
 
 	private final static String QUERY_GROUP = "RemarkDescription";
 
+	private static final String DELETE_QUERY = "deleteRemarkDescriptionByRemarkId";
+	private static final String GET_QUERY = "getByRemarkId";
+	private static final String INSERT_QUERY = "storeToDatabase";
+
 	protected static QueryGroup queryGroup = null;
 
 	static {
@@ -35,14 +39,6 @@ public class RemarkDescriptionModel {
 		}
 	}
 
-	/**
-	 * Store a list of RemarkDescriptions
-	 * 
-	 * @param descriptions
-	 * @param remarkInsertedId
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static void storeAllToDatabase(List<RemarkDescription> descriptions, Long remarkInsertedId,
 			Connection connection) throws IOException, SQLException {
 		for (RemarkDescription remarkDescription : descriptions) {
@@ -51,34 +47,18 @@ public class RemarkDescriptionModel {
 		}
 	}
 
-	/**
-	 * Store a RemarkDescription in the database
-	 * 
-	 * @param remark
-	 * @return true if the insert was correct
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static void storeToDatabase(RemarkDescription remarkDescription, Connection connection)
 			throws IOException, SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("storeToDatabase"))) {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(INSERT_QUERY))) {
 			((RemarkDescriptionDAO) remarkDescription).storeToDatabase(statement);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			statement.executeUpdate();
 		}
 	}
 
-	/**
-	 * Get all RemarkDescriptions from a Remark
-	 * 
-	 * @param id
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static List<RemarkDescription> findByRemarkId(Long id, Connection connection)
 			throws IOException, SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getByRemarkId"))) {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_QUERY))) {
 			statement.setLong(1, id);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			try (ResultSet resultSet = statement.executeQuery()) {
@@ -93,6 +73,16 @@ public class RemarkDescriptionModel {
 				return remarks;
 			}
 		}
+	}
+
+	public static void deletePreviousDescriptions(Long remarkId, Connection connection) throws SQLException {
+		String query = queryGroup.getQuery(DELETE_QUERY);
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setLong(1, remarkId);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+
 	}
 
 }

@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import mx.nic.rdap.db.QueryGroup;
 
@@ -20,7 +19,6 @@ import mx.nic.rdap.db.QueryGroup;
 
 public class CountryCodeModel {
 
-	private final static Logger logger = Logger.getLogger(CountryCodeModel.class.getName());
 
 	private final static String QUERY_GROUP = "CountryCode";
 

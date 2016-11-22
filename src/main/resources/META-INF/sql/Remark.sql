@@ -28,3 +28,20 @@ INSERT INTO rdap.asn_remarks VALUES (?,?);
 #getAll
 SELECT * FROM rdap.remark ORDER BY 1 ASC;
 
+#deleteEntityRemarksRelation
+DELETE FROM rdap.entity_remarks WHERE rem_id IN (?);
+
+#deleteNameserverRemarksRelation
+DELETE FROM rdap.nameserver_remarks WHERE rem_id IN (?);
+
+#deleteDomainRemarksRelation
+DELETE FROM rdap.domain_remarks WHERE rem_id IN (?);
+
+#deleteAutnumRemarksRelation
+DELETE FROM rdap.asn_remarks WHERE rem_id IN (?);
+
+#deleteIpNetworkRemarksRelation
+DELETE FROM rdap.ip_network_remarks WHERE rem_id IN (?);
+
+#deleteRemarksById
+DELETE FROM rdap.remark WHERE rem_id IN (?);

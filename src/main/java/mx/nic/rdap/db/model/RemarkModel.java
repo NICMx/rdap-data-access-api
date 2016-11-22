@@ -15,15 +15,13 @@ import java.util.logging.Logger;
 import mx.nic.rdap.core.db.Remark;
 import mx.nic.rdap.db.QueryGroup;
 import mx.nic.rdap.db.RemarkDAO;
+import mx.nic.rdap.db.Util;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 
 /**
  * Model for the Remark Object
  * 
- * @author dalpuche
- * @author dhfelix
- *
  */
 public class RemarkModel {
 
@@ -35,11 +33,21 @@ public class RemarkModel {
 	private static final String DOMAIN_STORE_QUERY = "storeDomainRemarksToDatabase";
 	private static final String ENTITY_STORE_QUERY = "storeEntityRemarksToDatabase";
 	private static final String AUTNUM_STORE_QUERY = "storeAutnumRemarksToDatabase";
+	// private static final String IP_NETWORK_STORE_QUERY =
+	// "storeIpNetworkRemarksToDatabase";
 
 	private static final String NAMESERVER_GET_QUERY = "getByNameserverId";
 	private static final String DOMAIN_GET_QUERY = "getByDomainId";
 	private static final String ENTITY_GET_QUERY = "getByEntityId";
 	private static final String AUTNUM_GET_QUERY = "getByAutnumId";
+	// private static final String IP_NETWORK_GET_QUERY = "getByIpNetworkId";
+
+	private static final String DELETE_QUERY = "deleteRemarksById";
+	private static final String NAMESERVER_DELETE_QUERY = "deleteNameserverRemarksRelation";
+	private static final String ENTITY_DELETE_QUERY = "deleteEntityRemarksRelation";
+	private static final String DOMAIN_DELETE_QUERY = "deleteDomainRemarksRelation";
+	private static final String AUTNUM_DELETE_QUERY = "deleteAutnumRemarksRelation";
+	private static final String IP_NETWORK_DELETE_QUERY = "deleteIpNetworkRemarksRelation";
 
 	protected static QueryGroup queryGroup = null;
 
@@ -51,15 +59,6 @@ public class RemarkModel {
 		}
 	}
 
-	/**
-	 * Store a Remark in the database
-	 * 
-	 * @param remark
-	 * @return true if the insert was correct
-	 * @throws IOException
-	 * @throws SQLException
-	 * @throws RequiredValueNotFoundException
-	 */
 	public static long storeToDatabase(Remark remark, Connection connection)
 			throws IOException, SQLException, RequiredValueNotFoundException {
 
@@ -72,9 +71,8 @@ public class RemarkModel {
 			statement.executeUpdate();
 			ResultSet result = statement.getGeneratedKeys();
 			result.next();
-			Long remarkInsertedId = result.getLong(1);// The id of the remark
-														// inserted
-
+			// The id of the remark inserted
+			Long remarkInsertedId = result.getLong(1);
 			remark.setId(remarkInsertedId);
 			RemarkDescriptionModel.storeAllToDatabase(remark.getDescriptions(), remarkInsertedId, connection);
 			LinkModel.storeRemarkLinksToDatabase(remark.getLinks(), remarkInsertedId, connection);
@@ -99,28 +97,11 @@ public class RemarkModel {
 		}
 	}
 
-	/**
-	 * Store the nameserver remarks
-	 * 
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
-	 */
 	public static void storeNameserverRemarksToDatabase(List<Remark> remarks, Long nameserverId, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		storeRelationRemarksToDatabase(remarks, nameserverId, connection, NAMESERVER_STORE_QUERY);
 	}
 
-	/**
-	 * Stores the domain's remarks
-	 * 
-	 * @param remarks
-	 * @param domainId
-	 * @param connection
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
-	 */
 	public static void storeDomainRemarksToDatabase(List<Remark> remarks, Long domainId, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		storeRelationRemarksToDatabase(remarks, domainId, connection, DOMAIN_STORE_QUERY);
@@ -131,11 +112,6 @@ public class RemarkModel {
 		storeRelationRemarksToDatabase(remarks, autnumId, connection, AUTNUM_STORE_QUERY);
 	}
 
-	/**
-	 * 
-	 * Stores the Entity's remarks
-	 * 
-	 */
 	public static void storeEntityRemarksToDatabase(List<Remark> remarks, Long entityId, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		storeRelationRemarksToDatabase(remarks, entityId, connection, ENTITY_STORE_QUERY);
@@ -153,31 +129,15 @@ public class RemarkModel {
 		}
 	}
 
-	/**
-	 * Get all remarks for the namemeserver
-	 * 
-	 * @param nameserverId
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static List<Remark> getByNameserverId(Long nameserverId, Connection connection)
 			throws IOException, SQLException {
 		return getByRelationId(nameserverId, connection, NAMESERVER_GET_QUERY);
 	}
 
-	/**
-	 * Get all domain's remarks
-	 * 
-	 */
 	public static List<Remark> getByDomainId(Long domainId, Connection connection) throws SQLException, IOException {
 		return getByRelationId(domainId, connection, DOMAIN_GET_QUERY);
 	}
 
-	/**
-	 * Get all entity's remarks
-	 * 
-	 */
 	public static List<Remark> getByEntityId(Long entityId, Connection connection) throws SQLException, IOException {
 		return getByRelationId(entityId, connection, ENTITY_GET_QUERY);
 	}
@@ -186,30 +146,13 @@ public class RemarkModel {
 		return getByRelationId(autnumId, connection, AUTNUM_GET_QUERY);
 	}
 
-	/**
-	 * Unused. Get all Remarks from DB
-	 * 
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static List<Remark> getAll(Connection connection) throws IOException, SQLException {
-		RemarkModel.queryGroup = new QueryGroup(QUERY_GROUP);
 		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getAll"));
 				ResultSet resultSet = statement.executeQuery();) {
 			return processResultSet(resultSet, connection);
 		}
 	}
 
-	/**
-	 * Process the resulset of the query
-	 * 
-	 * @param resultSet
-	 * @return
-	 * @throws SQLException
-	 * @throws ObjectNotFoundException
-	 * @throws IOException
-	 */
 	private static List<Remark> processResultSet(ResultSet resultSet, Connection connection)
 			throws SQLException, ObjectNotFoundException, IOException {
 		if (!resultSet.next()) {
@@ -225,6 +168,90 @@ public class RemarkModel {
 			remarks.add(remark);
 		} while (resultSet.next());
 		return remarks;
+	}
+
+	public static void updateEntityRemarksInDatabase(List<Remark> previousRemarks, List<Remark> remarks, Long entityId,
+			Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
+		if (!previousRemarks.isEmpty()) {
+			deleteRemarkRelationByRemarksId(queryGroup.getQuery(ENTITY_DELETE_QUERY), previousRemarks, connection);
+			deletePreviusRemarks(previousRemarks, connection);
+		}
+		storeEntityRemarksToDatabase(remarks, entityId, connection);
+	}
+
+	public static void updateNameserverRemarksInDatabase(List<Remark> previousRemarks, List<Remark> remarks,
+			Long nameserverId, Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
+		if (!previousRemarks.isEmpty()) {
+			deleteRemarkRelationByRemarksId(queryGroup.getQuery(NAMESERVER_DELETE_QUERY), previousRemarks, connection);
+			deletePreviusRemarks(previousRemarks, connection);
+		}
+		storeNameserverRemarksToDatabase(remarks, nameserverId, connection);
+	}
+
+	public static void updateDomainRemarksInDatabase(List<Remark> previousRemarks, List<Remark> remarks, Long domainId,
+			Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
+		if (!previousRemarks.isEmpty()) {
+			deleteRemarkRelationByRemarksId(queryGroup.getQuery(DOMAIN_DELETE_QUERY), previousRemarks, connection);
+			deletePreviusRemarks(previousRemarks, connection);
+		}
+		storeDomainRemarksToDatabase(remarks, domainId, connection);
+	}
+
+	public static void updateAutnumRemarksInDatabase(List<Remark> previousRemarks, List<Remark> remarks, Long asnId,
+			Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
+		if (!previousRemarks.isEmpty()) {
+			deleteRemarkRelationByRemarksId(queryGroup.getQuery(AUTNUM_DELETE_QUERY), previousRemarks, connection);
+			deletePreviusRemarks(previousRemarks, connection);
+		}
+		storeAutnumRemarksToDatabase(remarks, asnId, connection);
+	}
+
+	public static void updateIpNetworkRemarksInDatabase(List<Remark> previousRemarks, List<Remark> remarks, Long ipId,
+			Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
+		if (!previousRemarks.isEmpty()) {
+			deleteRemarkRelationByRemarksId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), previousRemarks, connection);
+			deletePreviusRemarks(previousRemarks, connection);
+		}
+		// storeIpNetworkRemarksToDatabase(remarks, ipId, connection);
+	}
+
+	private static void deleteRemarkRelationByRemarksId(String query, List<Remark> previousRemarks,
+			Connection connection) throws SQLException {
+		List<Long> ids = new ArrayList<Long>();
+		for (Remark remark : previousRemarks) {
+			ids.add(remark.getId());
+		}
+		String dynamicQuery = Util.createDynamicQueryWithInClause(ids.size(), query);
+		try (PreparedStatement statement = connection.prepareStatement(dynamicQuery)) {
+			int index = 1;
+			for (Long id : ids) {
+				statement.setLong(index++, id);
+			}
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+
+	}
+
+	private static void deletePreviusRemarks(List<Remark> previousRemarks, Connection connection) throws SQLException {
+		List<Long> ids = new ArrayList<Long>();
+		for (Remark remark : previousRemarks) {
+			ids.add(remark.getId());
+			LinkModel.deleteRemarksLinksData(remark.getLinks(), connection);
+			RemarkDescriptionModel.deletePreviousDescriptions(remark.getId(), connection);
+		}
+
+		String query = queryGroup.getQuery(DELETE_QUERY);
+		String dynamicQuery = Util.createDynamicQueryWithInClause(ids.size(), query);
+
+		try (PreparedStatement statement = connection.prepareStatement(dynamicQuery)) {
+			int index = 1;
+			for (Long id : ids) {
+				statement.setLong(index++, id);
+			}
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
 	}
 
 }

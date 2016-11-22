@@ -6,3 +6,6 @@ INSERT INTO rdap.ip_address  VALUES (null,?,?,IF(?=4,INET_ATON(?),INET6_ATON(?))
 
 #getAll
 SELECT * FROM rdap.ip_address ORDER BY 1 ASC;
+
+#deleteByNameserverId
+delete from ip_address where nse_id=?;

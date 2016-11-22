@@ -45,3 +45,30 @@ INSERT INTO rdap.entity_links VALUES(?,?);
 
 #storeAutnumLinksToDatabase
 INSERT INTO rdap.asn_links VALUES(?,?);
+
+#deleteEntityLinksRelation
+DELETE FROM rdap.entity_links WHERE lin_id IN (?);
+
+#deleteNameserverLinksRelation
+DELETE FROM rdap.nameserver_links WHERE lin_id IN (?);
+
+#deleteDSLinksRelation
+DELETE FROM rdap.ds_links WHERE lin_id IN (?);
+
+#deleteDomainLinksRelation
+DELETE FROM rdap.domain_links WHERE lin_id IN (?);
+
+#deleteIpNetworkLinksRelation
+DELETE FROM rdap.ip_network_links WHERE lin_id IN (?);
+
+#deleteAutnumLinksRelation
+DELETE FROM rdap.asn_links WHERE lin_id IN (?);
+
+#deleteEventLinksRelation
+DELETE FROM rdap.event_links WHERE lin_id IN (?);
+
+#deleteRemarkLinksRelation
+DELETE FROM rdap.remark_links WHERE lin_id IN (?);
+
+#deleteLinksById
+DELETE FROM rdap.link WHERE lin_id IN (?);

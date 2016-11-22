@@ -33,3 +33,24 @@ INSERT INTO rdap.asn_events VALUES (?,?);
 
 #getAll
 SELECT * FROM rdap.event;
+
+#deleteEventById
+DELETE FROM rdap.event WHERE eve_id IN (?);
+
+#deleteNameserverEventsRelation
+DELETE FROM rdap.nameserver_events WHERE eve_id IN (?);
+
+#deleteEntityEventsRelation
+DELETE FROM rdap.entity_events WHERE eve_id IN (?);
+
+#deleteDsEventsRelation
+DELETE FROM rdap.ds_events WHERE eve_id IN (?);
+
+#deleteDomainEventsRelation
+DELETE FROM rdap.domain_events WHERE eve_id IN (?);
+
+#deleteAutnumEventsRelation
+DELETE FROM rdap.asn_events WHERE eve_id IN (?);
+
+#deleteIpNetworkEventsRelation
+DELETE FROM rdap.ip_network_events WHERE eve_id IN (?);

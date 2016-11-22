@@ -25,7 +25,7 @@ public class RolModel {
 
 	private final static Logger logger = Logger.getLogger(RolModel.class.getName());
 
-	private final static String QUERY_GROUP = "rol";
+	private final static String QUERY_GROUP = "Rol";
 
 	private static final String STORE_DOMAIN_ROLES = "storeDomainsEntityRol";
 	private static final String STORE_ENTITY_ROLES = "storeEntitiesEntityRol";
@@ -200,6 +200,20 @@ public class RolModel {
 		}
 
 		return resultRoles;
+	}
+
+	private static void deleteNameserverEntityRolesByNameserverId(Long nameserverId, Connection connection) throws SQLException {
+		String query = queryGroup.getQuery("deleteNameserverEntityRolesByNameserverId");
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setLong(1, nameserverId);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+	}
+	
+	public static void updateNameserverEntityRoles(List<Entity> entities, Long nameserverId, Connection connection) throws SQLException {
+		deleteNameserverEntityRolesByNameserverId(nameserverId, connection);
+		storeNameserverEntityRoles(entities, nameserverId, connection);
 	}
 
 }

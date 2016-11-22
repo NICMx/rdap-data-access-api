@@ -216,4 +216,21 @@ public class StatusModel {
 		return result;
 	}
 
+	private static void deleteByNameserverId(Long nameserverId,Connection connection) throws SQLException{
+		String query = queryGroup.getQuery("deleteByNameserverId");
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setLong(1, nameserverId);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+	}
+	
+	/**
+	 * To avoid a complete search on a likely small data,erase the previous data and insert the new
+	 */
+	public static void updateNameserverStatusInDatabase(List<Status> status, Long nameserverId, Connection connection) throws SQLException, IOException {
+		deleteByNameserverId(nameserverId, connection);
+		storeNameserverStatusToDatabase(status, nameserverId, connection);
+	}
+
 }

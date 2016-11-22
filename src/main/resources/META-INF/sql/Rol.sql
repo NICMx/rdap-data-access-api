@@ -24,3 +24,6 @@ SELECT rol.rol_id FROM rdap.asn_entity_roles rol WHERE rol.asn_id = ? AND rol.en
 
 #getMainEntityRol
 SELECT DISTINCT rol.rol_id FROM rdap.entity_entity_roles rol WHERE rol.ent_id = ? AND rol.main_ent_id IN (?);
+
+#deleteNameserverEntityRolesByNameserverId
+DELETE FROM rdap.nameserver_entity_roles  WHERE nse_id=?;
