@@ -50,54 +50,25 @@ public class DomainTest extends DatabaseTest {
 
 	@Test
 	public void insertAndGetSimpleDomain() {
-		Entity registrar = new EntityDAO();
-		registrar.setHandle("whois");
-		registrar.setPort43("whois.mx");
-		registrar.getRoles().add(Rol.SPONSOR);
-
-		Entity ent = new EntityDAO();
-		ent.setHandle("usr_evaldez");
-		ent.getRoles().add(Rol.REGISTRANT);
-		ent.getRoles().add(Rol.ADMINISTRATIVE);
-		ent.getRoles().add(Rol.TECHNICAL);
-
-		try {
-			EntityModel.storeToDatabase(registrar, connection);
-			EntityModel.storeToDatabase(ent, connection);
-		} catch (SQLException | IOException | RequiredValueNotFoundException e1) {
-			e1.printStackTrace();
-			fail();
-		}
-
-		try {
-			EntityModel.storeToDatabase(registrar, connection);
-			EntityModel.storeToDatabase(ent, connection);
-		} catch (SQLException | IOException | RequiredValueNotFoundException e1) {
-			e1.printStackTrace();
-			fail();
-		}
 
 		Domain dom = new DomainDAO();
-		dom.getEntities().add(ent);
-		dom.getEntities().add(registrar);
-		dom.setHandle("domcommx");
-		dom.setLdhName("mydomaintest.mx");
+		dom.setHandle("domcommx1");
+		dom.setPunycodeName("xn--fo-5ja");
 
 		Integer zoneId = null;
 		try {
-			zoneId = ZoneModel.storeToDatabase("mx", connection);
+			zoneId = ZoneModel.storeToDatabase("example.mx", connection);
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 			fail(e1.toString());
 		}
 		dom.setZoneId(zoneId);
 
-		SecureDNSDAO secureDNS = SecureDnsTest.getSecureDns(null, null, false, false, null);
-		dom.setSecureDNS(secureDNS);
 
 		Long domId = null;
 		try {
 			domId = DomainModel.storeToDatabase(dom, connection);
+			connection.commit();
 		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
 			e.printStackTrace();
 			fail();
@@ -181,7 +152,7 @@ public class DomainTest extends DatabaseTest {
 		}
 
 		domain.setZoneId(zoneId);
-		domain.setLdhName(domainName);
+		domain.setPunycodeName(domainName);
 		domain.setSecureDNS(SecureDnsTest.createDefaultSDNS());
 
 		// Creates and inserts a list of variants into the domain
