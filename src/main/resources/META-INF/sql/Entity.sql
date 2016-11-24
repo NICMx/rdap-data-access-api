@@ -43,3 +43,6 @@ SELECT * FROM rdap.entity e WHERE e.ent_handle = ? ORDER BY 1 LIMIT ?;
 #searchByName
 SELECT * FROM rdap.entity ent JOIN rdap.entity_contact eco ON eco.ent_id=ent.ent_id JOIN rdap.vcard vca ON vca.vca_id=eco.vca_id WHERE vca.vca_name = ? ORDER BY 1 LIMIT ?;
 
+#updateInDatabase
+UPDATE rdap.entity SET ent_port43=? WHERE ent_id=?;
+

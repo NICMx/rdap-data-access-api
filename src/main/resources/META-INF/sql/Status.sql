@@ -29,5 +29,17 @@ INSERT INTO rdap.registrar_status VALUES (?,?);
 #storeAutnumStatusToDatabase
 INSERT INTO rdap.asn_status VALUES (?,?);
 
-#deleteByNameserverId
+#deleteEntityStatusRelation
+DELETE FROM rdap.entity_status  WHERE ent_id=?;
+
+#deleteNameserverStatusRelation
 DELETE FROM rdap.nameserver_status  WHERE nse_id=?;
+
+#deleteDomainStatusRelation
+DELETE FROM rdap.domain_status  WHERE dom_id=?;
+
+#deleteAutnumStatusRelation
+DELETE FROM rdap.autnum_status  WHERE asn_id=?;
+
+#deleteIpNetworkStatusRelation
+DELETE FROM rdap.ip_network_status  WHERE ine_id=?;

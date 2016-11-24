@@ -25,5 +25,20 @@ SELECT rol.rol_id FROM rdap.asn_entity_roles rol WHERE rol.asn_id = ? AND rol.en
 #getMainEntityRol
 SELECT DISTINCT rol.rol_id FROM rdap.entity_entity_roles rol WHERE rol.ent_id = ? AND rol.main_ent_id IN (?);
 
-#deleteNameserverEntityRolesByNameserverId
+#deleteEntityEntityRoles
+DELETE FROM rdap.entity_entity_roles  WHERE ent_id=?;
+
+#deleteNameserverEntityRoles
 DELETE FROM rdap.nameserver_entity_roles  WHERE nse_id=?;
+
+#deleteDomainEntityRoles
+DELETE FROM rdap.domain_entity_roles  WHERE dom_id=?;
+
+#deleteAutnumEntityRoles
+DELETE FROM rdap.asn_entity_roles  WHERE asn_id=?;
+
+#deleteIpNetworkEntityRoles
+DELETE FROM rdap.ip_network_entity_roles  WHERE ine_id=?;
+
+#deleteMainEntityRelation
+DELETE FROM rdap.entity_entity_roles  WHERE main_ent_id=?;

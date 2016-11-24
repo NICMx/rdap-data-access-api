@@ -35,6 +35,17 @@ public class EntityModel {
 
 	protected static QueryGroup queryGroup = null;
 
+	private final static String UPDATE_QUERY = "updateInDatabase";
+	private final static String STORE_QUERY = "storeToDatabase";
+	private final static String GET_ID_BY_HANDLE_QUERY = "getIdByHandle";
+	private final static String GET_BY_ID_QUERY = "getById";
+	private final static String GET_BY_HANDLE_QUERY = "getByHandle";
+
+	private final static String SEARCH_BY_PARTIAL_HANDLE_QUERY = "searchByPartialHandle";
+	private final static String SEARCH_BY_HANDLE_QUERY = "searchByHandle";
+	private final static String SEARCH_BY_PARTIAL_NAME_QUERY = "searchByPartialName";
+	private final static String SEARCH_BY_NAME_QUERY = "searchByName";
+
 	private final static String GET_ENTITY_ENTITY_QUERY = "getEntitysEntitiesQuery";
 	private final static String GET_DOMAIN_ENTITY_QUERY = "getDomainsEntitiesQuery";
 	private final static String GET_NS_ENTITY_QUERY = "getNameserversEntitiesQuery";
@@ -49,7 +60,7 @@ public class EntityModel {
 	}
 
 	public static Long existsByHandle(String entityHandle, Connection connection) throws SQLException {
-		String query = queryGroup.getQuery("getIdByHandle");
+		String query = queryGroup.getQuery(GET_ID_BY_HANDLE_QUERY);
 		Long entId = null;
 		try (PreparedStatement statement = connection.prepareStatement(query);) {
 			statement.setString(1, entityHandle);
@@ -67,17 +78,6 @@ public class EntityModel {
 		return entId;
 	}
 
-	/**
-	 * Store an Entity with his relations in the database
-	 * 
-	 * @param entity
-	 *            The entity to be stored.
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 * @throws RequiredValueNotFoundException
-	 * @throws IOException
-	 */
 	public static long storeToDatabase(Entity entity, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		Long entityId = existsByHandle(entity.getHandle(), connection);
@@ -88,7 +88,7 @@ public class EntityModel {
 			return entityId;
 		}
 
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("storeToDatabase"),
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(STORE_QUERY),
 				Statement.RETURN_GENERATED_KEYS);) {
 			((EntityDAO) entity).storeToDatabase(statement);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
@@ -100,30 +100,21 @@ public class EntityModel {
 			entity.setId(entityId);
 		}
 
-		List<VCard> vCardList = entity.getVCardList();
-		if (!vCardList.isEmpty()) {
-			for (VCard vCard : vCardList) {
-				VCardModel.storeToDatabase(vCard, connection);
-			}
-			VCardModel.storeRegistrarContactToDatabase(vCardList, entityId, connection);
-		}
-
 		storeNestedObjects(entity, connection);
 
 		return entityId;
 	}
 
-	/**
-	 * Store the nested objects of the entity.
-	 * 
-	 * @param entity
-	 * @param connection
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
-	 */
+	private static void isValidForStore(Entity entity) throws RequiredValueNotFoundException {
+		if (entity.getHandle() == null || entity.getHandle().isEmpty())
+			throw new RequiredValueNotFoundException("handle", "Entity");
+	}
+
 	private static void storeNestedObjects(Entity entity, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
+		isValidForStore(entity);
+		storeVcardList(entity, connection);
+
 		PublicIdModel.storePublicIdByEntity(entity.getPublicIds(), entity.getId(), connection);
 		StatusModel.storeEntityStatusToDatabase(entity.getStatus(), entity.getId(), connection);
 		RemarkModel.storeEntityRemarksToDatabase(entity.getRemarks(), entity.getId(), connection);
@@ -138,20 +129,19 @@ public class EntityModel {
 			RolModel.storeMainEntityRol(entity.getEntities(), entity, connection);
 	}
 
-	/**
-	 * Get an entity from the database by its ID.
-	 * 
-	 * @param entityId
-	 *            id of the entity to look.
-	 * @param connection
-	 *            connection use to query the object.
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
-	 */
+	private static void storeVcardList(Entity entity, Connection connection) throws SQLException {
+		List<VCard> vCardList = entity.getVCardList();
+		if (!vCardList.isEmpty()) {
+			for (VCard vCard : vCardList) {
+				VCardModel.storeToDatabase(vCard, connection);
+			}
+			VCardModel.storeRegistrarContactToDatabase(vCardList, entity.getId(), connection);
+		}
+	}
+
 	public static Entity getById(Long entityId, Connection connection) throws SQLException, IOException {
 		Entity entResult = null;
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getById"));) {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_BY_ID_QUERY));) {
 			statement.setLong(1, entityId);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
@@ -162,20 +152,9 @@ public class EntityModel {
 		return entResult;
 	}
 
-	/**
-	 * Get an entity from the database by its handle id
-	 * 
-	 * @param entityHandle
-	 *            Handle of the entity to look.
-	 * @param connection
-	 *            connection use to query the object.
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
-	 */
 	public static EntityDAO getByHandle(String entityHandle, Connection connection) throws SQLException, IOException {
 		EntityDAO entResult = null;
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getByHandle"));) {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_BY_HANDLE_QUERY));) {
 			statement.setString(1, entityHandle);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
@@ -186,14 +165,6 @@ public class EntityModel {
 		return entResult;
 	}
 
-	/**
-	 * sets the nested objects of the entity.
-	 * 
-	 * @param entity
-	 * @param connection
-	 * @throws SQLException
-	 * @throws IOException
-	 */
 	private static void getNestedObjects(Entity entity, Connection connection) throws SQLException, IOException {
 
 		Long entityId = entity.getId();
@@ -244,15 +215,6 @@ public class EntityModel {
 
 	}
 
-	/**
-	 * Proccess the {@link ResultSet} of the query.
-	 * 
-	 * @param resultSet
-	 *            {@link ResultSet} to proccess.
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 */
 	private static EntityDAO processResultSet(ResultSet resultSet, Connection connection) throws SQLException {
 		if (!resultSet.next()) {
 			throw new ObjectNotFoundException("Object not found");
@@ -357,14 +319,14 @@ public class EntityModel {
 
 	public static List<EntityDAO> searchByHandle(String handle, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
-		return searchBy(handle, resultLimit, connection, queryGroup.getQuery("searchByPartialHandle"),
-				queryGroup.getQuery("searchByHandle"));
+		return searchBy(handle, resultLimit, connection, queryGroup.getQuery(SEARCH_BY_PARTIAL_HANDLE_QUERY),
+				queryGroup.getQuery(SEARCH_BY_HANDLE_QUERY));
 	}
 
 	public static List<EntityDAO> searchByVCardName(String handle, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
-		return searchBy(handle, resultLimit, connection, queryGroup.getQuery("searchByPartialName"),
-				queryGroup.getQuery("searchByName"));
+		return searchBy(handle, resultLimit, connection, queryGroup.getQuery(SEARCH_BY_PARTIAL_NAME_QUERY),
+				queryGroup.getQuery(SEARCH_BY_NAME_QUERY));
 	}
 
 	private static List<EntityDAO> searchBy(String handle, Integer resultLimit, Connection connection,
@@ -403,12 +365,66 @@ public class EntityModel {
 	}
 
 	/**
-	 * @param entity
-	 * @param rdapConnection
+	 * Can't use a regular upsert sql statement, because nameserver table has
+	 * multiple unique constraints, instead will check if the nameserver
+	 * exist,then update it on insert it,if not exist.
 	 */
-	public static void upsertToDatabase(EntityDAO entity, Connection rdapConnection) {
-		// TODO Auto-generated method stub
-		
+	public static void upsertToDatabase(EntityDAO entity, Connection rdapConnection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		try {
+			EntityDAO previusEntity = getByHandle(entity.getHandle(), rdapConnection);
+			entity.setId(previusEntity.getId());
+			update(previusEntity, entity, rdapConnection);
+		} catch (ObjectNotFoundException onfe) {
+			storeToDatabase(entity, rdapConnection);
+		}
+	}
+
+	private static void isValidForUpdate(EntityDAO entity) throws RequiredValueNotFoundException {
+		if (entity.getId() == null)
+			throw new RequiredValueNotFoundException("id", "Entity");
+		if (entity.getHandle() == null || entity.getHandle().isEmpty())
+			throw new RequiredValueNotFoundException("handle", "Entity");
+
+	}
+
+	private static void update(EntityDAO previusEntity, EntityDAO entity, Connection rdapConnection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		isValidForUpdate(entity);
+		String query = queryGroup.getQuery(UPDATE_QUERY);
+		try (PreparedStatement statement = rdapConnection.prepareStatement(query)) {
+			entity.updateInDatabase(statement);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+		updatedNestedObjects(previusEntity, entity, rdapConnection);
+	}
+
+	private static void updatedNestedObjects(EntityDAO previusEntity, EntityDAO entity, Connection connection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		Long entityId = entity.getId();
+		updateVcardList(previusEntity, entity, connection);
+		PublicIdModel.updateEntityPublicIdsInDatabase(previusEntity.getPublicIds(), entity.getPublicIds(), entityId,
+				connection);
+		StatusModel.updateEntityStatusInDatabase(entity.getStatus(), entityId, connection);
+		RemarkModel.updateEntityRemarksInDatabase(previusEntity.getRemarks(), entity.getRemarks(), entityId,
+				connection);
+		LinkModel.updateEntityLinksInDatabase(previusEntity.getLinks(), entity.getLinks(), entityId, connection);
+		EventModel.updateEntityEventsInDatabase(previusEntity.getEvents(), entity.getEvents(), entityId, connection);
+
+		for (Entity ent : entity.getEntities()) {
+			upsertToDatabase((EntityDAO) ent, connection);
+		}
+		RolModel.updateEntityEntityRoles(entity.getEntities(), entity, connection);
+
+	}
+
+	private static void updateVcardList(Entity previousEntity, Entity entity, Connection connection)
+			throws SQLException {
+		VCardModel.deleteRegistrarContact(entity.getId(), connection);
+		if (!previousEntity.getVCardList().isEmpty())
+			VCardModel.deletePreviousVCards(previousEntity.getVCardList(), connection);
+		storeVcardList(entity, connection);
 	}
 
 }

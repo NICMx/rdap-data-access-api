@@ -26,17 +26,23 @@ public class StatusModel {
 
 	protected static QueryGroup queryGroup = null;
 
-	private static final String NS_STORE_QUERY = "storeNameserverStatusToDatabase";
+	private static final String NAMESERVER_STORE_QUERY = "storeNameserverStatusToDatabase";
 	private static final String DOMAIN_STORE_QUERY = "storeDomainStatusToDatabase";
 	private static final String ENTITY_STORE_QUERY = "storeEntityStatusToDatabase";
 	private static final String REGISTRAR_STORE_QUERY = "storeRegistrarStatusToDatabase";
 	private static final String AUTNUM_STORE_QUERY = "storeAutnumStatusToDatabase";
 
-	private static final String NS_GET_QUERY = "getByNameServerId";
+	private static final String NAMESERVER_GET_QUERY = "getByNameServerId";
 	private static final String DOMAIN_GET_QUERY = "getByDomainId";
 	private static final String ENTITY_GET_QUERY = "getByEntityId";
 	private static final String REGISTRAR_GET_QUERY = "getByRegistrarId";
 	private static final String AUTNUM_GET_QUERY = "getByAutnumid";
+
+	private static final String NAMESERVER_DELETE_QUERY = "deleteNameserverStatusRelation";
+	private static final String ENTITY_DELETE_QUERY = "deleteEntityStatusRelation";
+	private static final String DOMAIN_DELETE_QUERY = "deleteDomainStatusRelation";
+	private static final String AUTNUM_DELETE_QUERY = "deleteAutnumStatusRelation";
+	private static final String IP_NETWORK_DELETE_QUERY = "deleteIpNetworkStatusRelation";
 
 	static {
 		try {
@@ -49,24 +55,15 @@ public class StatusModel {
 	/**
 	 * Store a array of statement in the relational table nameserver_status
 	 * 
-	 * @param status
-	 * @param nameserverId
-	 * @throws IOException
-	 * @throws SQLException
 	 */
 	public static void storeNameserverStatusToDatabase(List<Status> statusList, Long nameserverId,
 			Connection connection) throws IOException, SQLException {
-		storeRelationStatusToDatabase(statusList, nameserverId, connection, NS_STORE_QUERY);
+		storeRelationStatusToDatabase(statusList, nameserverId, connection, NAMESERVER_STORE_QUERY);
 	}
 
 	/**
 	 * Stores an array of statements in the relational table domain_status
 	 * 
-	 * @param statusList
-	 * @param domainId
-	 * @param connection
-	 * @throws IOException
-	 * @throws SQLException
 	 */
 	public static void storeDomainStatusToDatabase(List<Status> statusList, Long domainId, Connection connection)
 			throws IOException, SQLException {
@@ -76,11 +73,6 @@ public class StatusModel {
 	/**
 	 * Stores an array of status in the relational table entity_status.
 	 * 
-	 * @param statusList
-	 * @param entityId
-	 * @param connection
-	 * @throws IOException
-	 * @throws SQLException
 	 */
 	public static void storeEntityStatusToDatabase(List<Status> statusList, Long entityId, Connection connection)
 			throws IOException, SQLException {
@@ -90,10 +82,6 @@ public class StatusModel {
 	/**
 	 * Stores an array of status in the relational table asn_status.
 	 * 
-	 * @param statusList
-	 * @param autnumId
-	 * @param connection
-	 * @throws SQLException
 	 */
 	public static void storeAutnumStatusToDatabase(List<Status> statusList, Long autnumId, Connection connection)
 			throws SQLException {
@@ -104,11 +92,6 @@ public class StatusModel {
 	/**
 	 * Stores an array of status in the relational table registrar_status.
 	 * 
-	 * @param statusList
-	 * @param entityId
-	 * @param connection
-	 * @throws IOException
-	 * @throws SQLException
 	 */
 	public static void storeRegistrarStatusToDatabase(List<Status> statusList, Long registrarId, Connection connection)
 			throws IOException, SQLException {
@@ -134,24 +117,15 @@ public class StatusModel {
 	/**
 	 * Get all Status for a Nameserver
 	 * 
-	 * @param nameserverId
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
 	 */
 	public static List<Status> getByNameServerId(Long nameserverId, Connection connection)
 			throws IOException, SQLException {
-		return getByRelationsId(nameserverId, connection, NS_GET_QUERY);
+		return getByRelationsId(nameserverId, connection, NAMESERVER_GET_QUERY);
 	}
 
 	/**
 	 * Get all status from a domain
 	 * 
-	 * @param domainId
-	 * @param connection
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
 	 */
 	public static List<Status> getByDomainId(Long domainId, Connection connection) throws IOException, SQLException {
 		return getByRelationsId(domainId, connection, DOMAIN_GET_QUERY);
@@ -160,11 +134,6 @@ public class StatusModel {
 	/**
 	 * Get all status from an entityId.
 	 * 
-	 * @param entityId
-	 * @param connection
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
 	 */
 	public static List<Status> getByEntityId(Long entityId, Connection connection) throws IOException, SQLException {
 		return getByRelationsId(entityId, connection, ENTITY_GET_QUERY);
@@ -173,11 +142,6 @@ public class StatusModel {
 	/**
 	 * Get all status with an autnums Id
 	 * 
-	 * @param autnumId
-	 * @param connection
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
 	 */
 	public static List<Status> getByAutnumId(Long autnumId, Connection connection) throws IOException, SQLException {
 		return getByRelationsId(autnumId, connection, AUTNUM_GET_QUERY);
@@ -216,21 +180,42 @@ public class StatusModel {
 		return result;
 	}
 
-	private static void deleteByNameserverId(Long nameserverId,Connection connection) throws SQLException{
-		String query = queryGroup.getQuery("deleteByNameserverId");
+	public static void updateEntityStatusInDatabase(List<Status> status, Long entityId, Connection connection)
+			throws SQLException, IOException {
+		deleteRelationByParentId(queryGroup.getQuery(ENTITY_DELETE_QUERY), entityId, connection);
+		storeEntityStatusToDatabase(status, entityId, connection);
+	}
+
+	public static void updateNameserverStatusInDatabase(List<Status> status, Long nameserverId, Connection connection)
+			throws SQLException, IOException {
+		deleteRelationByParentId(queryGroup.getQuery(NAMESERVER_DELETE_QUERY), nameserverId, connection);
+		storeNameserverStatusToDatabase(status, nameserverId, connection);
+	}
+
+	public static void updateDomainStatusInDatabase(List<Status> status, Long domainId, Connection connection)
+			throws SQLException, IOException {
+		deleteRelationByParentId(queryGroup.getQuery(DOMAIN_DELETE_QUERY), domainId, connection);
+		storeDomainStatusToDatabase(status, domainId, connection);
+	}
+
+	public static void updateAutnumStatusInDatabase(List<Status> status, Long autnumId, Connection connection)
+			throws SQLException, IOException {
+		deleteRelationByParentId(queryGroup.getQuery(AUTNUM_DELETE_QUERY), autnumId, connection);
+		storeAutnumStatusToDatabase(status, autnumId, connection);
+	}
+
+	public static void updateIpNetworkStatusInDatabase(List<Status> status, Long ipNetworkId, Connection connection)
+			throws SQLException, IOException {
+		deleteRelationByParentId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), ipNetworkId, connection);
+		// storeIpNetworkStatusToDatabase(status, nameserverId, connection);
+	}
+
+	private static void deleteRelationByParentId(String query, Long objectId, Connection connection)
+			throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
-			statement.setLong(1, nameserverId);
+			statement.setLong(1, objectId);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			statement.executeUpdate();
 		}
 	}
-	
-	/**
-	 * To avoid a complete search on a likely small data,erase the previous data and insert the new
-	 */
-	public static void updateNameserverStatusInDatabase(List<Status> status, Long nameserverId, Connection connection) throws SQLException, IOException {
-		deleteByNameserverId(nameserverId, connection);
-		storeNameserverStatusToDatabase(status, nameserverId, connection);
-	}
-
 }

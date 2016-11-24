@@ -21,9 +21,6 @@ import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 /**
  * The model for the Link object
  * 
- * @author dalpuche
- * @author dhfelix
- *
  */
 public class LinkModel {
 
@@ -57,7 +54,7 @@ public class LinkModel {
 	private static final String AUTNUM_DELETE_QUERY = "deleteAutnumLinksRelation";
 	private static final String IP_NETWORK_DELETE_QUERY = "deleteIpNetworkLinksRelation";
 	private static final String REMARK_DELETE_QUERY = "deleteRemarkLinksRelation";
-	private static final String EVENTS_DELETE_QUERY = "deleteLinksById";
+	private static final String EVENTS_DELETE_QUERY = "deleteEventLinksRelation";
 
 	static {
 		try {
@@ -70,8 +67,6 @@ public class LinkModel {
 	/**
 	 * Validate the required attributes for the link
 	 * 
-	 * @param link
-	 * @throws RequiredValueNotFoundException
 	 */
 	private static void isValidForStore(Link link) throws RequiredValueNotFoundException {
 		if (link.getValue() == null || link.getValue().isEmpty())
@@ -83,9 +78,6 @@ public class LinkModel {
 	/**
 	 * Store a Link in the Database
 	 * 
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
 	 */
 	public static Long storeToDatabase(Link link, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
@@ -103,67 +95,26 @@ public class LinkModel {
 		}
 	}
 
-	/**
-	 * Store the nameserver links
-	 * 
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
-	 */
 	public static void storeNameserverLinksToDatabase(List<Link> links, Long nameserverId, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		storeLinkRelationToDatabase(links, nameserverId, connection, NAMESERVER_STORE_QUERY);
 	}
 
-	/**
-	 * Stores the Domain links
-	 * 
-	 * @param links
-	 * @param domainId
-	 * @param connection
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
-	 */
 	public static void storeDomainLinksToDatabase(List<Link> links, Long domainId, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		storeLinkRelationToDatabase(links, domainId, connection, DOMAIN_STORE_QUERY);
 	}
 
-	/**
-	 * Stores the DsData links
-	 * 
-	 * @param links
-	 * @param dsDataId
-	 * @param connection
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
-	 */
 	public static void storeDsDataLinksToDatabase(List<Link> links, Long dsDataId, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		storeLinkRelationToDatabase(links, dsDataId, connection, DS_DATA_STORE_QUERY);
 	}
 
-	/**
-	 * Store the event links
-	 * 
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
-	 */
 	public static void storeEventLinksToDatabase(List<Link> links, Long eventId, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		storeLinkRelationToDatabase(links, eventId, connection, EVENT_STORE_QUERY);
 	}
 
-	/**
-	 * Store the remark links
-	 * 
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
-	 */
 	public static void storeRemarkLinksToDatabase(List<Link> links, Long remarkId, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		storeLinkRelationToDatabase(links, remarkId, connection, REMARK_STORE_QUERY);
@@ -175,31 +126,11 @@ public class LinkModel {
 
 	}
 
-	/**
-	 * Store the entity links
-	 * 
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
-	 */
 	public static void storeEntityLinksToDatabase(List<Link> links, Long entityId, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		storeLinkRelationToDatabase(links, entityId, connection, ENTITY_STORE_QUERY);
 	}
 
-	/**
-	 * @param links
-	 *            The links to be stored in the relation.
-	 * @param id
-	 *            Id of the owner of the links.
-	 * @param connection
-	 *            Connection to a database.
-	 * @param storeQueryId
-	 *            SQL query to use to store the relation of the links.
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
-	 */
 	private static void storeLinkRelationToDatabase(List<Link> links, Long id, Connection connection,
 			String storeQueryId) throws SQLException, IOException, RequiredValueNotFoundException {
 		if (links.isEmpty())
@@ -217,73 +148,27 @@ public class LinkModel {
 		}
 	}
 
-	/**
-	 * Get all links for a Nameserver
-	 * 
-	 * @param nameserverId
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static List<LinkDAO> getByNameServerId(Long nameserverId, Connection connection)
 			throws IOException, SQLException {
 		return getByRelationId(nameserverId, connection, NAMESERVER_GET_QUERY);
 	}
 
-	/**
-	 * Gets all links from a domain
-	 * 
-	 * @param domainId
-	 * @param connection
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static List<LinkDAO> getByDomainId(Long domainId, Connection connection) throws IOException, SQLException {
 		return getByRelationId(domainId, connection, DOMAIN_GET_QUERY);
 	}
 
-	/**
-	 * Get all links for a event
-	 * 
-	 * @param nameserverId
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static List<LinkDAO> getByEventId(Long eventId, Connection connection) throws IOException, SQLException {
 		return getByRelationId(eventId, connection, EVENT_GET_QUERY);
 	}
 
-	/**
-	 * Get all links for a Remark
-	 * 
-	 * @param nameserverId
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static List<LinkDAO> getByRemarkId(Long remarkId, Connection connection) throws IOException, SQLException {
 		return getByRelationId(remarkId, connection, REMARK_GET_QUERY);
 	}
 
-	/**
-	 * Get all links for a DsData
-	 * 
-	 * @param dsDataId
-	 * @param connection
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static List<LinkDAO> getByDsDataId(Long dsDataId, Connection connection) throws IOException, SQLException {
 		return getByRelationId(dsDataId, connection, DS_DATA_GET_QUERY);
 	}
 
-	/**
-	 * Get all links for an entity
-	 * 
-	 */
 	public static List<LinkDAO> getByEntityId(Long entityId, Connection connection) throws IOException, SQLException {
 		return getByRelationId(entityId, connection, ENTITY_GET_QUERY);
 	}
@@ -292,16 +177,6 @@ public class LinkModel {
 		return getByRelationId(autnumId, connection, AUTNUM_GET_QUERY);
 	}
 
-	/**
-	 * @param id
-	 *            Id of the owner of the links
-	 * @param connection
-	 *            connection to a database.
-	 * @param queryGetId
-	 *            SQL query to get the links of the id.
-	 * @return
-	 * @throws SQLException
-	 */
 	private static List<LinkDAO> getByRelationId(Long id, Connection connection, String queryGetId)
 			throws SQLException {
 		String query = queryGroup.getQuery(queryGetId);
@@ -326,13 +201,6 @@ public class LinkModel {
 		return result;
 	}
 
-	/**
-	 * Unused. Get all the ipAddress from DB
-	 * 
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static List<Link> getAll(Connection connection) throws SQLException {
 		String query = queryGroup.getQuery("getAll");
 		List<Link> result = null;
@@ -358,7 +226,7 @@ public class LinkModel {
 	public static void updateEntityLinksInDatabase(List<Link> previousLinks, List<Link> links, Long entityId,
 			Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
 		if (!previousLinks.isEmpty()) {
-			deleteLinksRelationByLinkId(ENTITY_DELETE_QUERY, previousLinks, connection);
+			deleteLinksRelationByLinkId(queryGroup.getQuery(ENTITY_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
 		storeEntityLinksToDatabase(links, entityId, connection);
@@ -367,7 +235,7 @@ public class LinkModel {
 	public static void updateNameserverLinksInDatabase(List<Link> previousLinks, List<Link> links, Long nameserverId,
 			Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
 		if (!previousLinks.isEmpty()) {
-			deleteLinksRelationByLinkId(NAMESERVER_DELETE_QUERY, previousLinks, connection);
+			deleteLinksRelationByLinkId(queryGroup.getQuery(NAMESERVER_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
 		storeNameserverLinksToDatabase(links, nameserverId, connection);
@@ -376,7 +244,7 @@ public class LinkModel {
 	public static void updateDSLinksInDatabase(List<Link> previousLinks, List<Link> links, Long dsId,
 			Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
 		if (!previousLinks.isEmpty()) {
-			deleteLinksRelationByLinkId(DS_DELETE_QUERY, previousLinks, connection);
+			deleteLinksRelationByLinkId(queryGroup.getQuery(DS_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
 		storeDsDataLinksToDatabase(links, dsId, connection);
@@ -385,7 +253,7 @@ public class LinkModel {
 	public static void updateDomainLinksInDatabase(List<Link> previousLinks, List<Link> links, Long domainId,
 			Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
 		if (!previousLinks.isEmpty()) {
-			deleteLinksRelationByLinkId(DOMAIN_DELETE_QUERY, previousLinks, connection);
+			deleteLinksRelationByLinkId(queryGroup.getQuery(DOMAIN_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
 		storeDomainLinksToDatabase(links, domainId, connection);
@@ -394,7 +262,7 @@ public class LinkModel {
 	public static void updateIpNetworkLinksInDatabase(List<Link> previousLinks, List<Link> links, Long ipNetworkId,
 			Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
 		if (!previousLinks.isEmpty()) {
-			deleteLinksRelationByLinkId(IP_NETWORK_DELETE_QUERY, previousLinks, connection);
+			deleteLinksRelationByLinkId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
 		// storeIpNetworkLinksToDatabase(links, domainId, connection);
@@ -403,7 +271,7 @@ public class LinkModel {
 	public static void updateAutnumLinksInDatabase(List<Link> previousLinks, List<Link> links, Long autnumId,
 			Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
 		if (!previousLinks.isEmpty()) {
-			deleteLinksRelationByLinkId(AUTNUM_DELETE_QUERY, previousLinks, connection);
+			deleteLinksRelationByLinkId(queryGroup.getQuery(AUTNUM_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
 		storeAutnumLinksToDatabase(links, autnumId, connection);
@@ -412,14 +280,14 @@ public class LinkModel {
 	public static void deleteEventLinksData(List<Link> previousLinks, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		if (!previousLinks.isEmpty()) {
-			deleteLinksRelationByLinkId(EVENTS_DELETE_QUERY, previousLinks, connection);
+			deleteLinksRelationByLinkId(queryGroup.getQuery(EVENTS_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
 	}
 
 	public static void deleteRemarksLinksData(List<Link> previousLinks, Connection connection) throws SQLException {
 		if (!previousLinks.isEmpty()) {
-			deleteLinksRelationByLinkId(REMARK_DELETE_QUERY, previousLinks, connection);
+			deleteLinksRelationByLinkId(queryGroup.getQuery(REMARK_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
 	}

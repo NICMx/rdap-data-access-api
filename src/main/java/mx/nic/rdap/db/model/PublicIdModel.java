@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import mx.nic.rdap.core.db.PublicId;
 import mx.nic.rdap.db.PublicIdDAO;
 import mx.nic.rdap.db.QueryGroup;
+import mx.nic.rdap.db.Util;
 
 /**
  * Model for the {@link PublicId} Object
@@ -28,10 +29,14 @@ public class PublicIdModel {
 
 	private static QueryGroup queryGroup = null;
 
+	private static final String STORE_QUERY = "storeToDatabase";
 	private static final String ENTITY_GET_QUERY = "getByEntity";
 	private static final String DOMAIN_GET_QUERY = "getByDomain";
 	private static final String ENTITY_STORE_QUERY = "storeEntityPublicIdsToDatabase";
 	private static final String DOMAIN_STORE_QUERY = "storeDomainPublicIdsToDatabase";
+	private static final String DELETE_QUERY = "deleteById";
+	private static final String DELETE_ENTITY_RELATION_QUERY = "deleteEntityPublicId";
+	private static final String DELETE_DOMAIN_RELATION_QUERY = "deleteDomainPublicId";
 
 	static {
 		try {
@@ -41,14 +46,6 @@ public class PublicIdModel {
 		}
 	}
 
-	/**
-	 * Stores all PublicId Objects to the database
-	 * 
-	 * @param publicIds
-	 * @param connection
-	 * @throws SQLException
-	 * @throws IOException
-	 */
 	public static void storeAllToDatabase(List<PublicId> publicIds, Connection connection)
 			throws SQLException, IOException {
 		for (PublicId publicId : publicIds) {
@@ -56,15 +53,8 @@ public class PublicIdModel {
 		}
 	}
 
-	/**
-	 * Stores a publicId to the database
-	 * 
-	 * @param publicId
-	 * @throws SQLException
-	 * @throws IOException
-	 */
 	public static Long storeToDatabase(PublicId publicId, Connection connection) throws SQLException, IOException {
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("storeToDatabase"),
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(STORE_QUERY),
 				Statement.RETURN_GENERATED_KEYS);) {
 			((PublicIdDAO) publicId).storeToDatabase(statement);
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
@@ -79,15 +69,6 @@ public class PublicIdModel {
 		}
 	}
 
-	/**
-	 * Stores relation of the Public Id
-	 * 
-	 * @param publicIds
-	 * @param id
-	 * @param connection
-	 * @throws SQLException
-	 * @throws IOException
-	 */
 	private static void storeBy(List<PublicId> publicIds, Long id, Connection connection, String query)
 			throws SQLException, IOException {
 		if (publicIds.isEmpty())
@@ -114,14 +95,6 @@ public class PublicIdModel {
 		storeBy(publicIds, entityId, connection, ENTITY_STORE_QUERY);
 	}
 
-	/**
-	 * Get all publicIds from an specific type of Object
-	 * 
-	 * @param domainId
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
-	 */
 	private static List<PublicId> getBy(Long entityId, Connection connection, String query)
 			throws SQLException, IOException {
 		PublicIdModel.queryGroup = new QueryGroup(QUERY_GROUP);
@@ -134,13 +107,6 @@ public class PublicIdModel {
 		}
 	}
 
-	/**
-	 * Get all public Ids (Not Implemented)
-	 * 
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 */
 	public static List<PublicId> getAll(Connection connection) throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement("getAll")) {
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
@@ -149,37 +115,14 @@ public class PublicIdModel {
 		}
 	}
 
-	/**
-	 * Get all domain's public identifiers
-	 * 
-	 * @param domainId
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
-	 */
 	public static List<PublicId> getByDomain(Long domainId, Connection connection) throws SQLException, IOException {
 		return getBy(domainId, connection, DOMAIN_GET_QUERY);
 	}
 
-	/**
-	 * Get all entitiy's public identifiers
-	 * 
-	 * @param domainId
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
-	 */
 	public static List<PublicId> getByEntity(Long entityId, Connection connection) throws SQLException, IOException {
 		return getBy(entityId, connection, ENTITY_GET_QUERY);
 	}
 
-	/**
-	 * Process the ResultSet of the query
-	 * 
-	 * @param resultSet
-	 * @return
-	 * @throws SQLException
-	 */
 	private static List<PublicId> processResultSet(ResultSet resultSet) throws SQLException {
 		if (!resultSet.next()) {
 			// Did not retrieve any public Ids
@@ -192,4 +135,49 @@ public class PublicIdModel {
 		} while (resultSet.next());
 		return publicIds;
 	}
+
+	public static void updateEntityPublicIdsInDatabase(List<PublicId> previousPublicIds, List<PublicId> entityPublicIds,
+			Long entityId, Connection connection) throws SQLException, IOException {
+		if (!previousPublicIds.isEmpty()) {
+			deletePublicIdsRelation(queryGroup.getQuery(DELETE_ENTITY_RELATION_QUERY), entityId, connection);
+			deletePreviousPublicIds(previousPublicIds, connection);
+		}
+		storePublicIdByEntity(entityPublicIds, entityId, connection);
+	}
+
+	public static void updateDomainPublicIdsInDatabase(List<PublicId> previousPublicIds, List<PublicId> domainPublicIds,
+			Long domainId, Connection connection) throws SQLException, IOException {
+		if (!previousPublicIds.isEmpty()) {
+			deletePublicIdsRelation(queryGroup.getQuery(DELETE_DOMAIN_RELATION_QUERY), domainId, connection);
+			deletePreviousPublicIds(previousPublicIds, connection);
+		}
+		storePublicIdByDomain(domainPublicIds, domainId, connection);
+	}
+
+	private static void deletePreviousPublicIds(List<PublicId> previousPublicIds, Connection connection)
+			throws SQLException {
+		List<Long> ids = new ArrayList<Long>();
+		for (PublicId publicId : previousPublicIds) {
+			ids.add(publicId.getId());
+		}
+		String dynamicQuery = Util.createDynamicQueryWithInClause(ids.size(), queryGroup.getQuery(DELETE_QUERY));
+		try (PreparedStatement statement = connection.prepareStatement(dynamicQuery)) {
+			int index = 1;
+			for (Long id : ids) {
+				statement.setLong(index++, id);
+			}
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+	}
+
+	private static void deletePublicIdsRelation(String query, Long parentId, Connection connection)
+			throws SQLException {
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setLong(1, parentId);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+	}
+
 }

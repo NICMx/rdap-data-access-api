@@ -52,8 +52,7 @@ public class NameserverTest extends DatabaseTest {
 	public void upsertMinimunNameServer() {
 
 		try {
-			// Nameserver base data
-			Nameserver nameserver = new NameserverDAO();
+			NameserverDAO nameserver = new NameserverDAO();
 			nameserver.setHandle("xx4");
 			nameserver.setPunycodeName("ns.xn--test-minumun.example");
 			NameserverModel.storeToDatabase(nameserver, connection);
@@ -76,7 +75,7 @@ public class NameserverTest extends DatabaseTest {
 
 		// Nameserver base data
 		Nameserver nameserver = new NameserverDAO();
-		nameserver.setHandle("XXX8");
+		nameserver.setHandle("XXX10");
 		nameserver.setPunycodeName("ns1.xn--fo-5ja.example");
 		nameserver.setPort43("whois.example.net");
 
@@ -186,9 +185,9 @@ public class NameserverTest extends DatabaseTest {
 	@Test
 	public void upsert(){
 		//insert a new nameserver
-//		insert();
+		insert();
 		// Nameserver base data
-				Nameserver nameserver = new NameserverDAO();
+		NameserverDAO nameserver = new NameserverDAO();
 				nameserver.setHandle("XXX8");
 				nameserver.setPunycodeName("updatedInfo.example");
 				nameserver.setPort43("whois.example.net");

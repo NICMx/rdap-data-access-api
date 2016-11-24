@@ -13,3 +13,8 @@ SELECT * FROM rdap.vcard ORDER BY 1 ASC;
 #getByEntityId
 SELECT vca.* FROM rdap.vcard vca JOIN rdap.entity_contact eco ON eco.vca_id = vca.vca_id WHERE eco.ent_id = ?;
 
+#deleteById
+DELETE FROM rdap.vcard WHERE vca_id IN (?);
+
+#deleteRegistrarContact
+DELETE FROM rdap.entity_contact WHERE ent_id=?;

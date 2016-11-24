@@ -24,8 +24,6 @@ public class EntityDAO extends Entity implements DatabaseObject {
 	/**
 	 * Construct Entity with a ResultSet
 	 * 
-	 * @param resultSet
-	 * @throws SQLException
 	 */
 	public EntityDAO(ResultSet resultSet) throws SQLException {
 		super();
@@ -58,13 +56,16 @@ public class EntityDAO extends Entity implements DatabaseObject {
 		preparedStatement.setString(2, getPort43());
 	}
 
-	/* (non-Javadoc)
-	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.PreparedStatement)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.
+	 * PreparedStatement)
 	 */
 	@Override
 	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
-		// TODO Auto-generated method stub
-		
+		preparedStatement.setString(1, getPort43());
+		preparedStatement.setLong(2, getId());
 	}
 
 }

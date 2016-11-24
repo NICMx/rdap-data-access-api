@@ -17,3 +17,11 @@ SELECT pid.* FROM rdap.public_id pid INNER JOIN rdap.domain_public_ids dom ON pi
 #getByEntity
 SELECT pid.* FROM rdap.public_id pid INNER JOIN rdap.entity_public_ids ent ON pid.pid_id = ent.pid_id WHERE ent.ent_id=?;
 
+#deleteById
+DELETE FROM rdap.public_id WHERE pid_id IN (?);
+
+#deleteEntityPublicId
+DELETE FROM rdap.entity_public_ids WHERE ent_id = ?;
+
+#deleteDomainPublicId
+DELETE FROM rdap.domain_public_ids WHERE dom_id = ?;

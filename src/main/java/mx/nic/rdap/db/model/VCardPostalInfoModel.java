@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import mx.nic.rdap.core.db.VCard;
 import mx.nic.rdap.core.db.VCardPostalInfo;
 import mx.nic.rdap.db.QueryGroup;
 import mx.nic.rdap.db.VCardPostalInfoDAO;
@@ -26,6 +25,10 @@ public class VCardPostalInfoModel {
 
 	private static final String QUERY_GROUP = "VCardPostalInfo";
 
+	private final static String STORE_QUERY = "storeToDatabase";
+	private final static String GET_QUERY = "getById";
+	private final static String GET_BY_VCARD_QUERY = "getByVCardId";
+	private final static String DELETE_QUERY = "deleteByVCardId";
 	protected static QueryGroup queryGroup = null;
 
 	static {
@@ -39,16 +42,11 @@ public class VCardPostalInfoModel {
 	/**
 	 * Store a VCardPostalInfo
 	 * 
-	 * @param vCardPostalInfo
-	 *            The vCardPostalInfo to be stored.
-	 * @param connection
-	 * @return
-	 * @throws SQLException
 	 */
 	public static long storeToDatabase(VCardPostalInfo vCardPostalInfo, Connection connection) throws SQLException {
 		long insertedId;
 
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("storeToDatabase"),
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(STORE_QUERY),
 				Statement.RETURN_GENERATED_KEYS);) {
 			((VCardPostalInfoDAO) vCardPostalInfo).storeToDatabase(statement);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
@@ -66,15 +64,10 @@ public class VCardPostalInfoModel {
 	/**
 	 * Get a {@link VCardPostalInfo} by its id.
 	 * 
-	 * @param vCardPostalInfoId
-	 *            Id of the {@link VCardPostalInfo} to look.
-	 * @param connection
-	 * @return
-	 * @throws SQLException
 	 */
 	public static VCardPostalInfo getById(Long vCardPostalInfoId, Connection connection) throws SQLException {
 		VCardPostalInfo vCardPostalInfoResult = null;
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getById"));) {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_QUERY));) {
 			statement.setLong(1, vCardPostalInfoId);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
@@ -86,15 +79,10 @@ public class VCardPostalInfoModel {
 	/**
 	 * Gets a {@link List} of {@link VCardPostalInfo} by a VCardId
 	 * 
-	 * @param vCardId
-	 *            Id of the {@link VCard} to get the {@link VCardPostalInfo}.
-	 * @param connection
-	 * @return
-	 * @throws SQLException
 	 */
 	public static List<VCardPostalInfo> getByVCardId(Long vCardId, Connection connection) throws SQLException {
 		List<VCardPostalInfo> vCardPostalInfoResult = null;
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getByVCardId"));) {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_BY_VCARD_QUERY));) {
 			statement.setLong(1, vCardId);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
@@ -106,11 +94,6 @@ public class VCardPostalInfoModel {
 	/**
 	 * Process a {@link ResultSet} and return one {@link VCardPostalInfo}.
 	 * 
-	 * @param resultSet
-	 *            {@link ResultSet} to proccess.
-	 * @param connection
-	 * @return
-	 * @throws SQLException
 	 */
 	private static VCardPostalInfo processResultSet(ResultSet resultSet, Connection connection) throws SQLException {
 		if (!resultSet.next()) {
@@ -126,11 +109,6 @@ public class VCardPostalInfoModel {
 	 * Process a {@link ResultSet} and return a {@link List} of
 	 * {@link VCardPostalInfo}.
 	 * 
-	 * @param resultSet
-	 *            {@link ResultSet} to proccess.
-	 * @param connection
-	 * @return
-	 * @throws SQLException
 	 */
 	private static List<VCardPostalInfo> processListResultSet(ResultSet resultSet, Connection connection)
 			throws SQLException {
@@ -148,4 +126,11 @@ public class VCardPostalInfoModel {
 		return result;
 	}
 
+	public static void deleteByVCardId(Long vCardId, Connection connection) throws SQLException {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(DELETE_QUERY));) {
+			statement.setLong(1, vCardId);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+	}
 }
