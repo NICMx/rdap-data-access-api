@@ -31,11 +31,13 @@ public class RolModel {
 	private static final String ENTITY_STORE_QUERY = "storeEntitiesEntityRol";
 	private static final String NAMESERVER_STORE_QUERY = "storeNSEntityRol";
 	private static final String AUTNUM_STORE_QUERY = "storeAutnumEntityRol";
+	private static final String IP_NETWORK_STORE_ROLES = "storeIpNetworkEntityRol";
 
 	private static final String DOMAIN_GET_QUERY = "getDomainRol";
 	private static final String ENTITY_GET_QUERY = "getEntityRol";
 	private static final String NAMESERVER_GET_QUERY = "getNSRol";
 	private static final String AUTNUM_GET_QUERY = "getAutnumRol";
+	private static final String IP_NETWORK_GET_QUERY = "getIpNetworkRol";
 
 	private static final String ENTITY_DELETE_QUERY = "deleteEntityEntityRoles";
 	private static final String NAMESERVER_DELETE_QUERY = "deleteNameserverEntityRoles";
@@ -69,8 +71,13 @@ public class RolModel {
 		return getNestedEntityRol(mainEntityId, nestedEntityId, connection, ENTITY_GET_QUERY);
 	}
 
-	public static List<Rol> getAutnumEntityRol(Long autnumId, Long id, Connection connection) throws SQLException {
-		return getNestedEntityRol(autnumId, id, connection, AUTNUM_GET_QUERY);
+	public static List<Rol> getAutnumEntityRol(Long autnumId, Long asnId, Connection connection) throws SQLException {
+		return getNestedEntityRol(autnumId, asnId, connection, AUTNUM_GET_QUERY);
+	}
+
+	public static List<Rol> getIpNetworkEntityRol(Long ipNetworkId, Long entityId, Connection connection)
+			throws SQLException {
+		return getNestedEntityRol(ipNetworkId, entityId, connection, IP_NETWORK_GET_QUERY);
 	}
 
 	private static List<Rol> getNestedEntityRol(Long ownerId, Long nestedEntityId, Connection connection,
@@ -121,6 +128,11 @@ public class RolModel {
 	public static void storeAutnumEntityRoles(List<Entity> entities, Long autnumId, Connection connection)
 			throws SQLException {
 		storeEntitiesRoles(entities, autnumId, connection, AUTNUM_STORE_QUERY);
+	}
+
+	public static void storeIpNetworkEntityRoles(List<Entity> entities, Long ipNetworkId, Connection connection)
+			throws SQLException {
+		storeEntitiesRoles(entities, ipNetworkId, connection, IP_NETWORK_STORE_ROLES);
 	}
 
 	private static void storeEntitiesRoles(List<Entity> entities, Long ownerId, Connection connection,

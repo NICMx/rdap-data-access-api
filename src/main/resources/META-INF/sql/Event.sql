@@ -14,7 +14,10 @@ SELECT eve.eve_id,eve.eac_id,eve.eve_actor,eve.eve_date FROM rdap.event eve JOIN
 SELECT eve.eve_id,eve.eac_id,eve.eve_actor,eve.eve_date FROM rdap.event eve JOIN rdap.entity_events ent ON ent.eve_id=eve.eve_id WHERE ent.ent_id=?;
 
 #getByAutnumId
-SELECT eve.eve_id, eve.eac_id, eve.eve_actor, eve.eve_date FROM rdap.event eve JOIN rdap.asn_events asn ON asn.eve_id WHERE asn.asn_id=?;
+SELECT eve.eve_id, eve.eac_id, eve.eve_actor, eve.eve_date FROM rdap.event eve JOIN rdap.asn_events asn ON asn.eve_id=eve.eve_od WHERE asn.asn_id=?;
+
+#getByIpNetworkId
+SELECT eve.eve_id, eve.eac_id, eve.eve_actor, eve.eve_date FROM rdap.event eve JOIN rdap.ip_network_events ine ON ine.eve_id=eve.eve_id WHERE ine.ine_id=?;
 
 #storeNameserverEventsToDatabase
 INSERT INTO rdap.nameserver_events values (?,?);
@@ -30,6 +33,9 @@ INSERT INTO rdap.entity_events values (?,?);
 
 #storeAutnumEventsToDatabase
 INSERT INTO rdap.asn_events VALUES (?,?);
+
+#storeIpNetworkEventsToDatabase
+INSERT INTO rdap.ip_network_events VALUES (?,?);
 
 #getAll
 SELECT * FROM rdap.event;

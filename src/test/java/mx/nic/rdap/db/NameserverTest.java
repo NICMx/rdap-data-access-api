@@ -75,7 +75,7 @@ public class NameserverTest extends DatabaseTest {
 
 		// Nameserver base data
 		Nameserver nameserver = new NameserverDAO();
-		nameserver.setHandle("XXX10");
+		nameserver.setHandle("XXX11");
 		nameserver.setPunycodeName("ns1.xn--fo-5ja.example");
 		nameserver.setPort43("whois.example.net");
 
@@ -188,7 +188,7 @@ public class NameserverTest extends DatabaseTest {
 		insert();
 		// Nameserver base data
 		NameserverDAO nameserver = new NameserverDAO();
-				nameserver.setHandle("XXX8");
+				nameserver.setHandle("XXX11");
 				nameserver.setPunycodeName("updatedInfo.example");
 				nameserver.setPort43("whois.example.net");
 

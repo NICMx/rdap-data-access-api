@@ -14,8 +14,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mx.nic.rdap.core.catalog.Rol;
 import mx.nic.rdap.core.db.Domain;
 import mx.nic.rdap.core.db.Entity;
+import mx.nic.rdap.core.db.IpNetwork;
 import mx.nic.rdap.core.exception.UnprocessableEntityException;
 import mx.nic.rdap.db.DomainDAO;
 import mx.nic.rdap.db.IpAddressDAO;
@@ -94,7 +96,22 @@ public class DomainModel {
 
 		VariantModel.storeAllToDatabase(domain.getVariants(), domain.getId(), connection);
 
+		if (domain.getIpNetwork() != null) {
+			storeDomainIpNetworkToDatabase(domainId, domain.getIpNetwork().getId(), connection);
+		}
+
 		return domainId;
+	}
+
+	private static void storeDomainIpNetworkToDatabase(Long domainId, Long ipNetworkId, Connection connection)
+			throws SQLException {
+		String query = queryGroup.getQuery("storeDomainIpNetworkRelation");
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setLong(1, domainId);
+			statement.setLong(2, ipNetworkId);
+			logger.log(Level.INFO, "Excuting QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
 	}
 
 	/**
@@ -398,8 +415,20 @@ public class DomainModel {
 		// Retrieve the entities
 		try {
 			domain.getEntities().addAll(EntityModel.getEntitiesByDomainId(domainId, connection));
+			for (Entity entity : domain.getEntities()) {
+				List<Rol> roles = RolModel.getNameserverEntityRol(domainId, entity.getId(), connection);
+				entity.setRoles(roles);
+			}
 		} catch (ObjectNotFoundException onfe) {
 			// Do nothing, entities is not required
+		}
+
+		// Retrieve the ipNetwork
+		try {
+			IpNetwork network = IpNetworkModel.getByDomainId(domainId, connection);
+			domain.setIpNetwork(network);
+		} catch (ObjectNotFoundException e) {
+			// Do nothing, ipNetwork is not requiered
 		}
 	}
 
@@ -434,6 +463,6 @@ public class DomainModel {
 	 */
 	public static void upsertToDatabase(DomainDAO domain, Connection rdapConnection) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

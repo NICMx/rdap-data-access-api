@@ -22,6 +22,9 @@ SELECT lin.* FROM rdap.link lin JOIN rdap.entity_links ent ON ent.lin_id=lin.lin
 #getByAutnumId
 SELECT lin.* FROM rdap.link lin JOIN rdap.asn_links asn ON asn.lin_id=lin.lin_id WHERE asn.asn_id = ?;
 
+#getByIpNetworkId
+SELECT lin.* FROM rdap.link lin JOIN rdap.ip_network_links ine ON ine.lin_id=lin.lin_id WHERE ine.ine_id=?;
+
 #storeNameserverLinksToDatabase
 INSERT INTO rdap.nameserver_links VALUES(?,?);
 
@@ -45,6 +48,9 @@ INSERT INTO rdap.entity_links VALUES(?,?);
 
 #storeAutnumLinksToDatabase
 INSERT INTO rdap.asn_links VALUES(?,?);
+
+#storeIpNetworkLinksToDatabase
+INSERT INTO rdap.ip_network_links VALUES (?, ?);
 
 #deleteEntityLinksRelation
 DELETE FROM rdap.entity_links WHERE lin_id IN (?);

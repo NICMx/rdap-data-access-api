@@ -37,6 +37,7 @@ public class LinkModel {
 	private static final String REMARK_GET_QUERY = "getByRemarkId";
 	private static final String ENTITY_GET_QUERY = "getByEntityId";
 	private static final String AUTNUM_GET_QUERY = "getByAutnumId";
+	private static final String IP_NETWORK_GET_QUERY = "getByIpNetworkId";
 
 	private static final String NAMESERVER_STORE_QUERY = "storeNameserverLinksToDatabase";
 	private static final String EVENT_STORE_QUERY = "storeEventLinksToDatabase";
@@ -45,6 +46,7 @@ public class LinkModel {
 	private static final String DOMAIN_STORE_QUERY = "storeDomainLinksToDatabase";
 	private static final String ENTITY_STORE_QUERY = "storeEntityLinksToDatabase";
 	private static final String AUTNUM_STORE_QUERY = "storeAutnumLinksToDatabase";
+	private static final String IP_NETWORK_STORE_QUERY = "storeIpNetworkLinksToDatabase";
 
 	private static final String DELETE_QUERY = "deleteLinksById";
 	private static final String NAMESERVER_DELETE_QUERY = "deleteNameserverLinksRelation";
@@ -131,6 +133,11 @@ public class LinkModel {
 		storeLinkRelationToDatabase(links, entityId, connection, ENTITY_STORE_QUERY);
 	}
 
+	public static void storeIpNetworkLinksToDatabase(List<Link> links, Long ipNetworkId, Connection connection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		storeLinkRelationToDatabase(links, ipNetworkId, connection, IP_NETWORK_STORE_QUERY);
+	}
+
 	private static void storeLinkRelationToDatabase(List<Link> links, Long id, Connection connection,
 			String storeQueryId) throws SQLException, IOException, RequiredValueNotFoundException {
 		if (links.isEmpty())
@@ -175,6 +182,10 @@ public class LinkModel {
 
 	public static List<LinkDAO> getByAutnumId(Long autnumId, Connection connection) throws SQLException {
 		return getByRelationId(autnumId, connection, AUTNUM_GET_QUERY);
+	}
+
+	public static List<LinkDAO> getByIpNetworkId(Long ipNetworkId, Connection connection) throws SQLException {
+		return getByRelationId(ipNetworkId, connection, IP_NETWORK_GET_QUERY);
 	}
 
 	private static List<LinkDAO> getByRelationId(Long id, Connection connection, String queryGetId)

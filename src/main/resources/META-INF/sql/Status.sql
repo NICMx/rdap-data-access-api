@@ -12,7 +12,10 @@ SELECT sta_id FROM rdap.entity_status WHERE ent_id=?;
 SELECT sta_id FROM rdap.registrar_status WHERE rar_id=?;
 
 #getByAutnumid
-SELECT sta_id FROM rdap.asn_status WHERE rar_id=?;
+SELECT sta_id FROM rdap.asn_status WHERE asn_id=?;
+
+#getByIpNetworkId
+SELECT sta_id FROM rdap.ip_network_status WHERE ine_id=?;
 
 #storeNameserverStatusToDatabase
 INSERT INTO rdap.nameserver_status VALUES (?,?);
@@ -28,6 +31,10 @@ INSERT INTO rdap.registrar_status VALUES (?,?);
 
 #storeAutnumStatusToDatabase
 INSERT INTO rdap.asn_status VALUES (?,?);
+
+#storeIpNetworkStatusToDatabase
+INSERT INTO rdap.ip_network_status VALUES (?, ?);
+
 
 #deleteEntityStatusRelation
 DELETE FROM rdap.entity_status  WHERE ent_id=?;

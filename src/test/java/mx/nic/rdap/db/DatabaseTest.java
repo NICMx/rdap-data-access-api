@@ -9,6 +9,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import mx.nic.rdap.db.model.CountryCodeModel;
 import mx.nic.rdap.db.model.ZoneModel;
 
 /**
@@ -20,12 +21,13 @@ public class DatabaseTest {
 	 * Connection for this tests
 	 */
 	public static Connection connection = null;
-	private static String rdapDatabaseConfigurationFile="database";
+	private static String rdapDatabaseConfigurationFile = "database";
 
 	@Before
 	public void before() throws SQLException, IOException {
 		connection = DatabaseSession.getRdapConnection();
 		ZoneModel.loadAllFromDatabase(connection);
+		CountryCodeModel.loadAllFromDatabase(connection);
 	}
 
 	@After
@@ -35,14 +37,12 @@ public class DatabaseTest {
 
 	@BeforeClass
 	public static void init() throws SQLException, IOException {
-			DatabaseSession.initRdapConnection(TestUtil.loadProperties(rdapDatabaseConfigurationFile));
+		DatabaseSession.initRdapConnection(TestUtil.loadProperties(rdapDatabaseConfigurationFile));
 	}
-
 
 	@AfterClass
 	public static void end() throws SQLException {
-			DatabaseSession.closeRdapDataSource();
+		DatabaseSession.closeRdapDataSource();
 	}
 
-	
 }

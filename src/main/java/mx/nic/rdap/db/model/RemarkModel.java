@@ -33,14 +33,13 @@ public class RemarkModel {
 	private static final String DOMAIN_STORE_QUERY = "storeDomainRemarksToDatabase";
 	private static final String ENTITY_STORE_QUERY = "storeEntityRemarksToDatabase";
 	private static final String AUTNUM_STORE_QUERY = "storeAutnumRemarksToDatabase";
-	// private static final String IP_NETWORK_STORE_QUERY =
-	// "storeIpNetworkRemarksToDatabase";
+	private static final String IP_NETWORK_STORE_QUERY = "storeIpNetworkRemarksToDatabase";
 
 	private static final String NAMESERVER_GET_QUERY = "getByNameserverId";
 	private static final String DOMAIN_GET_QUERY = "getByDomainId";
 	private static final String ENTITY_GET_QUERY = "getByEntityId";
 	private static final String AUTNUM_GET_QUERY = "getByAutnumId";
-	// private static final String IP_NETWORK_GET_QUERY = "getByIpNetworkId";
+	private static final String IP_NETWORK_GET_QUERY = "getByIpNetworkId";
 
 	private static final String DELETE_QUERY = "deleteRemarksById";
 	private static final String NAMESERVER_DELETE_QUERY = "deleteNameserverRemarksRelation";
@@ -117,6 +116,11 @@ public class RemarkModel {
 		storeRelationRemarksToDatabase(remarks, entityId, connection, ENTITY_STORE_QUERY);
 	}
 
+	public static void storeIpNetworkRemarksToDatabase(List<Remark> remarks, Long ipNetworkId, Connection connection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		storeRelationRemarksToDatabase(remarks, ipNetworkId, connection, IP_NETWORK_STORE_QUERY);
+	}
+
 	private static List<Remark> getByRelationId(Long id, Connection connection, String queryId)
 			throws IOException, SQLException {
 		String query = queryGroup.getQuery(queryId);
@@ -144,6 +148,11 @@ public class RemarkModel {
 
 	public static List<Remark> getByAutnumId(Long autnumId, Connection connection) throws IOException, SQLException {
 		return getByRelationId(autnumId, connection, AUTNUM_GET_QUERY);
+	}
+
+	public static List<Remark> getByIpNetworkId(Long ipNetworkId, Connection connection)
+			throws IOException, SQLException {
+		return getByRelationId(ipNetworkId, connection, IP_NETWORK_GET_QUERY);
 	}
 
 	public static List<Remark> getAll(Connection connection) throws IOException, SQLException {
@@ -212,7 +221,7 @@ public class RemarkModel {
 			deleteRemarkRelationByRemarksId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), previousRemarks, connection);
 			deletePreviusRemarks(previousRemarks, connection);
 		}
-		// storeIpNetworkRemarksToDatabase(remarks, ipId, connection);
+		storeIpNetworkRemarksToDatabase(remarks, ipId, connection);
 	}
 
 	private static void deleteRemarkRelationByRemarksId(String query, List<Remark> previousRemarks,
