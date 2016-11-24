@@ -36,12 +36,14 @@ public class EventModel {
 	private static final String DOMAIN_GET_QUERY = "getByDomainId";
 	private static final String ENTITY_GET_QUERY = "getByEntityId";
 	private static final String AUTNUM_GET_QUERY = "getByAutnumId";
+	private static final String IP_NETWORK_GET_QUERY = "getByIpNetworkId";
 
 	private static final String NAMESERVER_STORE_QUERY = "storeNameserverEventsToDatabase";
 	private static final String DS_DATA_STORE_QUERY = "storeDsDataEventsToDatabase";
 	private static final String DOMAIN_STORE_QUERY = "storeDomainEventsToDatabase";
 	private static final String ENTITY_STORE_QUERY = "storeEntityEventsToDatabase";
 	private static final String AUTNUM_STORE_QUERY = "storeAutnumEventsToDatabase";
+	private static final String IP_NETWORK_STORE_QUERY = "storeIpNetworkEventsToDatabase";
 
 	private static final String DELETE_QUERY = "deleteEventById";
 	private static final String NAMESERVER_DELETE_QUERY = "deleteNameserverEventsRelation";
@@ -85,7 +87,6 @@ public class EventModel {
 
 	public static void storeNameserverEventsToDatabase(List<Event> events, Long nameserverId, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
-
 		storeRelationEventsToDatabase(events, nameserverId, connection, NAMESERVER_STORE_QUERY);
 	}
 
@@ -107,6 +108,11 @@ public class EventModel {
 	public static void storeDsDataEventsToDatabase(List<Event> events, Long dsDataId, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		storeRelationEventsToDatabase(events, dsDataId, connection, DS_DATA_STORE_QUERY);
+	}
+
+	public static void storeIpNetworkEventsToDatabase(List<Event> events, Long ipNetworkId, Connection connection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		storeRelationEventsToDatabase(events, ipNetworkId, connection, IP_NETWORK_STORE_QUERY);
 	}
 
 	private static void storeRelationEventsToDatabase(List<Event> events, Long id, Connection connection,
@@ -145,6 +151,11 @@ public class EventModel {
 
 	public static List<Event> getByEntityId(Long entityId, Connection connection) throws SQLException, IOException {
 		return getByRelationId(entityId, connection, ENTITY_GET_QUERY);
+	}
+
+	public static List<Event> getByIpNetworkId(Long ipNetworkId, Connection connection)
+			throws SQLException, IOException {
+		return getByRelationId(ipNetworkId, connection, IP_NETWORK_GET_QUERY);
 	}
 
 	private static List<Event> getByRelationId(Long id, Connection connection, String getQueryId)
@@ -245,7 +256,7 @@ public class EventModel {
 			deleteEventsRelationByEventId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), previousEvents, connection);
 			deletePreviousEvents(previousEvents, connection);
 		}
-		// storeIpNetworkEventsToDatabase(events, ipNetworkId, connection);
+		storeIpNetworkEventsToDatabase(events, ipNetworkId, connection);
 	}
 
 	private static void deleteEventsRelationByEventId(String query, List<Event> events, Connection connection)

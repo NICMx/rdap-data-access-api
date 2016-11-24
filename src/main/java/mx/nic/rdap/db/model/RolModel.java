@@ -31,11 +31,13 @@ public class RolModel {
 	private static final String STORE_ENTITY_ROLES = "storeEntitiesEntityRol";
 	private static final String STORE_NS_ROLES = "storeNSEntityRol";
 	private static final String STORE_AUTNUM_ROLES = "storeAutnumEntityRol";
+	private static final String STORE_IP_NETWORK_ROLES = "storeIpNetworkEntityRol";
 
 	private static final String GET_DOMAIN_ROLES = "getDomainRol";
 	private static final String GET_ENTITY_ROLES = "getEntityRol";
 	private static final String GET_NS_ROLES = "getNSRol";
 	private static final String GET_AUTNUM_ROLES = "getAutnumRol";
+	private static final String GET_IP_NETWORK_ROLES = "getIpNetworkRol";
 
 	private static QueryGroup queryGroup = null;
 
@@ -62,8 +64,14 @@ public class RolModel {
 		return getNestedEntityRol(mainEntityId, nestedEntityId, connection, GET_ENTITY_ROLES);
 	}
 
-	public static List<Rol> getAutnumEntityRol(Long autnumId, Long id, Connection connection) throws SQLException {
-		return getNestedEntityRol(autnumId, id, connection, GET_AUTNUM_ROLES);
+	public static List<Rol> getAutnumEntityRol(Long autnumId, Long entityId, Connection connection)
+			throws SQLException {
+		return getNestedEntityRol(autnumId, entityId, connection, GET_AUTNUM_ROLES);
+	}
+
+	public static List<Rol> getIpNetworkEntityRol(Long ipNetworkId, Long entityId, Connection connection)
+			throws SQLException {
+		return getNestedEntityRol(ipNetworkId, entityId, connection, GET_IP_NETWORK_ROLES);
 	}
 
 	private static List<Rol> getNestedEntityRol(Long ownerId, Long nestedEntityId, Connection connection,
@@ -123,6 +131,11 @@ public class RolModel {
 	public static void storeAutnumEntityRoles(List<Entity> entities, Long autnumId, Connection connection)
 			throws SQLException {
 		storeEntitiesRoles(entities, autnumId, connection, STORE_AUTNUM_ROLES);
+	}
+
+	public static void storeIpNetworkEntityRoles(List<Entity> entities, Long ipNetworkId, Connection connection)
+			throws SQLException {
+		storeEntitiesRoles(entities, ipNetworkId, connection, STORE_IP_NETWORK_ROLES);
 	}
 
 	private static void storeEntitiesRoles(List<Entity> entities, Long ownerId, Connection connection,
@@ -202,7 +215,8 @@ public class RolModel {
 		return resultRoles;
 	}
 
-	private static void deleteNameserverEntityRolesByNameserverId(Long nameserverId, Connection connection) throws SQLException {
+	private static void deleteNameserverEntityRolesByNameserverId(Long nameserverId, Connection connection)
+			throws SQLException {
 		String query = queryGroup.getQuery("deleteNameserverEntityRolesByNameserverId");
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setLong(1, nameserverId);
@@ -210,8 +224,9 @@ public class RolModel {
 			statement.executeUpdate();
 		}
 	}
-	
-	public static void updateNameserverEntityRoles(List<Entity> entities, Long nameserverId, Connection connection) throws SQLException {
+
+	public static void updateNameserverEntityRoles(List<Entity> entities, Long nameserverId, Connection connection)
+			throws SQLException {
 		deleteNameserverEntityRolesByNameserverId(nameserverId, connection);
 		storeNameserverEntityRoles(entities, nameserverId, connection);
 	}

@@ -1,11 +1,8 @@
-#storeToDatabase
+|#storeToDatabase
 INSERT INTO rdap.domain(dom_handle,dom_ldh_name,dom_port43,zone_id) VALUES (?,?,?,?);
 
 #getByHandle
 SELECT * FROM rdap.domain WHERE dom_handle=?;
-
-#storeDomainEntityRoles 
-INSERT INTO rdap.domain_entity_roles(dom_id,ent_id,rol_id) VALUES (?,?,?);
 
 #getByLdhName
 SELECT * FROM rdap.domain WHERE dom_ldh_name=? AND zone_id = ?;
@@ -35,4 +32,7 @@ SELECT d.* FROM rdap.domain d WHERE d.dom_ldh_name LIKE ? AND d.zone_id IN (?) O
 SELECT DISTINCT (dom.dom_id), dom.dom_ldh_name, dom.dom_handle, dom.dom_port43, dom.zone_id FROM rdap.domain dom JOIN rdap.domain_nameservers dom_ns ON dom_ns.dom_id = dom.dom_id JOIN rdap.nameserver ns ON ns.nse_id = dom_ns.nse_id WHERE  ns.nse_ldh_name LIKE ? ORDER BY 1 LIMIT ?;
 
 #searchByNsIp
-SELECT DISTINCT (dom.dom_id), dom.dom_ldh_name, dom.dom_handle, dom.dom_port43, dom.zone_id FROM rdap.domain dom JOIN rdap.domain_nameservers dom_ns ON dom_ns.dom_id = dom.dom_id JOIN rdap.nameserver ns ON ns.nse_id = dom_ns.nse_id JOIN rdap.ip_address ip	ON ip.nse_id = ns.nse_id WHERE IF(?=4, INET_ATON(?),INET6_ATON(?)) = ip.iad_value ORDER BY 1 LIMIT ?; 
+SELECT DISTINCT (dom.dom_id), dom.dom_ldh_name, dom.dom_handle, dom.dom_port43, dom.zone_id FROM rdap.domain dom JOIN rdap.domain_nameservers dom_ns ON dom_ns.dom_id = dom.dom_id JOIN rdap.nameserver ns ON ns.nse_id = dom_ns.nse_id JOIN rdap.ip_address ip	ON ip.nse_id = ns.nse_id WHERE IF(?=4, INET_ATON(?),INET6_ATON(?)) = ip.iad_value ORDER BY 1 LIMIT ?;
+
+#storeDomainIpNetworkRelation
+INSERT INTO rdap.domain_networks VALUES (?, ?);
