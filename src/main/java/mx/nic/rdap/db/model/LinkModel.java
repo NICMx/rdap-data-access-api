@@ -240,7 +240,8 @@ public class LinkModel {
 			deleteLinksRelationByLinkId(queryGroup.getQuery(ENTITY_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
-		storeEntityLinksToDatabase(links, entityId, connection);
+		if (!links.isEmpty())
+			storeEntityLinksToDatabase(links, entityId, connection);
 	}
 
 	public static void updateNameserverLinksInDatabase(List<Link> previousLinks, List<Link> links, Long nameserverId,
@@ -249,7 +250,8 @@ public class LinkModel {
 			deleteLinksRelationByLinkId(queryGroup.getQuery(NAMESERVER_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
-		storeNameserverLinksToDatabase(links, nameserverId, connection);
+		if (!links.isEmpty())
+			storeNameserverLinksToDatabase(links, nameserverId, connection);
 	}
 
 	public static void updateDSLinksInDatabase(List<Link> previousLinks, List<Link> links, Long dsId,
@@ -258,7 +260,8 @@ public class LinkModel {
 			deleteLinksRelationByLinkId(queryGroup.getQuery(DS_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
-		storeDsDataLinksToDatabase(links, dsId, connection);
+		if (!links.isEmpty())
+			storeDsDataLinksToDatabase(links, dsId, connection);
 	}
 
 	public static void updateDomainLinksInDatabase(List<Link> previousLinks, List<Link> links, Long domainId,
@@ -267,7 +270,8 @@ public class LinkModel {
 			deleteLinksRelationByLinkId(queryGroup.getQuery(DOMAIN_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
-		storeDomainLinksToDatabase(links, domainId, connection);
+		if (!links.isEmpty())
+			storeDomainLinksToDatabase(links, domainId, connection);
 	}
 
 	public static void updateIpNetworkLinksInDatabase(List<Link> previousLinks, List<Link> links, Long ipNetworkId,
@@ -276,6 +280,7 @@ public class LinkModel {
 			deleteLinksRelationByLinkId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
+		// if(!links.isEmpty())
 		// storeIpNetworkLinksToDatabase(links, domainId, connection);
 	}
 
@@ -285,7 +290,8 @@ public class LinkModel {
 			deleteLinksRelationByLinkId(queryGroup.getQuery(AUTNUM_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
-		storeAutnumLinksToDatabase(links, autnumId, connection);
+		if (!links.isEmpty())
+			storeAutnumLinksToDatabase(links, autnumId, connection);
 	}
 
 	public static void deleteEventLinksData(List<Link> previousLinks, Connection connection)

@@ -95,6 +95,33 @@ public class DomainTest extends DatabaseTest {
 	}
 
 	@Test
+	public void upsertSimpleDomain(){
+
+		DomainDAO dom = new DomainDAO();
+		dom.setHandle("upsert1");
+		dom.setPunycodeName("aaa");
+
+		Integer zoneId = null;
+		try {
+			zoneId = ZoneModel.storeToDatabase("mx", connection);
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			fail(e1.toString());
+		}
+		dom.setZoneId(zoneId);
+
+
+		try {
+			DomainModel.upsertToDatabase(dom, connection);
+			dom.setPunycodeName("bbb");
+			DomainModel.upsertToDatabase(dom, connection);
+		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	@Test
 	/**
 	 * Inserts a domain and retrieves it
 	 */
@@ -294,6 +321,178 @@ public class DomainTest extends DatabaseTest {
 		Assert.assertTrue("getById fails", domain.equals(domainById));
 		Assert.assertTrue("findByLdhName fails", domain.equals(findByLdhName));
 
+	}
+	
+	@Test
+	public void upsert(){
+
+		DomainDAO domain = new DomainDAO();
+
+		Entity registrar = new EntityDAO();
+		registrar.setHandle("rar_dhfelix");
+		registrar.setPort43("whois.dhfelixrar.mx");
+		registrar.getRoles().add(Rol.SPONSOR);
+
+		Entity ent = new EntityDAO();
+		ent.setHandle("usr_evaldez");
+		ent.getRoles().add(Rol.REGISTRANT);
+		ent.getRoles().add(Rol.ADMINISTRATIVE);
+		ent.getRoles().add(Rol.TECHNICAL);
+
+		try {
+			EntityModel.storeToDatabase(registrar, connection);
+			EntityModel.storeToDatabase(ent, connection);
+		} catch (SQLException | IOException | RequiredValueNotFoundException e1) {
+			e1.printStackTrace();
+			fail();
+		}
+
+		try {
+			EntityModel.storeToDatabase(registrar, connection);
+			EntityModel.storeToDatabase(ent, connection);
+		} catch (SQLException | IOException | RequiredValueNotFoundException e1) {
+			e1.printStackTrace();
+			fail();
+		}
+
+		domain.getEntities().add(ent);
+		domain.getEntities().add(registrar);
+		List<Nameserver> nameservers = new ArrayList<Nameserver>();
+		try {
+			nameservers = createDefaultNameservers(10);
+		} catch (UnknownHostException e1) {
+			e1.printStackTrace();
+		}
+		domain.setNameServers(nameservers);
+
+		// Creates and inserts a zone
+		Integer zoneId = null;
+		try {
+			zoneId = ZoneModel.storeToDatabase("mx", connection);
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+			fail(e1.toString());
+		}
+
+		domain.setZoneId(zoneId);
+		domain.setPunycodeName("myupsertedDomain");
+		domain.setSecureDNS(SecureDnsTest.createDefaultSDNS());
+
+		// Creates and inserts a list of variants into the domain
+		List<Variant> variants = new ArrayList<Variant>();
+
+		List<VariantRelation> relations1 = new ArrayList<VariantRelation>();
+		relations1.add(VariantRelation.REGISTERED);
+		relations1.add(VariantRelation.CONJOINED);
+		List<VariantName> variantNames1 = new ArrayList<VariantName>();
+		variantNames1.add(DomainTest.createVariantName("xn--fo-cka.mx"));
+		variantNames1.add(DomainTest.createVariantName("xn--fo-fka.mx"));
+
+		List<VariantRelation> relations2 = new ArrayList<VariantRelation>();
+		relations2.add(VariantRelation.UNREGISTERED);
+		relations2.add(VariantRelation.REGISTRATION_RESTRICTED);
+		List<VariantName> variantNames2 = new ArrayList<VariantName>();
+		variantNames2.add(DomainTest.createVariantName("xn--fo-8ja.mx"));
+
+		variants.add(DomainTest.createVariant(null, relations1, variantNames1, null, null));
+		variants.add(DomainTest.createVariant(null, relations2, variantNames2, null, ".EXAMPLE Spanish"));
+
+		domain.getVariants().addAll(variants);
+
+		domain.getStatus().add(Status.ACTIVE);
+		domain.getStatus().add(Status.TRANSFER_PROHIBITED);
+
+		// Creates and inserts default public id
+		List<PublicId> listPids = new ArrayList<>();
+		PublicId pid = new PublicIdDAO();
+		pid.setPublicId("dumy pid 1");
+		pid.setType("dummy iana");
+		PublicId pid2 = new PublicIdDAO();
+		pid.setPublicId("dumy pid 2");
+		pid.setType("dummy IETF");
+		listPids.add(pid);
+		listPids.add(pid2);
+
+		domain.getPublicIds().addAll(listPids);
+
+		// Creates and inserts Remark data
+		List<Remark> remarks = new ArrayList<Remark>();
+		Remark remark = new RemarkDAO();
+		remark.setLanguage("ES");
+		remark.setTitle("Prueba");
+		remark.setType("PruebaType");
+
+		List<RemarkDescription> descriptions = new ArrayList<RemarkDescription>();
+		RemarkDescription description1 = new RemarkDescriptionDAO();
+		description1.setOrder(1);
+		description1.setDescription("She sells sea shells down by the sea shore.");
+
+		RemarkDescription description2 = new RemarkDescriptionDAO();
+		description2.setOrder(2);
+		description2.setDescription("Originally written by Terry Sullivan.");
+
+		descriptions.add(description1);
+		descriptions.add(description2);
+		remark.setDescriptions(descriptions);
+		remarks.add(remark);
+		domain.getRemarks().addAll(remarks);
+
+		// Links data
+		List<Link> links = new ArrayList<Link>();
+		Link link = new LinkDAO();
+		link.setValue("http://example.net/domain/xxxx");
+		link.setRel("other");
+		link.setHref("http://example.net/domain/xxxx");
+		link.setType("application/rdap+json");
+		links.add(link);
+		domain.getLinks().addAll(links);
+
+		// Events Data
+		List<Event> events = new ArrayList<Event>();
+		Event event1 = new EventDAO();
+		event1.setEventAction(EventAction.REGISTRATION);
+		event1.setEventDate(new Date());
+
+		Event event2 = new EventDAO();
+		event2.setEventAction(EventAction.LAST_CHANGED);
+		event2.setEventDate(new Date());
+		event2.setEventActor("joe@example.com");
+
+		// event links data
+		List<Link> eventLinks = new ArrayList<Link>();
+		Link eventLink = new LinkDAO();
+		eventLink.setValue("eventLink1");
+		eventLink.setRel("eventlink");
+		eventLink.setHref("http://example.net/eventlink/xxxx");
+		eventLink.setType("application/rdap+json");
+		eventLinks.add(eventLink);
+		event2.setLinks(eventLinks);
+
+		events.add(event1);
+		events.add(event2);
+		domain.getEvents().addAll(events);
+
+		domain.setHandle( "myupsertedDomain." + ZoneModel.getZoneNameById(domain.getZoneId()));
+
+		List<DsData> dsDataList = new ArrayList<>();
+		DsData dsData = SecureDnsTest.getDsData(null, null, 66612, 1, "ABCDEF1234", 1, null, null);
+		DsData dsData2 = SecureDnsTest.getDsData(null, null, 1234, 1, "abcd5432", 1, null, null);
+		dsDataList.add(dsData);
+		dsDataList.add(dsData2);
+
+		SecureDNS secureDns = SecureDnsTest.getSecureDns(null, null, true, true, dsDataList);
+		domain.setSecureDNS(secureDns);
+
+		try {
+			DomainModel.upsertToDatabase(domain, connection);
+			domain.getEntities().get(0).setPort43("Myupsertedregistrar");
+			domain.setPort43("MyUpsertedDomain");
+			DomainModel.upsertToDatabase(domain, connection);
+
+		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 
 	public static List<Nameserver> createDefaultNameservers(int randomInt) throws UnknownHostException {

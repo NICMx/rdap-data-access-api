@@ -75,7 +75,7 @@ public class NameserverTest extends DatabaseTest {
 
 		// Nameserver base data
 		Nameserver nameserver = new NameserverDAO();
-		nameserver.setHandle("XXX11");
+		nameserver.setHandle("XXX13");
 		nameserver.setPunycodeName("ns1.xn--fo-5ja.example");
 		nameserver.setPort43("whois.example.net");
 
@@ -188,7 +188,7 @@ public class NameserverTest extends DatabaseTest {
 		insert();
 		// Nameserver base data
 		NameserverDAO nameserver = new NameserverDAO();
-				nameserver.setHandle("XXX11");
+				nameserver.setHandle("XXX13");
 				nameserver.setPunycodeName("updatedInfo.example");
 				nameserver.setPort43("whois.example.net");
 
@@ -247,7 +247,6 @@ public class NameserverTest extends DatabaseTest {
 				nameserver.setEvents(events);
 				try {
 					NameserverModel.upsertToDatabase(nameserver, connection);
-					connection.commit();
 				} catch (IOException | SQLException | RequiredValueNotFoundException e) {
 					e.printStackTrace();
 					fail();

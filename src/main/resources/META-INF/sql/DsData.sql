@@ -5,4 +5,4 @@ INSERT INTO rdap.ds_data VALUES (null, ?, ?, ?, ?, ?);
 SELECT * FROM rdap.ds_data ds WHERE ds.sdns_id = ?;
 
 #deleteFromDatabase
-DELETE FROM rdap.ds_data WHERE snds_id=?;
+DELETE FROM rdap.ds_data WHERE sdns_id=?;

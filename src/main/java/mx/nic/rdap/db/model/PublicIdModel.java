@@ -142,7 +142,8 @@ public class PublicIdModel {
 			deletePublicIdsRelation(queryGroup.getQuery(DELETE_ENTITY_RELATION_QUERY), entityId, connection);
 			deletePreviousPublicIds(previousPublicIds, connection);
 		}
-		storePublicIdByEntity(entityPublicIds, entityId, connection);
+		if (!entityPublicIds.isEmpty())
+			storePublicIdByEntity(entityPublicIds, entityId, connection);
 	}
 
 	public static void updateDomainPublicIdsInDatabase(List<PublicId> previousPublicIds, List<PublicId> domainPublicIds,
@@ -151,7 +152,8 @@ public class PublicIdModel {
 			deletePublicIdsRelation(queryGroup.getQuery(DELETE_DOMAIN_RELATION_QUERY), domainId, connection);
 			deletePreviousPublicIds(previousPublicIds, connection);
 		}
-		storePublicIdByDomain(domainPublicIds, domainId, connection);
+		if (!domainPublicIds.isEmpty())
+			storePublicIdByDomain(domainPublicIds, domainId, connection);
 	}
 
 	private static void deletePreviousPublicIds(List<PublicId> previousPublicIds, Connection connection)

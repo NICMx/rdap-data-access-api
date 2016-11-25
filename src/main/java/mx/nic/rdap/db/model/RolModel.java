@@ -212,10 +212,12 @@ public class RolModel {
 		return resultRoles;
 	}
 
-	public static void updateEntityEntityRoles(List<Entity> entities, EntityDAO entity, Connection connection)
-			throws SQLException {
-		deleteRelationByParentId(queryGroup.getQuery(ENTITY_DELETE_QUERY), entity.getId(), connection);
-		storeEntityEntityRoles(entities, entity.getId(), connection);
+	public static void updateEntityEntityRoles(List<Entity> previousEntities, List<Entity> entities, EntityDAO entity,
+			Connection connection) throws SQLException {
+		if (!previousEntities.isEmpty())
+			deleteRelationByParentId(queryGroup.getQuery(ENTITY_DELETE_QUERY), entity.getId(), connection);
+		if (!entities.isEmpty())
+			storeEntityEntityRoles(entities, entity.getId(), connection);
 		updateMainEntityRol(entities, entity, connection);
 	}
 
@@ -229,27 +231,34 @@ public class RolModel {
 			storeMainEntityRol(nestedEntities, mainEntity, connection);
 	}
 
-	public static void updateNameserverEntityRoles(List<Entity> entities, Long nameserverId, Connection connection)
-			throws SQLException {
-		deleteRelationByParentId(queryGroup.getQuery(NAMESERVER_DELETE_QUERY), nameserverId, connection);
-		storeNameserverEntityRoles(entities, nameserverId, connection);
+	public static void updateNameserverEntityRoles(List<Entity> previousEntities, List<Entity> entities,
+			Long nameserverId, Connection connection) throws SQLException {
+		if (!previousEntities.isEmpty())
+			deleteRelationByParentId(queryGroup.getQuery(NAMESERVER_DELETE_QUERY), nameserverId, connection);
+		if (!entities.isEmpty())
+			storeNameserverEntityRoles(entities, nameserverId, connection);
 	}
 
-	public static void updateDomainEntityRoles(List<Entity> entities, Long domainId, Connection connection)
-			throws SQLException {
-		deleteRelationByParentId(queryGroup.getQuery(DOMAIN_DELETE_QUERY), domainId, connection);
-		storeDomainEntityRoles(entities, domainId, connection);
+	public static void updateDomainEntityRoles(List<Entity> previousEntities, List<Entity> entities, Long domainId,
+			Connection connection) throws SQLException {
+		if (!previousEntities.isEmpty())
+			deleteRelationByParentId(queryGroup.getQuery(DOMAIN_DELETE_QUERY), domainId, connection);
+		if (!entities.isEmpty())
+			storeDomainEntityRoles(entities, domainId, connection);
 	}
 
-	public static void updateAutnumrEntityRoles(List<Entity> entities, Long autnumId, Connection connection)
-			throws SQLException {
-		deleteRelationByParentId(queryGroup.getQuery(AUTNUM_DELETE_QUERY), autnumId, connection);
-		storeAutnumEntityRoles(entities, autnumId, connection);
+	public static void updateAutnumrEntityRoles(List<Entity> previousEntities, List<Entity> entities, Long autnumId,
+			Connection connection) throws SQLException {
+		if (!previousEntities.isEmpty())
+			deleteRelationByParentId(queryGroup.getQuery(AUTNUM_DELETE_QUERY), autnumId, connection);
+		if (!entities.isEmpty())
+			storeAutnumEntityRoles(entities, autnumId, connection);
 	}
 
-	public static void updateIpNetworkEntityRoles(List<Entity> entities, Long ipNetworkId, Connection connection)
-			throws SQLException {
-		deleteRelationByParentId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), ipNetworkId, connection);
+	public static void updateIpNetworkEntityRoles(List<Entity> previousEntities, List<Entity> entities,
+			Long ipNetworkId, Connection connection) throws SQLException {
+		if (!previousEntities.isEmpty())
+			deleteRelationByParentId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), ipNetworkId, connection);
 		// storeIpNetworkEntityRoles(entities, ipNetworkId, connection);
 	}
 

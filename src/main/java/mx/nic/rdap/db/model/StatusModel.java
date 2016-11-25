@@ -177,33 +177,42 @@ public class StatusModel {
 		return result;
 	}
 
-	public static void updateEntityStatusInDatabase(List<Status> status, Long entityId, Connection connection)
-			throws SQLException, IOException {
-		deleteRelationByParentId(queryGroup.getQuery(ENTITY_DELETE_QUERY), entityId, connection);
-		storeEntityStatusToDatabase(status, entityId, connection);
+	public static void updateEntityStatusInDatabase(List<Status> previousStatus, List<Status> status, Long entityId,
+			Connection connection) throws SQLException, IOException {
+		if (!previousStatus.isEmpty())
+			deleteRelationByParentId(queryGroup.getQuery(ENTITY_DELETE_QUERY), entityId, connection);
+		if (!status.isEmpty())
+			storeEntityStatusToDatabase(status, entityId, connection);
 	}
 
-	public static void updateNameserverStatusInDatabase(List<Status> status, Long nameserverId, Connection connection)
-			throws SQLException, IOException {
-		deleteRelationByParentId(queryGroup.getQuery(NAMESERVER_DELETE_QUERY), nameserverId, connection);
-		storeNameserverStatusToDatabase(status, nameserverId, connection);
+	public static void updateNameserverStatusInDatabase(List<Status> previousStatus, List<Status> status,
+			Long nameserverId, Connection connection) throws SQLException, IOException {
+		if (!previousStatus.isEmpty())
+			deleteRelationByParentId(queryGroup.getQuery(NAMESERVER_DELETE_QUERY), nameserverId, connection);
+		if (!status.isEmpty())
+			storeNameserverStatusToDatabase(status, nameserverId, connection);
 	}
 
-	public static void updateDomainStatusInDatabase(List<Status> status, Long domainId, Connection connection)
-			throws SQLException, IOException {
-		deleteRelationByParentId(queryGroup.getQuery(DOMAIN_DELETE_QUERY), domainId, connection);
-		storeDomainStatusToDatabase(status, domainId, connection);
+	public static void updateDomainStatusInDatabase(List<Status> previousStatus, List<Status> status, Long domainId,
+			Connection connection) throws SQLException, IOException {
+		if (!previousStatus.isEmpty())
+			deleteRelationByParentId(queryGroup.getQuery(DOMAIN_DELETE_QUERY), domainId, connection);
+		if (!status.isEmpty())
+			storeDomainStatusToDatabase(status, domainId, connection);
 	}
 
-	public static void updateAutnumStatusInDatabase(List<Status> status, Long autnumId, Connection connection)
-			throws SQLException, IOException {
-		deleteRelationByParentId(queryGroup.getQuery(AUTNUM_DELETE_QUERY), autnumId, connection);
-		storeAutnumStatusToDatabase(status, autnumId, connection);
+	public static void updateAutnumStatusInDatabase(List<Status> previousStatus, List<Status> status, Long autnumId,
+			Connection connection) throws SQLException, IOException {
+		if (!previousStatus.isEmpty())
+			deleteRelationByParentId(queryGroup.getQuery(AUTNUM_DELETE_QUERY), autnumId, connection);
+		if (!status.isEmpty())
+			storeAutnumStatusToDatabase(status, autnumId, connection);
 	}
 
-	public static void updateIpNetworkStatusInDatabase(List<Status> status, Long ipNetworkId, Connection connection)
-			throws SQLException, IOException {
-		deleteRelationByParentId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), ipNetworkId, connection);
+	public static void updateIpNetworkStatusInDatabase(List<Status> previousStatus, List<Status> status,
+			Long ipNetworkId, Connection connection) throws SQLException, IOException {
+		if (!previousStatus.isEmpty())
+			deleteRelationByParentId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), ipNetworkId, connection);
 		// storeIpNetworkStatusToDatabase(status, nameserverId, connection);
 	}
 

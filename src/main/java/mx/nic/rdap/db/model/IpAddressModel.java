@@ -130,8 +130,7 @@ public class IpAddressModel {
 		}
 	}
 
-	
-	private static void deleteByNameserverId(Long nameserverId,Connection connection) throws SQLException{
+	private static void deleteByNameserverId(Long nameserverId, Connection connection) throws SQLException {
 		String query = queryGroup.getQuery("deleteByNameserverId");
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setLong(1, nameserverId);
@@ -139,14 +138,18 @@ public class IpAddressModel {
 			statement.executeUpdate();
 		}
 	}
-	
+
 	/**
-	 * To avoid a complete search on a likely small data,erase the previous data and insert the new
+	 * To avoid a complete search on a likely small data,erase the previous data
+	 * and insert the new
 	 */
-	public static void updateInDatabase(NameserverIpAddressesStruct ipAddresses, Long nameserverId,
-			Connection connection) throws SQLException, IOException {
-		deleteByNameserverId(nameserverId, connection);
-		storeToDatabase(ipAddresses, nameserverId, connection);
-		
+	public static void updateInDatabase(NameserverIpAddressesStruct previousIpAddresses,
+			NameserverIpAddressesStruct ipAddresses, Long nameserverId, Connection connection)
+			throws SQLException, IOException {
+		if (!previousIpAddresses.getIpv4Adresses().isEmpty() || !previousIpAddresses.getIpv6Adresses().isEmpty())
+			deleteByNameserverId(nameserverId, connection);
+		if (!ipAddresses.getIpv4Adresses().isEmpty() || !ipAddresses.getIpv6Adresses().isEmpty())
+			storeToDatabase(ipAddresses, nameserverId, connection);
+
 	}
 }

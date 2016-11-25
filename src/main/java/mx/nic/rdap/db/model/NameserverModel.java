@@ -370,29 +370,35 @@ public class NameserverModel {
 		updatedNestedObjects(previusNameserver, nameserver, rdapConnection);
 	}
 
-	private static void updatedNestedObjects(NameserverDAO previusNameserver, NameserverDAO nameserver,
+	private static void updatedNestedObjects(NameserverDAO previousNameserver, NameserverDAO nameserver,
 			Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
 		Long nameserverId = nameserver.getId();
-		IpAddressModel.updateInDatabase(nameserver.getIpAddresses(), nameserverId, connection);
-		StatusModel.updateNameserverStatusInDatabase(nameserver.getStatus(), nameserverId, connection);
-		RemarkModel.updateNameserverRemarksInDatabase(previusNameserver.getRemarks(), nameserver.getRemarks(),
+		IpAddressModel.updateInDatabase(previousNameserver.getIpAddresses(), nameserver.getIpAddresses(), nameserverId,
+				connection);
+		StatusModel.updateNameserverStatusInDatabase(previousNameserver.getStatus(), nameserver.getStatus(),
 				nameserverId, connection);
-		LinkModel.updateNameserverLinksInDatabase(previusNameserver.getLinks(), nameserver.getLinks(), nameserverId,
+		RemarkModel.updateNameserverRemarksInDatabase(previousNameserver.getRemarks(), nameserver.getRemarks(),
+				nameserverId, connection);
+		LinkModel.updateNameserverLinksInDatabase(previousNameserver.getLinks(), nameserver.getLinks(), nameserverId,
 				connection);
-		EventModel.updateNameserverEventsInDatabase(previusNameserver.getEvents(), nameserver.getEvents(), nameserverId,
-				connection);
-		updateNameserverEntities(nameserver, connection);
+		EventModel.updateNameserverEventsInDatabase(previousNameserver.getEvents(), nameserver.getEvents(),
+				nameserverId, connection);
+		updateNameserverEntities(previousNameserver, nameserver, connection);
 	}
 
-	public static void updateNameserverEntities(NameserverDAO nameserver, Connection connection) throws SQLException {
+	public static void updateNameserverEntities(NameserverDAO previusNameserver, NameserverDAO nameserver,
+			Connection connection) throws SQLException {
 		EntityModel.validateParentEntities(nameserver.getEntities(), connection);
-		RolModel.updateNameserverEntityRoles(nameserver.getEntities(), nameserver.getId(), connection);
+		RolModel.updateNameserverEntityRoles(previusNameserver.getEntities(), nameserver.getEntities(),
+				nameserver.getId(), connection);
 	}
 
-	public static void updateDomainNameservers(List<Nameserver> nameservers, Long domainId, Connection connection)
-			throws SQLException, IOException, RequiredValueNotFoundException {
-		deleteDomainRelation(domainId, connection);
-		storeDomainNameserversToDatabase(nameservers, domainId, connection);
+	public static void updateDomainNameservers(List<Nameserver> previousNameservers, List<Nameserver> nameservers,
+			Long domainId, Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
+		if (!previousNameservers.isEmpty())
+			deleteDomainRelation(domainId, connection);
+		if (!nameservers.isEmpty())
+			storeDomainNameserversToDatabase(nameservers, domainId, connection);
 	}
 
 	private static void deleteDomainRelation(Long domainId, Connection connection) throws SQLException {

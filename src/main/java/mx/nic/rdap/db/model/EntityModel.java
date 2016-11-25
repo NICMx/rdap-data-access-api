@@ -406,7 +406,7 @@ public class EntityModel {
 		updateVcardList(previusEntity, entity, connection);
 		PublicIdModel.updateEntityPublicIdsInDatabase(previusEntity.getPublicIds(), entity.getPublicIds(), entityId,
 				connection);
-		StatusModel.updateEntityStatusInDatabase(entity.getStatus(), entityId, connection);
+		StatusModel.updateEntityStatusInDatabase(previusEntity.getStatus(), entity.getStatus(), entityId, connection);
 		RemarkModel.updateEntityRemarksInDatabase(previusEntity.getRemarks(), entity.getRemarks(), entityId,
 				connection);
 		LinkModel.updateEntityLinksInDatabase(previusEntity.getLinks(), entity.getLinks(), entityId, connection);
@@ -415,7 +415,7 @@ public class EntityModel {
 		for (Entity ent : entity.getEntities()) {
 			upsertToDatabase((EntityDAO) ent, connection);
 		}
-		RolModel.updateEntityEntityRoles(entity.getEntities(), entity, connection);
+		RolModel.updateEntityEntityRoles(previusEntity.getEntities(), entity.getEntities(), entity, connection);
 
 	}
 

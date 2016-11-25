@@ -75,9 +75,12 @@ public class SecureDNSModel {
 
 	public static void updateSecureDns(SecureDNS previousSecureDns, SecureDNS secureDns, Long domainId,
 			Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
-		DsDataModel.deleteDsDataBySecureDnsId(previousSecureDns.getId(), connection);
-		deletePreviousSecureDnsByDomainId(domainId, connection);
-		storeToDatabase(secureDns, connection);
+		if (previousSecureDns != null) {
+			DsDataModel.deleteDsDataBySecureDnsId(previousSecureDns.getId(), connection);
+			deletePreviousSecureDnsByDomainId(domainId, connection);
+		}
+		if (secureDns != null)
+			storeToDatabase(secureDns, connection);
 	}
 
 	private static void deletePreviousSecureDnsByDomainId(Long domainId, Connection connection) throws SQLException {

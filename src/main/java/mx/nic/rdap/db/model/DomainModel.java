@@ -167,7 +167,7 @@ public class DomainModel {
 			}
 		}
 	}
-	
+
 	public static DomainDAO getByHandle(String handle, Connection connection) throws SQLException, IOException {
 		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_BY_HANDLE_QUERY))) {
 			statement.setString(1, handle);
@@ -491,21 +491,24 @@ public class DomainModel {
 		RemarkModel.updateDomainRemarksInDatabase(previousDomain.getRemarks(), domain.getRemarks(), domainId,
 				connection);
 		EventModel.updateDomainEventsInDatabase(previousDomain.getEvents(), domain.getEvents(), domainId, connection);
-		StatusModel.updateDomainStatusInDatabase(domain.getStatus(), domainId, connection);
+		StatusModel.updateDomainStatusInDatabase(previousDomain.getStatus(), domain.getStatus(), domainId, connection);
 		LinkModel.updateDomainLinksInDatabase(previousDomain.getLinks(), domain.getLinks(), domainId, connection);
-		RolModel.updateDomainEntityRoles(domain.getEntities(), domainId, connection);
+		RolModel.updateDomainEntityRoles(previousDomain.getEntities(), domain.getEntities(), domainId, connection);
 		PublicIdModel.updateDomainPublicIdsInDatabase(previousDomain.getPublicIds(), domain.getPublicIds(), domainId,
 				connection);
-		NameserverModel.updateDomainNameservers(domain.getNameServers(), domainId, connection);
+		NameserverModel.updateDomainNameservers(previousDomain.getNameServers(), domain.getNameServers(), domainId,
+				connection);
 		SecureDNSModel.updateSecureDns(previousDomain.getSecureDNS(), domain.getSecureDNS(), domainId, connection);
 		VariantModel.updateVariants(previousDomain.getVariants(), domain.getVariants(), domain.getId(), connection);
-		updateDomainIpNetworkOnDatabase(domainId, domain.getIpNetwork().getId(), connection);
+		updateDomainIpNetworkOnDatabase(previousDomain.getIpNetwork(), domain.getIpNetwork(), domainId, connection);
 	}
 
-	private static void updateDomainIpNetworkOnDatabase(Long domainId, Long ipNetworkId, Connection connection)
-			throws SQLException {
-		deletePreviousIpNetworkRelation(domainId, connection);
-		storeDomainIpNetworkRelationToDatabase(domainId, ipNetworkId, connection);
+	private static void updateDomainIpNetworkOnDatabase(IpNetwork previousIpNetwork, IpNetwork ipNetwork, Long domainId,
+			Connection connection) throws SQLException {
+		if (previousIpNetwork != null)
+			deletePreviousIpNetworkRelation(domainId, connection);
+		if (ipNetwork != null)
+			storeDomainIpNetworkRelationToDatabase(domainId, ipNetwork.getId(), connection);
 	}
 
 	private static void deletePreviousIpNetworkRelation(Long domainId, Connection connection) throws SQLException {

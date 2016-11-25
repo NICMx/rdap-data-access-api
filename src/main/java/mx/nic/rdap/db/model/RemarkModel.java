@@ -185,7 +185,8 @@ public class RemarkModel {
 			deleteRemarkRelationByRemarksId(queryGroup.getQuery(ENTITY_DELETE_QUERY), previousRemarks, connection);
 			deletePreviusRemarks(previousRemarks, connection);
 		}
-		storeEntityRemarksToDatabase(remarks, entityId, connection);
+		if (!remarks.isEmpty())
+			storeEntityRemarksToDatabase(remarks, entityId, connection);
 	}
 
 	public static void updateNameserverRemarksInDatabase(List<Remark> previousRemarks, List<Remark> remarks,
@@ -194,7 +195,8 @@ public class RemarkModel {
 			deleteRemarkRelationByRemarksId(queryGroup.getQuery(NAMESERVER_DELETE_QUERY), previousRemarks, connection);
 			deletePreviusRemarks(previousRemarks, connection);
 		}
-		storeNameserverRemarksToDatabase(remarks, nameserverId, connection);
+		if (!remarks.isEmpty())
+			storeNameserverRemarksToDatabase(remarks, nameserverId, connection);
 	}
 
 	public static void updateDomainRemarksInDatabase(List<Remark> previousRemarks, List<Remark> remarks, Long domainId,
@@ -203,7 +205,8 @@ public class RemarkModel {
 			deleteRemarkRelationByRemarksId(queryGroup.getQuery(DOMAIN_DELETE_QUERY), previousRemarks, connection);
 			deletePreviusRemarks(previousRemarks, connection);
 		}
-		storeDomainRemarksToDatabase(remarks, domainId, connection);
+		if (!remarks.isEmpty())
+			storeDomainRemarksToDatabase(remarks, domainId, connection);
 	}
 
 	public static void updateAutnumRemarksInDatabase(List<Remark> previousRemarks, List<Remark> remarks, Long asnId,
@@ -212,7 +215,8 @@ public class RemarkModel {
 			deleteRemarkRelationByRemarksId(queryGroup.getQuery(AUTNUM_DELETE_QUERY), previousRemarks, connection);
 			deletePreviusRemarks(previousRemarks, connection);
 		}
-		storeAutnumRemarksToDatabase(remarks, asnId, connection);
+		if (!remarks.isEmpty())
+			storeAutnumRemarksToDatabase(remarks, asnId, connection);
 	}
 
 	public static void updateIpNetworkRemarksInDatabase(List<Remark> previousRemarks, List<Remark> remarks, Long ipId,
@@ -221,7 +225,8 @@ public class RemarkModel {
 			deleteRemarkRelationByRemarksId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), previousRemarks, connection);
 			deletePreviusRemarks(previousRemarks, connection);
 		}
-		storeIpNetworkRemarksToDatabase(remarks, ipId, connection);
+		if (!remarks.isEmpty())
+			storeIpNetworkRemarksToDatabase(remarks, ipId, connection);
 	}
 
 	private static void deleteRemarkRelationByRemarksId(String query, List<Remark> previousRemarks,

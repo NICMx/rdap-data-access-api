@@ -211,7 +211,8 @@ public class EventModel {
 			deleteEventsRelationByEventId(queryGroup.getQuery(ENTITY_DELETE_QUERY), previousEvents, connection);
 			deletePreviousEvents(previousEvents, connection);
 		}
-		storeEntityEventsToDatabase(events, entityId, connection);
+		if (!events.isEmpty())
+			storeEntityEventsToDatabase(events, entityId, connection);
 	}
 
 	public static void updateNameserverEventsInDatabase(List<Event> previousEvents, List<Event> events,
@@ -220,7 +221,8 @@ public class EventModel {
 			deleteEventsRelationByEventId(queryGroup.getQuery(NAMESERVER_DELETE_QUERY), previousEvents, connection);
 			deletePreviousEvents(previousEvents, connection);
 		}
-		storeNameserverEventsToDatabase(events, nameserverId, connection);
+		if (!events.isEmpty())
+			storeNameserverEventsToDatabase(events, nameserverId, connection);
 	}
 
 	public static void updateDsEventsInDatabase(List<Event> previousEvents, List<Event> events, Long dsId,
@@ -229,7 +231,8 @@ public class EventModel {
 			deleteEventsRelationByEventId(queryGroup.getQuery(DS_DELETE_QUERY), previousEvents, connection);
 			deletePreviousEvents(previousEvents, connection);
 		}
-		storeDsDataEventsToDatabase(events, dsId, connection);
+		if (!events.isEmpty())
+			storeDsDataEventsToDatabase(events, dsId, connection);
 	}
 
 	public static void updateDomainEventsInDatabase(List<Event> previousEvents, List<Event> events, Long domainId,
@@ -238,7 +241,8 @@ public class EventModel {
 			deleteEventsRelationByEventId(queryGroup.getQuery(DOMAIN_DELETE_QUERY), previousEvents, connection);
 			deletePreviousEvents(previousEvents, connection);
 		}
-		storeDomainEventsToDatabase(events, domainId, connection);
+		if (!events.isEmpty())
+			storeDomainEventsToDatabase(events, domainId, connection);
 	}
 
 	public static void updateAutnumEventsInDatabase(List<Event> previousEvents, List<Event> events, Long autnumId,
@@ -247,7 +251,8 @@ public class EventModel {
 			deleteEventsRelationByEventId(queryGroup.getQuery(AUTNUM_DELETE_QUERY), previousEvents, connection);
 			deletePreviousEvents(previousEvents, connection);
 		}
-		storeAutnumEventsToDatabase(events, autnumId, connection);
+		if (!events.isEmpty())
+			storeAutnumEventsToDatabase(events, autnumId, connection);
 	}
 
 	public static void updateIpNetworkEventsInDatabase(List<Event> previousEvents, List<Event> events, Long ipNetworkId,
@@ -256,7 +261,8 @@ public class EventModel {
 			deleteEventsRelationByEventId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), previousEvents, connection);
 			deletePreviousEvents(previousEvents, connection);
 		}
-		storeIpNetworkEventsToDatabase(events, ipNetworkId, connection);
+		if (!events.isEmpty())
+			storeIpNetworkEventsToDatabase(events, ipNetworkId, connection);
 	}
 
 	private static void deleteEventsRelationByEventId(String query, List<Event> events, Connection connection)
