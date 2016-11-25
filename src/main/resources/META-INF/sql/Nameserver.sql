@@ -34,3 +34,6 @@ SELECT DISTINCT(nse.nse_id), nse.nse_handle,nse.nse_ldh_name, nse.nse_port43 FRO
 
 #getAll
 SELECT * FROM rdap.nameserver nse;
+
+#deleteDomainNameserversRelation
+DELETE FROM rdap.domain_nameservers WHERE dom_id=?;

@@ -18,7 +18,6 @@ import mx.nic.rdap.core.catalog.Rol;
 import mx.nic.rdap.core.db.Domain;
 import mx.nic.rdap.core.db.Entity;
 import mx.nic.rdap.core.db.IpNetwork;
-import mx.nic.rdap.core.exception.UnprocessableEntityException;
 import mx.nic.rdap.db.DomainDAO;
 import mx.nic.rdap.db.IpAddressDAO;
 import mx.nic.rdap.db.QueryGroup;
@@ -37,6 +36,23 @@ public class DomainModel {
 	private final static String QUERY_GROUP = "Domain";
 
 	private static QueryGroup queryGroup = null;
+	private static final String STORE_QUERY = "storeToDatabase";
+	private static final String UPDATE_QUERY = "updateInDatabase";
+
+	private static final String STORE_IP_NETWORK_RELATION_QUERY = "storeDomainIpNetworkRelation";
+	private static final String GET_BY_LDH_QUERY = "getByLdhName";
+	private static final String GET_BY_ID_QUERY = "getDomainById";
+	private static final String GET_BY_HANDLE_QUERY = "getByHandle";
+	private static final String SEARCH_BY_PARTIAL_NAME_WITH_PARTIAL_ZONE_QUERY = "searchByPartialNameWPartialZone";
+	private static final String SEARCH_BY_NAME_WITH_PARTIAL_ZONE_QUERY = "searchByNameWPartialZone";
+	private static final String SEARCH_BY_PARTIAL_NAME_WITH_ZONE_QUERY = "searchByPartialNameWZone";
+	private static final String SEARCH_BY_NAME_WITH_ZONE_QUERY = "searchByNameWZone";
+	private static final String SEARCH_BY_PARTIAL_NAME_WITHOUT_ZONE_QUERY = "searchByPartialNameWOutZone";
+	private static final String SEARCH_BY_NAME_WITHOUT_ZONE_QUERY = "searchByNameWOutZone";
+	private static final String SEARCH_BY_NAMESERVER_LDH_QUERY = "searchByNsLdhName";
+	private static final String SEARCH_BY_NAMESERVER_IP_QUERY = "searchByNsIp";
+
+	private static final String DELETE_IP_NETWORK_RELATION_QUERY = "deleteDomainIpNetworkRelation";
 
 	static {
 		try {
@@ -46,19 +62,11 @@ public class DomainModel {
 		}
 	}
 
-	/**
-	 * Stores Object domain to database
-	 * 
-	 * @param domain
-	 * @param connection
-	 * @throws SQLException
-	 * @throws RequiredValueNotFoundException
-	 * @throws IOException
-	 */
 	public static Long storeToDatabase(Domain domain, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
-		String query = queryGroup.getQuery("storeToDatabase");
+		String query = queryGroup.getQuery(STORE_QUERY);
 		Long domainId;
+		isValidForStore((DomainDAO) domain);
 		try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			((DomainDAO) domain).storeToDatabase(statement);
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
@@ -69,6 +77,13 @@ public class DomainModel {
 			domain.setId(domainId);
 		}
 
+		storeNestedObjects(domain, connection);
+		return domainId;
+	}
+
+	public static void storeNestedObjects(Domain domain, Connection connection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		Long domainId = domain.getId();
 		RemarkModel.storeDomainRemarksToDatabase(domain.getRemarks(), domainId, connection);
 		EventModel.storeDomainEventsToDatabase(domain.getEvents(), domainId, connection);
 		StatusModel.storeDomainStatusToDatabase(domain.getStatus(), domainId, connection);
@@ -81,14 +96,7 @@ public class DomainModel {
 		NameserverModel.storeDomainNameserversToDatabase(domain.getNameServers(), domainId, connection);
 
 		if (domain.getEntities().size() > 0) {
-			for (Entity ent : domain.getEntities()) {
-				Long entId = EntityModel.existsByHandle(ent.getHandle(), connection);
-				if (entId == null) {
-					throw new NullPointerException(
-							"Entity: " + ent.getHandle() + " was not insert previously to the database");
-				}
-				ent.setId(entId);
-			}
+			EntityModel.validateParentEntities(domain.getEntities(), connection);
 			RolModel.storeDomainEntityRoles(domain.getEntities(), domainId, connection);
 		}
 
@@ -97,15 +105,20 @@ public class DomainModel {
 		VariantModel.storeAllToDatabase(domain.getVariants(), domain.getId(), connection);
 
 		if (domain.getIpNetwork() != null) {
-			storeDomainIpNetworkToDatabase(domainId, domain.getIpNetwork().getId(), connection);
+			storeDomainIpNetworkRelationToDatabase(domainId, domain.getIpNetwork().getId(), connection);
 		}
-
-		return domainId;
 	}
 
-	private static void storeDomainIpNetworkToDatabase(Long domainId, Long ipNetworkId, Connection connection)
+	private static void isValidForStore(DomainDAO domain) throws RequiredValueNotFoundException {
+		if (domain.getHandle() == null || domain.getHandle().isEmpty())
+			throw new RequiredValueNotFoundException("handle", "Domain");
+		if (domain.getLdhName() == null || domain.getLdhName().isEmpty())
+			throw new RequiredValueNotFoundException("ldhName", "Domain");
+	}
+
+	private static void storeDomainIpNetworkRelationToDatabase(Long domainId, Long ipNetworkId, Connection connection)
 			throws SQLException {
-		String query = queryGroup.getQuery("storeDomainIpNetworkRelation");
+		String query = queryGroup.getQuery(STORE_IP_NETWORK_RELATION_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setLong(1, domainId);
 			statement.setLong(2, ipNetworkId);
@@ -117,15 +130,10 @@ public class DomainModel {
 	/**
 	 * Finds domain with its Punycode name
 	 * 
-	 * @param name
-	 * @param connection
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws InvalidValueException
 	 */
 	public static DomainDAO findByLdhName(String name, Integer zoneId, Connection connection)
 			throws SQLException, IOException, InvalidValueException {
-		String query = queryGroup.getQuery("getByLdhName");
+		String query = queryGroup.getQuery(GET_BY_LDH_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, IDN.toASCII(name));
 			statement.setInt(2, zoneId);
@@ -144,13 +152,9 @@ public class DomainModel {
 	/**
 	 * Finds domain with its Punycode name
 	 * 
-	 * @param name
-	 * @param connection
-	 * @throws SQLException
-	 * @throws IOException
 	 */
 	public static Domain getDomainById(Long domainId, Connection connection) throws SQLException, IOException {
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getDomainById"))) {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_BY_ID_QUERY))) {
 			statement.setLong(1, domainId);
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
 			try (ResultSet resultSet = statement.executeQuery()) {
@@ -163,18 +167,25 @@ public class DomainModel {
 			}
 		}
 	}
+	
+	public static DomainDAO getByHandle(String handle, Connection connection) throws SQLException, IOException {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_BY_HANDLE_QUERY))) {
+			statement.setString(1, handle);
+			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
+			try (ResultSet resultSet = statement.executeQuery()) {
+				if (!resultSet.next()) {
+					throw new ObjectNotFoundException("Object not found.");
+				}
+				DomainDAO domain = new DomainDAO(resultSet);
+				loadNestedObjects(domain, connection);
+				return domain;
+			}
+		}
+	}
 
 	/**
 	 * Searches a domain by it´s name and TLD
 	 * 
-	 * @param name
-	 * @param zone
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 * @throws InvalidValueException
-	 * @throws IOException
-	 * @throws UnprocessableEntityException
 	 */
 	public static List<DomainDAO> searchByName(String name, String zone, Integer resultLimit, Connection connection)
 			throws SQLException, IOException, InvalidValueException {
@@ -187,9 +198,9 @@ public class DomainModel {
 			zone = zone.replaceAll("\\*", "%");
 			if (isPartialName) {
 				name = name.replaceAll("\\*", "%");
-				query = queryGroup.getQuery("searchByPartialNameWPartialZone");
+				query = queryGroup.getQuery(SEARCH_BY_PARTIAL_NAME_WITH_PARTIAL_ZONE_QUERY);
 			} else {
-				query = queryGroup.getQuery("searchByNameWPartialZone");
+				query = queryGroup.getQuery(SEARCH_BY_NAME_WITH_PARTIAL_ZONE_QUERY);
 			}
 		} else {
 
@@ -199,9 +210,9 @@ public class DomainModel {
 
 			if (isPartialName) {
 				name = name.replaceAll("\\*", "%");
-				query = queryGroup.getQuery("searchByPartialNameWZone");
+				query = queryGroup.getQuery(SEARCH_BY_PARTIAL_NAME_WITH_ZONE_QUERY);
 			} else {
-				query = queryGroup.getQuery("searchByNameWZone");
+				query = queryGroup.getQuery(SEARCH_BY_NAME_WITH_ZONE_QUERY);
 			}
 		}
 
@@ -239,13 +250,6 @@ public class DomainModel {
 	/**
 	 * Searches a domain by it's name when user don´t care about the TLD
 	 * 
-	 * @param domainName
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 * @throws InvalidValueException
-	 * @throws IOException
-	 * @throws UnprocessableEntityException
 	 */
 	public static List<DomainDAO> searchByName(String domainName, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
@@ -253,9 +257,9 @@ public class DomainModel {
 		String query = null;
 		if (domainName.contains("*")) {
 			domainName = domainName.replaceAll("\\*", "%");
-			query = queryGroup.getQuery("searchByPartialNameWOutZone");
+			query = queryGroup.getQuery(SEARCH_BY_PARTIAL_NAME_WITHOUT_ZONE_QUERY);
 		} else {
-			query = queryGroup.getQuery("searchByNameWOutZone");
+			query = queryGroup.getQuery(SEARCH_BY_NAME_WITHOUT_ZONE_QUERY);
 		}
 
 		try (PreparedStatement statement = connection.prepareStatement(query);) {
@@ -282,17 +286,13 @@ public class DomainModel {
 	/**
 	 * Searches all domains with a nameserver by name
 	 * 
-	 * @param name
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
 	 */
 	public static List<DomainDAO> searchByNsLdhName(String name, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
 
 		name = name.replace("*", "%");
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("searchByNsLdhName"))) {
+		try (PreparedStatement statement = connection
+				.prepareStatement(queryGroup.getQuery(SEARCH_BY_NAMESERVER_LDH_QUERY))) {
 			statement.setString(1, name);
 			statement.setInt(2, resultLimit);
 			logger.log(Level.INFO, "Executing query" + statement.toString());
@@ -314,11 +314,6 @@ public class DomainModel {
 	/**
 	 * searches all domains with a nameserver by address
 	 * 
-	 * @param ip
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
 	 */
 	public static List<DomainDAO> searchByNsIp(String ip, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
@@ -331,7 +326,8 @@ public class DomainModel {
 		} else if (ipAddress.getAddress() instanceof Inet4Address) {
 			ipAddress.setType(6);
 		}
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("searchByNsIp"))) {
+		try (PreparedStatement statement = connection
+				.prepareStatement(queryGroup.getQuery(SEARCH_BY_NAMESERVER_IP_QUERY))) {
 			statement.setInt(1, ipAddress.getType());
 			statement.setString(2, ipAddress.getAddress().getHostAddress());
 			statement.setString(3, ipAddress.getAddress().getHostAddress());
@@ -356,10 +352,6 @@ public class DomainModel {
 	/**
 	 * Load the nested object of the domain
 	 * 
-	 * @param domain
-	 * @param connection
-	 * @throws SQLException
-	 * @throws IOException
 	 */
 	public static void loadNestedObjects(Domain domain, Connection connection) throws SQLException, IOException {
 		Long domainId = domain.getId();
@@ -435,9 +427,6 @@ public class DomainModel {
 	/**
 	 * Validate if the zone of the request domain is managed by the server
 	 * 
-	 * @param domainName
-	 * @throws InvalidValueException
-	 * @throws ObjectNotFoundException
 	 */
 	public static void validateDomainZone(String domainName) throws InvalidValueException, ObjectNotFoundException {
 		if (ZoneModel.isReverseAddress(domainName)) {
@@ -458,11 +447,75 @@ public class DomainModel {
 	}
 
 	/**
-	 * @param domain
-	 * @param rdapConnection
+	 * Can't use a regular upsert sql statement, because domain table has
+	 * multiple unique constraints, instead will check if the nameserver
+	 * exist,then update it on insert it,if not exist.
 	 */
-	public static void upsertToDatabase(DomainDAO domain, Connection rdapConnection) {
-		// TODO Auto-generated method stub
+	public static void upsertToDatabase(DomainDAO domain, Connection rdapConnection)
+			throws SQLException, RequiredValueNotFoundException, IOException {
+		try {
+			DomainDAO previousDomain = getByHandle(domain.getHandle(), rdapConnection);
+			domain.setId(previousDomain.getId());
+			update(previousDomain, domain, rdapConnection);
+		} catch (ObjectNotFoundException onfe) {
+			storeToDatabase(domain, rdapConnection);
+		}
+	}
+
+	private static void update(DomainDAO previousDomain, DomainDAO domain, Connection rdapConnection)
+			throws RequiredValueNotFoundException, SQLException, IOException {
+		isValidForUpdate(domain);
+		String query = queryGroup.getQuery(UPDATE_QUERY);
+		try (PreparedStatement statement = rdapConnection.prepareStatement(query)) {
+			domain.updateInDatabase(statement);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+		updatedNestedObjects(previousDomain, domain, rdapConnection);
+	}
+
+	private static void isValidForUpdate(DomainDAO domain) throws RequiredValueNotFoundException {
+		if (domain.getId() == null)
+			throw new RequiredValueNotFoundException("id", "Domain");
+		if (domain.getHandle() == null || domain.getHandle().isEmpty())
+			throw new RequiredValueNotFoundException("handle", "Domain");
+		if (domain.getLdhName() == null || domain.getLdhName().isEmpty())
+			throw new RequiredValueNotFoundException("ldhName", "Domain");
+		if (domain.getZoneId() == null)
+			throw new RequiredValueNotFoundException("zone", "Domain");
+	}
+
+	private static void updatedNestedObjects(DomainDAO previousDomain, DomainDAO domain, Connection connection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		Long domainId = domain.getId();
+		RemarkModel.updateDomainRemarksInDatabase(previousDomain.getRemarks(), domain.getRemarks(), domainId,
+				connection);
+		EventModel.updateDomainEventsInDatabase(previousDomain.getEvents(), domain.getEvents(), domainId, connection);
+		StatusModel.updateDomainStatusInDatabase(domain.getStatus(), domainId, connection);
+		LinkModel.updateDomainLinksInDatabase(previousDomain.getLinks(), domain.getLinks(), domainId, connection);
+		RolModel.updateDomainEntityRoles(domain.getEntities(), domainId, connection);
+		PublicIdModel.updateDomainPublicIdsInDatabase(previousDomain.getPublicIds(), domain.getPublicIds(), domainId,
+				connection);
+		NameserverModel.updateDomainNameservers(domain.getNameServers(), domainId, connection);
+		SecureDNSModel.updateSecureDns(previousDomain.getSecureDNS(), domain.getSecureDNS(), domainId, connection);
+		VariantModel.updateVariants(previousDomain.getVariants(), domain.getVariants(), domain.getId(), connection);
+		updateDomainIpNetworkOnDatabase(domainId, domain.getIpNetwork().getId(), connection);
+	}
+
+	private static void updateDomainIpNetworkOnDatabase(Long domainId, Long ipNetworkId, Connection connection)
+			throws SQLException {
+		deletePreviousIpNetworkRelation(domainId, connection);
+		storeDomainIpNetworkRelationToDatabase(domainId, ipNetworkId, connection);
+	}
+
+	private static void deletePreviousIpNetworkRelation(Long domainId, Connection connection) throws SQLException {
+		try (PreparedStatement statement = connection
+				.prepareStatement(queryGroup.getQuery(DELETE_IP_NETWORK_RELATION_QUERY))) {
+			statement.setLong(1, domainId);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
 
 	}
+
 }

@@ -53,6 +53,7 @@ public class NameserverModel {
 
 	private static final String DOMAIN_GET_QUERY = "getByDomainId";
 	private static final String DOMAIN_STORE_QUERY = "storeDomainNameserversToDatabase";
+	private static final String DOMAIN_DELETE_RELATION_QUERY = "deleteDomainNameserversRelation";
 
 	static {
 		try {
@@ -109,21 +110,10 @@ public class NameserverModel {
 
 	public static void storeNameserverEntities(Nameserver nameserver, Connection connection) throws SQLException {
 		if (nameserver.getEntities().size() > 0) {
-			validateNameserverEntities(nameserver, connection);
+			EntityModel.validateParentEntities(nameserver.getEntities(), connection);
 			RolModel.storeNameserverEntityRoles(nameserver.getEntities(), nameserver.getId(), connection);
 		}
 
-	}
-
-	public static void validateNameserverEntities(Nameserver nameserver, Connection connection) throws SQLException {
-		for (Entity entity : nameserver.getEntities()) {
-			Long entityId = EntityModel.existsByHandle(entity.getHandle(), connection);
-			if (entityId == null) {
-				throw new NullPointerException(
-						"Entity: " + entity.getHandle() + " was not insert previously to the database");
-			}
-			entity.setId(entityId);
-		}
 	}
 
 	/**
@@ -395,7 +385,23 @@ public class NameserverModel {
 	}
 
 	public static void updateNameserverEntities(NameserverDAO nameserver, Connection connection) throws SQLException {
-		validateNameserverEntities(nameserver, connection);
+		EntityModel.validateParentEntities(nameserver.getEntities(), connection);
 		RolModel.updateNameserverEntityRoles(nameserver.getEntities(), nameserver.getId(), connection);
+	}
+
+	public static void updateDomainNameservers(List<Nameserver> nameservers, Long domainId, Connection connection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		deleteDomainRelation(domainId, connection);
+		storeDomainNameserversToDatabase(nameservers, domainId, connection);
+	}
+
+	private static void deleteDomainRelation(Long domainId, Connection connection) throws SQLException {
+		try (PreparedStatement statement = connection
+				.prepareStatement(queryGroup.getQuery(DOMAIN_DELETE_RELATION_QUERY))) {
+			statement.setLong(1, domainId);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+
 	}
 }

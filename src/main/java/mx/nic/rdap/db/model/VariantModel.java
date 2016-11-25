@@ -16,6 +16,7 @@ import mx.nic.rdap.core.catalog.VariantRelation;
 import mx.nic.rdap.core.db.Variant;
 import mx.nic.rdap.core.db.VariantName;
 import mx.nic.rdap.db.QueryGroup;
+import mx.nic.rdap.db.Util;
 import mx.nic.rdap.db.VariantDAO;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 
@@ -28,6 +29,17 @@ public class VariantModel {
 	private final static Logger logger = Logger.getLogger(VariantModel.class.getName());
 
 	private final static String QUERY_GROUP = "Variant";
+	private static final String STORE_QUERY = "storeToDatabase";
+	private static final String STORE_RELATION_QUERY = "storeVariantRelation";
+	private static final String STORE_NAMES_QUERY = "storeVariantNames";
+	private static final String GET_BY_DOMAIN_QUERY = "getByDomainId";
+	private static final String GET_RELATION_BY_VARIANT_QUERY = "getVariantRelationsByVariantId";
+	private static final String GET_BY_ID_QUERY = "getById";
+	private static final String GET_NAMES_BY_VARIANT_QUERY = "getVariantNamesByVariantId";
+
+	private static final String DELETE_QUERY = "deleteFromDatabase";
+	private static final String DELETE_RELATION_QUERY = "deleteVariantRelation";
+	private static final String DELETE_NAMES_QUERY = "deleteVariantNames";
 
 	protected static QueryGroup queryGroup = null;
 
@@ -39,15 +51,6 @@ public class VariantModel {
 		}
 	}
 
-	/**
-	 * Store all variants from a domain into the database
-	 * 
-	 * @param variants
-	 * @param domainId
-	 * @param connection
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static void storeAllToDatabase(List<Variant> variants, Long domainId, Connection connection)
 			throws IOException, SQLException {
 		for (Variant variant : variants) {
@@ -56,17 +59,9 @@ public class VariantModel {
 		}
 	}
 
-	/**
-	 * Store a variant into the database
-	 * 
-	 * @param variant
-	 * @return true if the insert was successful
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static Long storeToDatabase(Variant variant, Connection connection) throws IOException, SQLException {
 		Long variantInsertedId = null;
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("storeToDatabase"),
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(STORE_QUERY),
 				Statement.RETURN_GENERATED_KEYS)) {
 			((VariantDAO) variant).storeToDatabase(statement);
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
@@ -83,16 +78,9 @@ public class VariantModel {
 		return variantInsertedId;
 	}
 
-	/**
-	 * Get all Variants from a domain
-	 * 
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
-	 */
 	public static List<Variant> getByDomainId(Long domainId, Connection connection) throws SQLException, IOException {
 		List<Variant> variants = null;
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getByDomainId"))) {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_BY_DOMAIN_QUERY))) {
 			statement.setLong(1, domainId);
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
@@ -118,7 +106,7 @@ public class VariantModel {
 
 	public static Variant getById(Long variantId, Connection connection) throws SQLException, IOException {
 		Variant result = null;
-		String query = queryGroup.getQuery("getById");
+		String query = queryGroup.getQuery(GET_BY_ID_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query);) {
 			statement.setLong(1, variantId);
 			logger.log(Level.INFO, "Executing QUERY" + statement.toString());
@@ -136,18 +124,10 @@ public class VariantModel {
 		return result;
 	}
 
-	/**
-	 * Gets and set all variant relations from a variant
-	 * 
-	 * @param variantId
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	private static void setVariantRelations(Variant variant, Connection connection) throws IOException, SQLException {
 		Long variantId = variant.getId();
 		try (PreparedStatement statement = connection
-				.prepareStatement(queryGroup.getQuery("getVariantRelationsByVariantId"))) {
+				.prepareStatement(queryGroup.getQuery(GET_RELATION_BY_VARIANT_QUERY))) {
 			statement.setLong(1, variantId);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			try (ResultSet resultSet = statement.executeQuery()) {
@@ -164,20 +144,12 @@ public class VariantModel {
 		}
 	}
 
-	/**
-	 * Inserts variant's relation to database
-	 * 
-	 * @param relations
-	 * @param variantId
-	 * @param connection
-	 * @throws SQLException
-	 */
 	private static void storeVariantRelations(Variant variant, Connection connection) throws SQLException {
 		if (variant.getRelations().isEmpty())
 			return;
 
 		Long variantId = variant.getId();
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("storeVariantRelation"))) {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(STORE_RELATION_QUERY))) {
 			for (VariantRelation relation : variant.getRelations()) {
 				statement.setInt(1, relation.getId());
 				statement.setLong(2, variantId);
@@ -187,18 +159,11 @@ public class VariantModel {
 		}
 	}
 
-	/**
-	 * Store a Variant's variantNames into the database
-	 * 
-	 * @param variantName
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	private static void storeVariantNames(Variant variant, Connection connection) throws IOException, SQLException {
 		if (variant.getVariantNames().isEmpty())
 			return;
 
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("storeVariantNames"))) {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(STORE_NAMES_QUERY))) {
 			Long variantId = variant.getId();
 			for (VariantName variantName : variant.getVariantNames()) {
 				statement.setString(1, variantName.getPunycode());
@@ -209,17 +174,9 @@ public class VariantModel {
 		}
 	}
 
-	/**
-	 * Get and set all VariantNames from a Variant
-	 * 
-	 * @param variant
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
-	 */
 	private static void setVariantNames(Variant variant, Connection connection) throws SQLException, IOException {
 		try (PreparedStatement statement = connection
-				.prepareStatement(queryGroup.getQuery("getVariantNamesByVariantId"))) {
+				.prepareStatement(queryGroup.getQuery(GET_NAMES_BY_VARIANT_QUERY))) {
 			statement.setLong(1, variant.getId());
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
@@ -232,6 +189,64 @@ public class VariantModel {
 				variantName.setLdhName(resultSet.getString("vna_ldh_name"));
 				variantNames.add(variantName);
 			} while (resultSet.next());
+		}
+	}
+
+	public static void updateVariants(List<Variant> previousVariants, List<Variant> variants, Long domainId,
+			Connection connection) throws IOException, SQLException {
+		if (!previousVariants.isEmpty()) {
+			deletePreviousNames(previousVariants, connection);
+			deletePreviousRelations(previousVariants, connection);
+			deletePreviousVariants(domainId, connection);
+		}
+		storeAllToDatabase(variants, domainId, connection);
+	}
+
+	private static void deletePreviousNames(List<Variant> previousVariants, Connection connection) throws SQLException {
+		List<Long> ids = new ArrayList<Long>();
+		for (Variant variant : previousVariants) {
+			ids.add(variant.getId());
+		}
+
+		String query = queryGroup.getQuery(DELETE_NAMES_QUERY);
+		String dynamicQuery = Util.createDynamicQueryWithInClause(ids.size(), query);
+
+		try (PreparedStatement statement = connection.prepareStatement(dynamicQuery)) {
+			int index = 1;
+			for (Long id : ids) {
+				statement.setLong(index++, id);
+			}
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+	}
+
+	private static void deletePreviousRelations(List<Variant> previousVariants, Connection connection)
+			throws SQLException {
+
+		List<Long> ids = new ArrayList<Long>();
+		for (Variant variant : previousVariants) {
+			ids.add(variant.getId());
+		}
+
+		String query = queryGroup.getQuery(DELETE_RELATION_QUERY);
+		String dynamicQuery = Util.createDynamicQueryWithInClause(ids.size(), query);
+
+		try (PreparedStatement statement = connection.prepareStatement(dynamicQuery)) {
+			int index = 1;
+			for (Long id : ids) {
+				statement.setLong(index++, id);
+			}
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+	}
+
+	private static void deletePreviousVariants(Long domainId, Connection connection) throws SQLException {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(DELETE_QUERY))) {
+			statement.setLong(1, domainId);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
 		}
 	}
 

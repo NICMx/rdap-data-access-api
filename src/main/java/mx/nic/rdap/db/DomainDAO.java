@@ -67,7 +67,10 @@ public class DomainDAO extends Domain implements DatabaseObject {
 	 */
 	@Override
 	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
-		// TODO Auto-generated method stub
+		preparedStatement.setString(1, this.getLdhName());
+		preparedStatement.setString(2, this.getPort43());
+		preparedStatement.setInt(3, this.getZoneId());
+		preparedStatement.setLong(4,this.getId());
 		
 	}
 

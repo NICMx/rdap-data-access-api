@@ -21,3 +21,12 @@ INSERT INTO rdap.variant_name VALUES (?,?);
 
 #getVariantNamesByVariantId
 SELECT vna_ldh_name FROM rdap.variant_name vn WHERE vn.var_id=?;
+
+#deleteFromDatabase
+DELETE FROM rdap.variant WHERE dom_id=?;
+
+#deleteVariantRelation
+DELETE FROM rdap.variant_relation WHERE var_id IN (?);
+
+#deleteVariantNames
+DELETE FROM rdap.variant_name WHERE var_id IN (?);

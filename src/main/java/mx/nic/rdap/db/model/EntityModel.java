@@ -365,7 +365,7 @@ public class EntityModel {
 	}
 
 	/**
-	 * Can't use a regular upsert sql statement, because nameserver table has
+	 * Can't use a regular upsert sql statement, because entity table has
 	 * multiple unique constraints, instead will check if the nameserver
 	 * exist,then update it on insert it,if not exist.
 	 */
@@ -427,4 +427,14 @@ public class EntityModel {
 		storeVcardList(entity, connection);
 	}
 
+	public static void validateParentEntities(List<Entity> entities, Connection connection) throws SQLException {
+		for (Entity ent : entities) {
+			Long entId = EntityModel.existsByHandle(ent.getHandle(), connection);
+			if (entId == null) {
+				throw new NullPointerException(
+						"Entity: " + ent.getHandle() + " was not insert previously to the database");
+			}
+			ent.setId(entId);
+		}
+	}
 }

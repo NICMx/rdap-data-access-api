@@ -26,6 +26,9 @@ public class DsDataModel {
 	private final static Logger logger = Logger.getLogger(DsDataModel.class.getName());
 
 	private final static String QUERY_GROUP = "DsData";
+	private final static String STORE_QUERY = "storeToDatabase";
+	private final static String GET_QUERY = "getBySecureDns";
+	private final static String DELETE_QUERY = "deleteFromDatabase";
 
 	protected static QueryGroup queryGroup = null;
 
@@ -40,16 +43,10 @@ public class DsDataModel {
 	/**
 	 * Stores a DsData Object to the database
 	 * 
-	 * @param dsData
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
 	 */
 	public static long storeToDatabase(DsData dsData, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
-		String query = queryGroup.getQuery("storeToDatabase");
+		String query = queryGroup.getQuery(STORE_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			((DsDataDAO) dsData).storeToDatabase(statement);
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
@@ -83,15 +80,10 @@ public class DsDataModel {
 	/**
 	 * Finds a SercureDns´s DsData
 	 * 
-	 * @param secureDnsId
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
 	 */
 	public static List<DsData> getBySecureDnsId(Long secureDnsId, Connection connection)
 			throws SQLException, IOException {
-		String query = queryGroup.getQuery("getBySecureDns");
+		String query = queryGroup.getQuery(GET_QUERY);
 		List<DsData> resultList = null;
 
 		try (PreparedStatement statement = connection.prepareStatement(query);) { // QUERY
@@ -113,5 +105,14 @@ public class DsDataModel {
 		}
 
 		return resultList;
+	}
+
+	public static void deleteDsDataBySecureDnsId(Long secureDnsId, Connection connection) throws SQLException {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(DELETE_QUERY))) {
+			statement.setLong(1, secureDnsId);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+
 	}
 }

@@ -24,6 +24,9 @@ public class SecureDNSModel {
 	private final static Logger logger = Logger.getLogger(SecureDNSModel.class.getName());
 
 	private final static String QUERY_GROUP = "SecureDNS";
+	private final static String STORE_QUERY = "storeToDatabase";
+	private final static String GET_QUERY = "getByDomain";
+	private final static String DELETE_QUERY = "deleteFromDatabase";
 
 	protected static QueryGroup queryGroup = null;
 
@@ -35,19 +38,9 @@ public class SecureDNSModel {
 		}
 	}
 
-	/**
-	 * Stores a SecureDNS Object to the database
-	 * 
-	 * @param secureDns
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
-	 */
 	public static Long storeToDatabase(SecureDNS secureDns, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
-		String query = queryGroup.getQuery("storeToDatabase");
+		String query = queryGroup.getQuery(STORE_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			((SecureDNSDAO) secureDns).storeToDatabase(statement);
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
@@ -65,17 +58,8 @@ public class SecureDNSModel {
 		return secureDns.getId();
 	}
 
-	/**
-	 * Gets a Domain´s secure DNS
-	 * 
-	 * @param domainId
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 * @throws IOException
-	 */
 	public static SecureDNS getByDomain(Long domainId, Connection connection) throws SQLException, IOException {
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getByDomain"));) {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_QUERY));) {
 			statement.setLong(1, domainId);
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
@@ -86,6 +70,21 @@ public class SecureDNSModel {
 			SecureDNSDAO secureDns = new SecureDNSDAO(resultSet);
 			secureDns.setDsData(DsDataModel.getBySecureDnsId(secureDns.getId(), connection));
 			return secureDns;
+		}
+	}
+
+	public static void updateSecureDns(SecureDNS previousSecureDns, SecureDNS secureDns, Long domainId,
+			Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
+		DsDataModel.deleteDsDataBySecureDnsId(previousSecureDns.getId(), connection);
+		deletePreviousSecureDnsByDomainId(domainId, connection);
+		storeToDatabase(secureDns, connection);
+	}
+
+	private static void deletePreviousSecureDnsByDomainId(Long domainId, Connection connection) throws SQLException {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(DELETE_QUERY))) {
+			statement.setLong(1, domainId);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
 		}
 	}
 }

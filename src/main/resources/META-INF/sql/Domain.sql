@@ -1,5 +1,8 @@
-|#storeToDatabase
+#storeToDatabase
 INSERT INTO rdap.domain(dom_handle,dom_ldh_name,dom_port43,zone_id) VALUES (?,?,?,?);
+
+#updateInDatabase
+UPDATE rdap.domain SET dom_ldh_name=?,dom_port43=?,zone_id=? WHERE dom_id=?;
 
 #getByHandle
 SELECT * FROM rdap.domain WHERE dom_handle=?;
@@ -36,3 +39,6 @@ SELECT DISTINCT (dom.dom_id), dom.dom_ldh_name, dom.dom_handle, dom.dom_port43, 
 
 #storeDomainIpNetworkRelation
 INSERT INTO rdap.domain_networks VALUES (?, ?);
+
+#deleteDomainIpNetworkRelation
+DELETE FROM rdap.domain_networks WHERE dom_id=?;
