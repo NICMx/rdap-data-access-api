@@ -144,4 +144,9 @@ public class AutnumModel {
 		}
 	}
 
+	public static void upsertToDatabase(AutnumDAO autnum, Connection connection) {
+		// TODO Auto-generated method stub
+
+	}
+
 }
