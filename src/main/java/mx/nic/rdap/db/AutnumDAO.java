@@ -64,13 +64,22 @@ public class AutnumDAO extends Autnum implements DatabaseObject {
 		preparedStatement.setInt(7, this.getCountry());
 	}
 
-	/* (non-Javadoc)
-	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.PreparedStatement)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.
+	 * PreparedStatement)
 	 */
 	@Override
 	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
-		// TODO Auto-generated method stub
-		
+		preparedStatement.setLong(1, this.getStartAutnum());
+		preparedStatement.setLong(2, this.getEndAutnum());
+		preparedStatement.setString(3, this.getName());
+		preparedStatement.setString(4, this.getType());
+		preparedStatement.setString(5, this.getPort43());
+		preparedStatement.setInt(6, this.getCountry());
+		preparedStatement.setLong(7, this.getId());
+
 	}
 
 }

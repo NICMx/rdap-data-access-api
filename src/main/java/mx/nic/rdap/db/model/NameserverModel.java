@@ -396,12 +396,12 @@ public class NameserverModel {
 	public static void updateDomainNameservers(List<Nameserver> previousNameservers, List<Nameserver> nameservers,
 			Long domainId, Connection connection) throws SQLException, IOException, RequiredValueNotFoundException {
 		if (!previousNameservers.isEmpty())
-			deleteDomainRelation(domainId, connection);
+			deleteDomainNameserverRelation(domainId, connection);
 		if (!nameservers.isEmpty())
 			storeDomainNameserversToDatabase(nameservers, domainId, connection);
 	}
 
-	private static void deleteDomainRelation(Long domainId, Connection connection) throws SQLException {
+	private static void deleteDomainNameserverRelation(Long domainId, Connection connection) throws SQLException {
 		try (PreparedStatement statement = connection
 				.prepareStatement(queryGroup.getQuery(DOMAIN_DELETE_RELATION_QUERY))) {
 			statement.setLong(1, domainId);

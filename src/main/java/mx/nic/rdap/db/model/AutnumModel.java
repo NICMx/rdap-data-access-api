@@ -28,6 +28,12 @@ public class AutnumModel {
 
 	private static QueryGroup queryGroup = null;
 
+	private static final String STORE_QUERY = "storeToDatabase";
+	private static final String GET_BY_RANGE = "getByRange";
+	private static final String GET_BY_ID = "getAutnumById";
+	private static final String GET_BY_HANDLE = "getAutnumByHandle";
+	private static final String UPDATE_QUERY = "updateInDatabase";
+
 	static {
 		try {
 			queryGroup = new QueryGroup(QUERY_GROUP);
@@ -48,13 +54,11 @@ public class AutnumModel {
 	 */
 	public static Long storeToDatabase(Autnum autnum, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
-		// Check if range is valid
-		if (autnum.getStartAutnum() > autnum.getEndAutnum()) {
-			throw new RuntimeException("Starting ASN is greater than final ASN");
-		}
+
+		isValidForStore(autnum);
 
 		Long autnumId;
-		String query = queryGroup.getQuery("storeToDatabase");
+		String query = queryGroup.getQuery(STORE_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 			((AutnumDAO) autnum).storeToDatabase(statement);
 			logger.log(Level.INFO, "Executing query:" + statement.toString());
@@ -83,8 +87,20 @@ public class AutnumModel {
 		return autnumId;
 	}
 
+	private static void isValidForStore(Autnum autnum) throws RequiredValueNotFoundException {
+		if (autnum.getHandle() == null || autnum.getHandle().isEmpty())
+			throw new RequiredValueNotFoundException("handle", "Autnum");
+		if (autnum.getStartAutnum() == null)
+			throw new RequiredValueNotFoundException("startAutnum", "Autnum");
+		if (autnum.getEndAutnum() == null)
+			throw new RequiredValueNotFoundException("endAutnum", "Autnum");
+		if (autnum.getStartAutnum() > autnum.getEndAutnum()) {
+			throw new RuntimeException("Starting ASN is greater than final ASN");
+		}
+	}
+
 	public static AutnumDAO getAutnumById(Long autnumId, Connection connection) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getAutnumById"))) {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_BY_ID))) {
 			statement.setLong(1, autnumId);
 			logger.log(Level.INFO, "Executing query: " + statement.toString());
 			try (ResultSet resultSet = statement.executeQuery()) {
@@ -99,9 +115,24 @@ public class AutnumModel {
 	}
 
 	public static AutnumDAO getByRange(Long autnumValue, Connection connection) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("getByRange"))) {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_BY_RANGE))) {
 			statement.setLong(1, autnumValue);
 			statement.setLong(2, autnumValue);
+			logger.log(Level.INFO, "Executing query: " + statement.toString());
+			try (ResultSet resultSet = statement.executeQuery()) {
+				if (!resultSet.next()) {
+					throw new ObjectNotFoundException("Object not found.");
+				}
+				AutnumDAO autnum = new AutnumDAO(resultSet);
+				loadNestedObjects(autnum, connection);
+				return autnum;
+			}
+		}
+	}
+
+	public static AutnumDAO getByHandle(String handle, Connection connection) throws SQLException {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_BY_HANDLE))) {
+			statement.setString(1, handle);
 			logger.log(Level.INFO, "Executing query: " + statement.toString());
 			try (ResultSet resultSet = statement.executeQuery()) {
 				if (!resultSet.next()) {
@@ -144,9 +175,67 @@ public class AutnumModel {
 		}
 	}
 
-	public static void upsertToDatabase(AutnumDAO autnum, Connection connection) {
-		// TODO Auto-generated method stub
+	public static void upsertToDatabase(AutnumDAO autnum, Connection connection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		try {
+			AutnumDAO previousAutnum = getByHandle(autnum.getHandle(), connection);
+			autnum.setId(previousAutnum.getId());
+			update(previousAutnum, autnum, connection);
+		} catch (ObjectNotFoundException e) {
+			storeToDatabase(autnum, connection);
+		}
 
+	}
+
+	private static void update(AutnumDAO previousAutnum, AutnumDAO autnum, Connection connection)
+			throws RequiredValueNotFoundException, SQLException, IOException {
+		isValidForUpdate(autnum);
+		String query = queryGroup.getQuery(UPDATE_QUERY);
+
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			autnum.updateInDatabase(statement);
+			logger.log(Level.INFO, "Executing query: " + statement.toString());
+			statement.executeUpdate();
+		}
+		updateNestedObjects(previousAutnum, autnum, connection);
+	}
+
+	private static void updateNestedObjects(AutnumDAO previousAutnum, AutnumDAO autnum, Connection connection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		Long autnumId = autnum.getId();
+		StatusModel.updateAutnumStatusInDatabase(previousAutnum.getStatus(), autnum.getStatus(), autnumId, connection);
+		RemarkModel.updateAutnumRemarksInDatabase(previousAutnum.getRemarks(), autnum.getRemarks(), autnumId,
+				connection);
+		LinkModel.updateAutnumLinksInDatabase(previousAutnum.getLinks(), autnum.getLinks(), autnumId, connection);
+		EventModel.updateAutnumEventsInDatabase(previousAutnum.getEvents(), autnum.getEvents(), autnumId, connection);
+		updateAutnumEntities(previousAutnum, autnum, connection);
+	}
+
+	private static void updateAutnumEntities(AutnumDAO previousAutnum, AutnumDAO autnum, Connection connection)
+			throws SQLException {
+		EntityModel.validateParentEntities(autnum.getEntities(), connection);
+		RolModel.updateAutnumEntityRoles(previousAutnum.getEntities(), autnum.getEntities(), autnum.getId(),
+				connection);
+
+	}
+
+	public static void storeAutnumEntities(Autnum autnum, Connection connection) throws SQLException {
+		EntityModel.validateParentEntities(autnum.getEntities(), connection);
+		RolModel.storeAutnumEntityRoles(autnum.getEntities(), autnum.getId(), connection);
+	}
+
+	private static void isValidForUpdate(AutnumDAO autnum) throws RequiredValueNotFoundException {
+		if (autnum.getId() == null)
+			throw new RequiredValueNotFoundException("id", "Autnum");
+		if (autnum.getHandle() == null || autnum.getHandle().isEmpty())
+			throw new RequiredValueNotFoundException("handle", "Autnum");
+		if (autnum.getStartAutnum() == null)
+			throw new RequiredValueNotFoundException("startAutnum", "Autnum");
+		if (autnum.getEndAutnum() == null)
+			throw new RequiredValueNotFoundException("endAutnum", "Autnum");
+		if (autnum.getStartAutnum() > autnum.getEndAutnum()) {
+			throw new RuntimeException("Starting ASN is greater than final ASN");
+		}
 	}
 
 }

@@ -52,23 +52,21 @@ public class DomainTest extends DatabaseTest {
 	public void insertAndGetSimpleDomain() {
 
 		Domain dom = new DomainDAO();
-		dom.setHandle("domcommx1");
+		dom.setHandle("dummyhandle");
 		dom.setPunycodeName("xn--fo-5ja");
 
 		Integer zoneId = null;
 		try {
-			zoneId = ZoneModel.storeToDatabase("example.mx", connection);
+			zoneId = ZoneModel.storeToDatabase("example", connection);
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 			fail(e1.toString());
 		}
 		dom.setZoneId(zoneId);
 
-
 		Long domId = null;
 		try {
 			domId = DomainModel.storeToDatabase(dom, connection);
-			connection.commit();
 		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
 			e.printStackTrace();
 			fail();
@@ -95,7 +93,7 @@ public class DomainTest extends DatabaseTest {
 	}
 
 	@Test
-	public void upsertSimpleDomain(){
+	public void upsertSimpleDomain() {
 
 		DomainDAO dom = new DomainDAO();
 		dom.setHandle("upsert1");
@@ -110,7 +108,6 @@ public class DomainTest extends DatabaseTest {
 		}
 		dom.setZoneId(zoneId);
 
-
 		try {
 			DomainModel.upsertToDatabase(dom, connection);
 			dom.setPunycodeName("bbb");
@@ -120,7 +117,7 @@ public class DomainTest extends DatabaseTest {
 			fail();
 		}
 	}
-	
+
 	@Test
 	/**
 	 * Inserts a domain and retrieves it
@@ -322,9 +319,9 @@ public class DomainTest extends DatabaseTest {
 		Assert.assertTrue("findByLdhName fails", domain.equals(findByLdhName));
 
 	}
-	
+
 	@Test
-	public void upsert(){
+	public void upsert() {
 
 		DomainDAO domain = new DomainDAO();
 
@@ -472,7 +469,7 @@ public class DomainTest extends DatabaseTest {
 		events.add(event2);
 		domain.getEvents().addAll(events);
 
-		domain.setHandle( "myupsertedDomain." + ZoneModel.getZoneNameById(domain.getZoneId()));
+		domain.setHandle("myupsertedDomain." + ZoneModel.getZoneNameById(domain.getZoneId()));
 
 		List<DsData> dsDataList = new ArrayList<>();
 		DsData dsData = SecureDnsTest.getDsData(null, null, 66612, 1, "ABCDEF1234", 1, null, null);

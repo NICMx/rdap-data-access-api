@@ -247,7 +247,7 @@ public class RolModel {
 			storeDomainEntityRoles(entities, domainId, connection);
 	}
 
-	public static void updateAutnumrEntityRoles(List<Entity> previousEntities, List<Entity> entities, Long autnumId,
+	public static void updateAutnumEntityRoles(List<Entity> previousEntities, List<Entity> entities, Long autnumId,
 			Connection connection) throws SQLException {
 		if (!previousEntities.isEmpty())
 			deleteRelationByParentId(queryGroup.getQuery(AUTNUM_DELETE_QUERY), autnumId, connection);

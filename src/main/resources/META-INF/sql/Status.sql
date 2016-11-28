@@ -46,7 +46,7 @@ DELETE FROM rdap.nameserver_status  WHERE nse_id=?;
 DELETE FROM rdap.domain_status  WHERE dom_id=?;
 
 #deleteAutnumStatusRelation
-DELETE FROM rdap.autnum_status  WHERE asn_id=?;
+DELETE FROM rdap.asn_status  WHERE asn_id=?;
 
 #deleteIpNetworkStatusRelation
 DELETE FROM rdap.ip_network_status  WHERE ine_id=?;

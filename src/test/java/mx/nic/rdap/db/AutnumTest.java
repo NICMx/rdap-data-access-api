@@ -30,6 +30,29 @@ import mx.nic.rdap.db.model.EntityModel;
 public class AutnumTest extends DatabaseTest {
 
 	@Test
+	public void upsertSimpleAutnum() {
+
+		AutnumDAO autnum = new AutnumDAO();
+		autnum.setHandle("dummyAutnum");
+		autnum.setStartAutnum(10L);
+		autnum.setEndAutnum(15L);
+		autnum.setType("dummyType");
+		autnum.setName("dummyName");
+		autnum.setPort43("dummy.p43");
+		autnum.setCountry(484);
+
+		try {
+			AutnumModel.upsertToDatabase(autnum, connection);
+			autnum.setEndAutnum(20L);
+			AutnumModel.upsertToDatabase(autnum, connection);
+		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
+			e.printStackTrace();
+			fail();
+		}
+
+	}
+
+	@Test
 	public void insertAndGetAutnum() {
 		Entity registrant = new EntityDAO();
 		registrant.setHandle("testHandler");
@@ -83,7 +106,7 @@ public class AutnumTest extends DatabaseTest {
 		autnum.getLinks().add(link);
 		autnum.getEvents().add(event);
 		autnum.getRemarks().add(remark);
-		autnum.setHandle("dummyASN");// TODO set to not null
+		autnum.setHandle("dummyASN");
 		try {
 			AutnumModel.storeToDatabase(autnum, connection);
 		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
@@ -109,5 +132,72 @@ public class AutnumTest extends DatabaseTest {
 		}
 		autnum.equals(getById);
 		autnum.equals(getByRange);
+	}
+
+	@Test
+	public void upsert() {
+		Entity registrant = new EntityDAO();
+		registrant.setHandle("testHandler");
+		registrant.setPort43("testestestest");
+		registrant.getRoles().add(Rol.REGISTRANT);
+
+		try {
+			EntityModel.storeToDatabase(registrant, connection);
+		} catch (IOException | RequiredValueNotFoundException | SQLException e) {
+			e.printStackTrace();
+			fail();
+		}
+		Link link = new LinkDAO();
+		link.setHref("dummy.com.mx");
+		link.setValue("http://dummy.net/ASN");
+		link.setType("application/rdap+json");
+		link.setRel("self");
+
+		Event event = new EventDAO();
+		event.setEventAction(EventAction.REGISTRATION);
+		event.setEventDate(new Date());
+		event.setEventActor("");
+
+		Remark remark = new RemarkDAO();
+		remark.setLanguage("ES");
+		remark.setTitle("Prueba");
+		remark.setType("PruebaType");
+
+		List<RemarkDescription> descriptions = new ArrayList<RemarkDescription>();
+		RemarkDescription description1 = new RemarkDescriptionDAO();
+		description1.setOrder(1);
+		description1.setDescription("She sells sea shells down by the sea shore.");
+
+		RemarkDescription description2 = new RemarkDescriptionDAO();
+		description2.setOrder(2);
+		description2.setDescription("Originally written by Terry Sullivan.");
+
+		descriptions.add(description1);
+		descriptions.add(description2);
+		remark.setDescriptions(descriptions);
+
+		AutnumDAO autnum = new AutnumDAO();
+		autnum.setCountry(484);
+		autnum.setStartAutnum(15L);
+		autnum.setEndAutnum(35L);
+		autnum.setName("testName");
+		autnum.setType("testType");
+		autnum.getEntities().add(registrant);
+		autnum.setPort43("dummy.dummy.mx");
+		autnum.getStatus().add(Status.ACTIVE);
+		autnum.getLinks().add(link);
+		autnum.getEvents().add(event);
+		autnum.getRemarks().add(remark);
+		autnum.setHandle("dummyASN");
+
+		try {
+			AutnumModel.upsertToDatabase(autnum, connection);
+			autnum.setStartAutnum(10L);
+			autnum.getEntities().get(0).setPort43("newdummyforent");
+			AutnumModel.upsertToDatabase(autnum, connection);
+		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 }
