@@ -408,7 +408,7 @@ public class DomainModel {
 		try {
 			domain.getEntities().addAll(EntityModel.getEntitiesByDomainId(domainId, connection));
 			for (Entity entity : domain.getEntities()) {
-				List<Rol> roles = RolModel.getNameserverEntityRol(domainId, entity.getId(), connection);
+				List<Rol> roles = RolModel.getDomainEntityRol(domainId, entity.getId(), connection);
 				entity.setRoles(roles);
 			}
 		} catch (ObjectNotFoundException onfe) {
