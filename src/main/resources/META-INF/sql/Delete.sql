@@ -106,23 +106,43 @@ DELETE  FROM rdap.zone;
 
 
 
-#38_delete_event_links
+#36_delete_asn_links
+DELETE FROM rdap.asn_links;
+
+#37_delete_asn_events
+DELETE FROM rdap.asn_events;
+
+#38_delete_asn_status
+DELETE FROM rdap.asn_status;
+
+#39_delete_asn_remarks
+DELETE FROM rdap.asn_remarks;
+
+#40_delete_asn_entity_roles
+DELETE FROM rdap.asn_entity_roles;
+
+#41_delete_asn
+DELETE FROM rdap.autonomous_system_number;
+
+
+
+#42_delete_event_links
 DELETE  FROM rdap.event_links;
 
-#39_delete_remark_links
+#43_delete_remark_links
 DELETE  FROM rdap.remark_links;
 
-#40_delete_event
+#44_delete_event
 DELETE  FROM rdap.event;
 
-#41_delete_link
+#45_delete_link
 DELETE  FROM rdap.link;
 
-#42_delete_public_id
+#46_delete_public_id
 DELETE  FROM rdap.public_id;
 
-#43_delete_remark_description
+#47_delete_remark_description
 DELETE  FROM rdap.remark_description;
 
-#44_delete_remark
+#48_delete_remark
 DELETE  FROM rdap.remark;
