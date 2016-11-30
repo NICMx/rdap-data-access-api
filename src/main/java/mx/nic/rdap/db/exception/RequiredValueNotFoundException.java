@@ -4,7 +4,7 @@ package mx.nic.rdap.db.exception;
  * Generic problems with the validation of the objects
  * 
  */
-public class RequiredValueNotFoundException extends Exception {
+public class RequiredValueNotFoundException extends RdapDatabaseException {
 
 	private static final long serialVersionUID = 1L;
 

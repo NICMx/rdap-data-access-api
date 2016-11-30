@@ -16,6 +16,7 @@ import mx.nic.rdap.core.catalog.Rol;
 import mx.nic.rdap.core.catalog.Status;
 import mx.nic.rdap.core.db.Entity;
 import mx.nic.rdap.core.db.Event;
+import mx.nic.rdap.core.db.IpNetwork;
 import mx.nic.rdap.core.db.PublicId;
 import mx.nic.rdap.core.db.VCard;
 import mx.nic.rdap.db.EntityDAO;
@@ -49,7 +50,8 @@ public class EntityModel {
 	private final static String GET_ENTITY_ENTITY_QUERY = "getEntitysEntitiesQuery";
 	private final static String GET_DOMAIN_ENTITY_QUERY = "getDomainsEntitiesQuery";
 	private final static String GET_NS_ENTITY_QUERY = "getNameserversEntitiesQuery";
-	private final static String GET_ANS_ENTITY_QUERY = "getAutnumEntitiesQuery";
+	private final static String GET_AUTNUM_ENTITY_QUERY = "getAutnumEntitiesQuery";
+	private final static String GET_IP_NETWORK_ENTITY_QUERY = "getIpNetworkEntitiesQuery";
 
 	static {
 		try {
@@ -127,6 +129,7 @@ public class EntityModel {
 
 		if (!entity.getRoles().isEmpty() && !entity.getEntities().isEmpty())
 			RolModel.storeMainEntityRol(entity.getEntities(), entity, connection);
+
 	}
 
 	private static void storeVcardList(Entity entity, Connection connection) throws SQLException {
@@ -213,6 +216,14 @@ public class EntityModel {
 			// Do nothing, entities is not required
 		}
 
+		// retrieve the networks
+		try {
+			List<IpNetwork> networks = IpNetworkModel.getByEntityId(entityId, connection);
+			entity.getIpNetworks().addAll(networks);
+		} catch (ObjectNotFoundException e) {
+			// Do nothing, networks are not required
+		}
+
 	}
 
 	private static EntityDAO processResultSet(ResultSet resultSet, Connection connection) throws SQLException {
@@ -259,9 +270,19 @@ public class EntityModel {
 
 	public static List<Entity> getEntitiesByAutnumId(Long autnumId, Connection connection)
 			throws SQLException, IOException {
-		List<Entity> entitiesById = getEntitiesById(autnumId, connection, GET_ANS_ENTITY_QUERY);
+		List<Entity> entitiesById = getEntitiesById(autnumId, connection, GET_AUTNUM_ENTITY_QUERY);
 		for (Entity ent : entitiesById) {
 			List<Rol> entityEntityRol = RolModel.getAutnumEntityRol(autnumId, ent.getId(), connection);
+			ent.getRoles().addAll(entityEntityRol);
+		}
+		return entitiesById;
+	}
+
+	public static List<Entity> getEntitiesByIpNetworkId(Long ipNetworkId, Connection connection)
+			throws SQLException, IOException {
+		List<Entity> entitiesById = getEntitiesById(ipNetworkId, connection, GET_IP_NETWORK_ENTITY_QUERY);
+		for (Entity ent : entitiesById) {
+			List<Rol> entityEntityRol = RolModel.getIpNetworkEntityRol(ipNetworkId, ent.getId(), connection);
 			ent.getRoles().addAll(entityEntityRol);
 		}
 		return entitiesById;

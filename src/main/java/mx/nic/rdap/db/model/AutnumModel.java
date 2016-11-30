@@ -72,7 +72,6 @@ public class AutnumModel {
 		RemarkModel.storeAutnumRemarksToDatabase(autnum.getRemarks(), autnumId, connection);
 		LinkModel.storeAutnumLinksToDatabase(autnum.getLinks(), autnumId, connection);
 		EventModel.storeAutnumEventsToDatabase(autnum.getEvents(), autnumId, connection);
-		if (autnum.getEntities().size() > 0) {
 			for (Entity ent : autnum.getEntities()) {
 				Long entId = EntityModel.existsByHandle(ent.getHandle(), connection);
 				if (entId == null) {
@@ -83,7 +82,6 @@ public class AutnumModel {
 			}
 			RolModel.storeAutnumEntityRoles(autnum.getEntities(), autnumId, connection);
 
-		}
 		return autnumId;
 	}
 

@@ -25,6 +25,9 @@ SELECT DISTINCT (ent.ent_id),  ent.ent_handle, ent.ent_port43 FROM rdap.entity e
 #getAutnumEntitiesQuery
 SELECT DISTINCT (ent.ent_id),  ent.ent_handle, ent.ent_port43 FROM rdap.entity ent JOIN rdap.asn_entity_roles rol ON rol.ent_id WHERE rol.asn_id = ?;
 
+#getIpNetworkEntitiesQuery
+SELECT DISTINCT (ent.ent_id),  ent.ent_handle, ent.ent_port43 FROM rdap.entity ent JOIN rdap.ipn_entity_roles rol ON rol.ent_id = ent.ent_id WHERE rol.ine_id = ?;
+
 #getIdByHandle
 SELECT ent_id FROM rdap.entity ent WHERE ent.ent_handle = ?;
 
