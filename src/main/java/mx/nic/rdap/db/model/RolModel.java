@@ -259,7 +259,8 @@ public class RolModel {
 			Long ipNetworkId, Connection connection) throws SQLException {
 		if (!previousEntities.isEmpty())
 			deleteRelationByParentId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), ipNetworkId, connection);
-		// storeIpNetworkEntityRoles(entities, ipNetworkId, connection);
+		if (!entities.isEmpty())
+			storeIpNetworkEntityRoles(entities, ipNetworkId, connection);
 	}
 
 	private static void deleteRelationByParentId(String query, Long objectId, Connection connection)

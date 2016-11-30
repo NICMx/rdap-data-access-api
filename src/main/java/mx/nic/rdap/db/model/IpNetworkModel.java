@@ -25,6 +25,7 @@ import mx.nic.rdap.db.IpNetworkDAO;
 import mx.nic.rdap.db.QueryGroup;
 import mx.nic.rdap.db.exception.InvalidValueException;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
+import mx.nic.rdap.db.exception.RdapDatabaseException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 
 public class IpNetworkModel {
@@ -40,6 +41,9 @@ public class IpNetworkModel {
 	private static final String STORE_TO_DATABASE = "storeToDatabase";
 	private static final String GET_BY_ENTITY_ID = "getByEntityId";
 	private static final String GET_BY_DOMAIN_ID = "getByDomainId";
+	private static final String GET_BY_HANDLE = "getByHandle";
+
+	private static final String UPDATE_QUERY = "updateInDatabase";
 
 	static {
 		try {
@@ -49,7 +53,7 @@ public class IpNetworkModel {
 		}
 	}
 
-	private static void isValidForStore(IpNetwork ipNetwork) throws RequiredValueNotFoundException {
+	private static void isValidForStore(IpNetwork ipNetwork) throws RdapDatabaseException {
 		if (ipNetwork.getHandle() == null)
 			throw new RequiredValueNotFoundException("handle", "IpNetwork");
 
@@ -83,7 +87,7 @@ public class IpNetworkModel {
 	}
 
 	public static Long storeToDatabase(IpNetwork ipNetwork, Connection connection)
-			throws RequiredValueNotFoundException, SQLException, IOException {
+			throws RdapDatabaseException, SQLException, IOException {
 		isValidForStore(ipNetwork);
 		String query = queryGroup.getQuery(STORE_TO_DATABASE);
 
@@ -111,7 +115,12 @@ public class IpNetworkModel {
 		LinkModel.storeIpNetworkLinksToDatabase(ipNetwork.getLinks(), ipNetwork.getId(), connection);
 		EventModel.storeIpNetworkEventsToDatabase(ipNetwork.getEvents(), ipNetwork.getId(), connection);
 		for (Entity ent : ipNetwork.getEntities()) {
-			EntityModel.storeToDatabase(ent, connection);
+			Long entId = EntityModel.existsByHandle(ent.getHandle(), connection);
+			if (entId == null) {
+				throw new NullPointerException(
+						"Entity: " + ent.getHandle() + "was not inserted previously to the database");
+			}
+			ent.setId(entId);
 		}
 		RolModel.storeIpNetworkEntityRoles(ipNetwork.getEntities(), ipNetwork.getId(), connection);
 
@@ -122,12 +131,12 @@ public class IpNetworkModel {
 
 		loadSimpleNestedObjects(ipNetwork, connection);
 
-//		// Retrieve the entities
-//		try {
-//			ipNetwork.getEntities().addAll(EntityModel.getEntitiesByIpNetworkId(ipNetworkId, connection));
-//		} catch (ObjectNotFoundException onfe) {
-//			// Do nothing, entities is not required
-//		}
+		// Retrieve the entities
+		try {
+			ipNetwork.getEntities().addAll(EntityModel.getEntitiesByIpNetworkId(ipNetworkId, connection));
+		} catch (ObjectNotFoundException onfe) {
+			// Do nothing, entities is not required
+		}
 
 	}
 
@@ -314,4 +323,76 @@ public class IpNetworkModel {
 		return results;
 	}
 
+	public static IpNetworkDAO getByHandle(String handle, Connection connection) throws SQLException, IOException {
+		String query = queryGroup.getQuery(GET_BY_HANDLE);// TOODO);
+		IpNetworkDAO result = null;
+		try (PreparedStatement statement = connection.prepareStatement(query);) {
+			statement.setString(1, handle);
+			logger.log(Level.INFO, "Executing QUERY : " + statement.toString());
+			ResultSet rs = statement.executeQuery();
+			if (!rs.next()) {
+				throw new ObjectNotFoundException("Object not found");
+			}
+
+			result = new IpNetworkDAO();
+			result.loadFromDatabase(rs);
+		}
+
+		loadNestedObjects(result, connection);
+
+		return result;
+	}
+
+	/**
+	 * Can't use a regular upsert sql statement, because domain table has
+	 * multiple unique constraints, instead will check if the nameserver
+	 * exist,then update it on insert it,if not exist.
+	 * 
+	 */
+	public static void upsertToDatabase(IpNetworkDAO ipNetwork, Connection rdapConnection)
+			throws SQLException, IOException, RdapDatabaseException {
+		try {
+			IpNetworkDAO previousNetwork = getByHandle(ipNetwork.getHandle(), rdapConnection);
+			ipNetwork.setId(previousNetwork.getId());
+			update(previousNetwork, ipNetwork, rdapConnection);
+		} catch (ObjectNotFoundException onfe) {
+			storeToDatabase(ipNetwork, rdapConnection);
+		}
+	}
+
+	public static void isValidForUpdate(IpNetworkDAO ipNetwork) throws RdapDatabaseException {
+		isValidForStore(ipNetwork);
+
+		if (ipNetwork.getId() == null)
+			throw new RequiredValueNotFoundException("id", "IpNetwork");
+	}
+
+	private static void update(IpNetworkDAO previousNetwork, IpNetworkDAO ipNetwork, Connection connection)
+			throws RdapDatabaseException, SQLException, IOException {
+		isValidForStore(ipNetwork);
+		String query = queryGroup.getQuery(UPDATE_QUERY);
+
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			ipNetwork.updateInDatabase(statement);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
+
+		updatedNestedObjects(previousNetwork, ipNetwork, connection);
+	}
+
+	private static void updatedNestedObjects(IpNetworkDAO previousNetwork, IpNetworkDAO ipNetwork,
+			Connection connection) throws RequiredValueNotFoundException, SQLException, IOException {
+		Long networkId = ipNetwork.getId();
+		RemarkModel.updateIpNetworkRemarksInDatabase(previousNetwork.getRemarks(), ipNetwork.getRemarks(), networkId,
+				connection);
+		EventModel.updateIpNetworkEventsInDatabase(previousNetwork.getEvents(), ipNetwork.getEvents(), networkId,
+				connection);
+		StatusModel.updateIpNetworkStatusInDatabase(previousNetwork.getStatus(), ipNetwork.getStatus(), networkId,
+				connection);
+		LinkModel.updateIpNetworkLinksInDatabase(previousNetwork.getLinks(), ipNetwork.getLinks(), networkId,
+				connection);
+		RolModel.updateIpNetworkEntityRoles(previousNetwork.getEntities(), ipNetwork.getEntities(), networkId,
+				connection);
+	}
 }

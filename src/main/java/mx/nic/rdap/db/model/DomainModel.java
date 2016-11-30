@@ -14,9 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import mx.nic.rdap.core.catalog.Rol;
 import mx.nic.rdap.core.db.Domain;
-import mx.nic.rdap.core.db.Entity;
 import mx.nic.rdap.core.db.IpNetwork;
 import mx.nic.rdap.db.DomainDAO;
 import mx.nic.rdap.db.IpAddressDAO;
@@ -407,10 +405,6 @@ public class DomainModel {
 		// Retrieve the entities
 		try {
 			domain.getEntities().addAll(EntityModel.getEntitiesByDomainId(domainId, connection));
-			for (Entity entity : domain.getEntities()) {
-				List<Rol> roles = RolModel.getDomainEntityRol(domainId, entity.getId(), connection);
-				entity.setRoles(roles);
-			}
 		} catch (ObjectNotFoundException onfe) {
 			// Do nothing, entities is not required
 		}
