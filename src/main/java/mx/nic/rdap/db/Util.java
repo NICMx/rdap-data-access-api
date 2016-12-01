@@ -30,7 +30,6 @@ public class Util {
 	private static final BigInteger FOURTH_OCTECT_LIMIT = new BigInteger(0xFF + ""); // 255
 	private static final int IP_ADDRESS_ARRAY_SIZE = 4;
 
-
 	/**
 	 * Validates if IpAddress is valid
 	 * 
@@ -44,27 +43,27 @@ public class Util {
 			try {
 				InetAddress.getByName(ipAddress);
 			} catch (UnknownHostException e) {
-				throw new InvalidValueException("Requested ip is invalid.","Address","IP");
+				throw new InvalidValueException("Requested ip is invalid.", "Address", "IP");
 			}
 			return;
 		}
 
 		if (ipAddress.startsWith(".") || !IP4_GENERIC_PATTERN.matcher(ipAddress).matches()) {
-			throw new InvalidValueException("Requested ip is invalid.","Address","IP");
+			throw new InvalidValueException("Requested ip is invalid.", "Address", "IP");
 		}
 
 		String[] split = ipAddress.split("\\.");
 
 		int arraySize = split.length;
 		if (arraySize > IP_ADDRESS_ARRAY_SIZE) {
-			throw new InvalidValueException("Requested ip is invalid.","Address","IP");
+			throw new InvalidValueException("Requested ip is invalid.", "Address", "IP");
 		}
 
 		BigInteger finalOctectValue;
 		try {
 			finalOctectValue = new BigInteger(split[arraySize - 1]);
 		} catch (NumberFormatException e) {
-			throw new InvalidValueException("Requested ip is invalid.","Address","IP");
+			throw new InvalidValueException("Requested ip is invalid.", "Address", "IP");
 		}
 
 		BigInteger limitValue = null;
@@ -84,28 +83,28 @@ public class Util {
 		}
 
 		if (limitValue.compareTo(finalOctectValue) < 0) {
-			throw new InvalidValueException("Requested ip is invalid.","Address","IP");
+			throw new InvalidValueException("Requested ip is invalid.", "Address", "IP");
 		}
 
 		try {
 			InetAddress.getByName(ipAddress);
 		} catch (UnknownHostException e) {
-			throw new InvalidValueException("Requested ip is invalid.","Address","IP");
+			throw new InvalidValueException("Requested ip is invalid.", "Address", "IP");
 		}
 
 	}
 
 	/**
-	 * Prepared statement don't allow set a unique value for an "in" clause, so, you have to manually add the list of parameters as ?
+	 * Prepared statement don't allow set a unique value for an "in" clause, so,
+	 * you have to manually add the list of parameters as ?
 	 */
 	public static String createDynamicQueryWithInClause(int listSize, String query) {
 		StringBuilder builder = new StringBuilder();
-		for( int i = 0 ; i < listSize; i++ ) {
-		    builder.append("?,");
+		for (int i = 0; i < listSize; i++) {
+			builder.append("?,");
 		}
-		String dynamicQuery =query.replace("?",builder.deleteCharAt( builder.length() -1 ).toString());
+		String dynamicQuery = query.replaceFirst("\\?", builder.deleteCharAt(builder.length() - 1).toString());
 		return dynamicQuery;
 	}
-
 
 }

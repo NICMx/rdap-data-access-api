@@ -19,6 +19,7 @@ import mx.nic.rdap.core.db.IpNetwork;
 import mx.nic.rdap.db.DomainDAO;
 import mx.nic.rdap.db.IpAddressDAO;
 import mx.nic.rdap.db.QueryGroup;
+import mx.nic.rdap.db.Util;
 import mx.nic.rdap.db.exception.InvalidValueException;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
@@ -191,14 +192,19 @@ public class DomainModel {
 		boolean isPartialZone = zone.contains("*");
 		boolean isPartialName = name.contains("*");
 		String query = null;
+		List<Integer> zoneIds = null;
 
 		if (isPartialZone) {
+			zoneIds = ZoneModel.getValidZoneIds();
+
 			zone = zone.replaceAll("\\*", "%");
 			if (isPartialName) {
 				name = name.replaceAll("\\*", "%");
 				query = queryGroup.getQuery(SEARCH_BY_PARTIAL_NAME_WITH_PARTIAL_ZONE_QUERY);
+				query = Util.createDynamicQueryWithInClause(zoneIds.size(), query);
 			} else {
 				query = queryGroup.getQuery(SEARCH_BY_NAME_WITH_PARTIAL_ZONE_QUERY);
+				query = Util.createDynamicQueryWithInClause(zoneIds.size(), query);
 			}
 		} else {
 
@@ -217,10 +223,12 @@ public class DomainModel {
 		try (PreparedStatement statement = connection.prepareStatement(query);) {
 
 			if (isPartialZone) {
-				statement.setString(1, ZoneModel.getValidZoneIds());
-				statement.setString(2, name);
-				statement.setString(3, zone);
-				statement.setInt(4, resultLimit);
+				for (int i = 1; i <= zoneIds.size(); i++) {
+					statement.setInt(i, zoneIds.get(i - 1));
+				}
+				statement.setString(zoneIds.size() + 1, name);
+				statement.setString(zoneIds.size() + 2, zone);
+				statement.setInt(zoneIds.size() + 3, resultLimit);
 			} else {
 				statement.setString(1, name);
 				Integer zoneId = ZoneModel.getIdByZoneName(zone);
@@ -260,10 +268,17 @@ public class DomainModel {
 			query = queryGroup.getQuery(SEARCH_BY_NAME_WITHOUT_ZONE_QUERY);
 		}
 
+		List<Integer> zoneIds = ZoneModel.getValidZoneIds();
+		query = Util.createDynamicQueryWithInClause(zoneIds.size(), query);
+
 		try (PreparedStatement statement = connection.prepareStatement(query);) {
-			statement.setString(1, domainName);
-			statement.setString(2, ZoneModel.getValidZoneIds());
-			statement.setInt(3, resultLimit);
+
+			for (int i = 1; i <= zoneIds.size(); i++) {
+				statement.setInt(i, zoneIds.get(i - 1));
+			}
+
+			statement.setString(zoneIds.size() + 1, domainName);
+			statement.setInt(zoneIds.size() + 2, resultLimit);
 			logger.log(Level.INFO, "Executing query" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
 

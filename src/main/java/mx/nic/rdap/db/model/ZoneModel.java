@@ -9,7 +9,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -207,10 +209,9 @@ public class ZoneModel {
 		ZoneModel.idByZone = idByZone;
 	}
 
-	public static String getValidZoneIds() {
-		String string = zoneById.keySet().toString();
-		// remove "[" and "]"
-		return string.substring(1, string.length() - 1);
+	public static List<Integer> getValidZoneIds() {
+		List<Integer> zoneIds = new ArrayList<Integer>(zoneById.keySet());
+		return zoneIds;
 	}
 
 }
