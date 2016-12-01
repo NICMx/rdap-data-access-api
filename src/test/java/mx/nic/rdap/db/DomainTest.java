@@ -126,7 +126,7 @@ public class DomainTest extends DatabaseTest {
 		Random random = new Random();
 		int randomInt = random.nextInt();
 
-		String domainName = "foo" + randomInt + ".mx";
+		String domainName = "foo" + randomInt;
 		DomainDAO domain = new DomainDAO();
 
 		Entity registrar = new EntityDAO();
