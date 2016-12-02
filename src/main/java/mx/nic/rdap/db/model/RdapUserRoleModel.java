@@ -21,6 +21,9 @@ public class RdapUserRoleModel {
 	private final static Logger logger = Logger.getLogger(RdapUserRoleModel.class.getName());
 
 	private final static String QUERY_GROUP = "RdapUserRole";
+	private final static String STORE_QUERY="storeToDatabase";
+	private final static String GET_QUERY="getByUserName";
+	private final static String DELETE_QUERY="deleteFromDatabase";
 	private static QueryGroup queryGroup = null;
 
 	static {
@@ -33,9 +36,6 @@ public class RdapUserRoleModel {
 
 	/**
 	 * Validate the required attributes for the rdapUserRole
-	 * 
-	 * @param nameserver
-	 * @throws RequiredValueNotFoundException
 	 */
 	private static void isValidForStore(RdapUserRoleDAO userRole) throws RequiredValueNotFoundException {
 		if (userRole.getUserName() == null || userRole.getUserName().isEmpty())
@@ -44,18 +44,10 @@ public class RdapUserRoleModel {
 			throw new RequiredValueNotFoundException("roleName", "RdapUserRole");
 	}
 
-	/**
-	 * Store a rdapUserRole in the database
-	 * 
-	 * @param userRole
-	 * @param connection
-	 * @throws RequiredValueNotFoundException
-	 * @throws SQLException
-	 */
 	public static void storeRdapUserRoleToDatabase(RdapUserRoleDAO userRole, Connection connection)
 			throws RequiredValueNotFoundException, SQLException {
 		isValidForStore(userRole);
-		String query = queryGroup.getQuery("storeToDatabase");
+		String query = queryGroup.getQuery(STORE_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			userRole.storeToDatabase(statement);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
@@ -63,17 +55,8 @@ public class RdapUserRoleModel {
 		}
 	}
 
-	/**
-	 * Get a rdapUserRole by the username
-	 * 
-	 * @param userName
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 */
 	public static RdapUserRoleDAO getByUserName(String userName, Connection connection) throws SQLException {
-
-		String query = queryGroup.getQuery("getByUserName");
+		String query = queryGroup.getQuery(GET_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, userName);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
@@ -87,6 +70,10 @@ public class RdapUserRoleModel {
 		}
 	}
 
+	/**
+	 * To avoid a complete search on a likely small data,erase the previous data
+	 * and insert the new
+	 */
 	public static void updateRdapUserRolesInDatabase(String name, RdapUserRoleDAO userRole, Connection rdapConnection)
 			throws RequiredValueNotFoundException, SQLException {
 		deleteRelationByParentId(name, rdapConnection);
@@ -95,7 +82,7 @@ public class RdapUserRoleModel {
 	}
 
 	private static void deleteRelationByParentId(String name, Connection rdapConnection) throws SQLException {
-		String query = queryGroup.getQuery("deleteFromDatabase");
+		String query = queryGroup.getQuery(DELETE_QUERY);
 		try (PreparedStatement statement = rdapConnection.prepareStatement(query)) {
 			statement.setString(1, name);
 			logger.log(Level.INFO, "Executing query: " + statement.toString());

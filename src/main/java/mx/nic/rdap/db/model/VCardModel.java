@@ -19,7 +19,7 @@ import mx.nic.rdap.db.VCardDAO;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 
 /**
- * Model for the {@link VCard}
+ * Model for the {@link VCard} object
  * 
  */
 public class VCardModel {
@@ -45,10 +45,6 @@ public class VCardModel {
 		}
 	}
 
-	/**
-	 * Store a VCard
-	 * 
-	 */
 	public static long storeToDatabase(VCard vCard, Connection connection) throws SQLException {
 		long vCardId;
 
@@ -141,10 +137,6 @@ public class VCardModel {
 		}
 	}
 
-	/**
-	 * Process a resultSet and return one {@link VCard}.
-	 * 
-	 */
 	private static VCard processResultSet(ResultSet resultSet, Connection connection) throws SQLException {
 		if (!resultSet.next()) {
 			throw new ObjectNotFoundException("Object not found");

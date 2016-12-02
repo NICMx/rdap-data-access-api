@@ -20,7 +20,7 @@ import mx.nic.rdap.db.Util;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 
 /**
- * The model for the Event object
+ * The model for {@link Event} Object
  * 
  */
 public class EventModel {

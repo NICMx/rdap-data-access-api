@@ -27,7 +27,10 @@ import mx.nic.rdap.db.exception.InvalidValueException;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RdapDatabaseException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
-
+/**
+ * Model for the {@link IpNetworkModel} Object
+ * 
+ */
 public class IpNetworkModel {
 
 	private final static Logger logger = Logger.getLogger(EntityModel.class.getName());

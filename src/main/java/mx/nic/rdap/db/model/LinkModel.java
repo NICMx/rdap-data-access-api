@@ -19,7 +19,7 @@ import mx.nic.rdap.db.Util;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 
 /**
- * The model for the Link object
+ * Model for the {@link Link} Object
  * 
  */
 public class LinkModel {
@@ -280,8 +280,8 @@ public class LinkModel {
 			deleteLinksRelationByLinkId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), previousLinks, connection);
 			deletePreviousLinks(previousLinks, connection);
 		}
-		// if(!links.isEmpty())
-		// storeIpNetworkLinksToDatabase(links, domainId, connection);
+		 if(!links.isEmpty())
+		 storeIpNetworkLinksToDatabase(links, ipNetworkId, connection);
 	}
 
 	public static void updateAutnumLinksInDatabase(List<Link> previousLinks, List<Link> links, Long autnumId,

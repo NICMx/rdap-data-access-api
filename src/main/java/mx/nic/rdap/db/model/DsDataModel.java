@@ -40,10 +40,6 @@ public class DsDataModel {
 		}
 	}
 
-	/**
-	 * Stores a DsData Object to the database
-	 * 
-	 */
 	public static long storeToDatabase(DsData dsData, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		String query = queryGroup.getQuery(STORE_QUERY);

@@ -26,7 +26,12 @@ public class IpAddressModel {
 	private final static Logger logger = Logger.getLogger(IpAddressModel.class.getName());
 
 	private final static String QUERY_GROUP = "IpAddress";
-
+	private static final String STORE_QUERY = "storeToDatabase";
+	private static final String GET_QUERY = "getByNameserverId";
+	private static final String GET_ALL_QUERY = "getAll";
+	private final static String DELETE_QUERY = "deleteByNameserverId";
+	
+	
 	protected static QueryGroup queryGroup = null;
 
 	static {
@@ -37,16 +42,9 @@ public class IpAddressModel {
 		}
 	}
 
-	/**
-	 * Store an array of IpAddress in the database
-	 * 
-	 * @param remark
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static void storeToDatabase(NameserverIpAddressesStruct struct, long nameserverId, Connection connection)
 			throws IOException, SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("storeToDatabase"),
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(STORE_QUERY),
 				Statement.RETURN_GENERATED_KEYS)) {
 			for (IpAddress addressV4 : struct.getIpv4Adresses()) {
 				addressV4.setNameserverId(nameserverId);
@@ -71,17 +69,9 @@ public class IpAddressModel {
 		}
 	}
 
-	/**
-	 * Get a NameserverIpAddressesStruct from a nameserverid
-	 * 
-	 * @param nameserverId
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static NameserverIpAddressesStruct getIpAddressStructByNameserverId(Long nameserverId, Connection connection)
 			throws IOException, SQLException {
-		String query = queryGroup.getQuery("getByNameserverId");
+		String query = queryGroup.getQuery(GET_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setLong(1, nameserverId);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
@@ -106,13 +96,9 @@ public class IpAddressModel {
 
 	/**
 	 * Unused. Getall the ipAddress from DB
-	 * 
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
 	 */
 	public static List<IpAddressDAO> getAll(Connection connection) throws IOException, SQLException {
-		String query = queryGroup.getQuery("getAll");
+		String query = queryGroup.getQuery(GET_ALL_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
@@ -130,15 +116,6 @@ public class IpAddressModel {
 		}
 	}
 
-	private static void deleteByNameserverId(Long nameserverId, Connection connection) throws SQLException {
-		String query = queryGroup.getQuery("deleteByNameserverId");
-		try (PreparedStatement statement = connection.prepareStatement(query)) {
-			statement.setLong(1, nameserverId);
-			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
-			statement.executeUpdate();
-		}
-	}
-
 	/**
 	 * To avoid a complete search on a likely small data,erase the previous data
 	 * and insert the new
@@ -151,5 +128,14 @@ public class IpAddressModel {
 		if (!ipAddresses.getIpv4Adresses().isEmpty() || !ipAddresses.getIpv6Adresses().isEmpty())
 			storeToDatabase(ipAddresses, nameserverId, connection);
 
+	}
+	
+	private static void deleteByNameserverId(Long nameserverId, Connection connection) throws SQLException {
+		String query = queryGroup.getQuery(DELETE_QUERY);
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			statement.setLong(1, nameserverId);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			statement.executeUpdate();
+		}
 	}
 }

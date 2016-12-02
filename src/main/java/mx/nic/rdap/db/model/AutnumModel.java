@@ -45,12 +45,6 @@ public class AutnumModel {
 	/**
 	 * Stores Object autnum to database
 	 * 
-	 * @param autnum
-	 * @param connection
-	 * @return
-	 * @throws SQLException
-	 * @throws RequiredValueNotFoundException
-	 * @throws IOException
 	 */
 	public static Long storeToDatabase(Autnum autnum, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
@@ -173,6 +167,11 @@ public class AutnumModel {
 		}
 	}
 
+	/**
+	 * Can't use a regular upsert sql statement, because Autnum table has
+	 * multiple unique constraints, instead will check if the nameserver
+	 * exist,then update it on insert it,if not exist.
+	 */
 	public static void upsertToDatabase(AutnumDAO autnum, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		try {

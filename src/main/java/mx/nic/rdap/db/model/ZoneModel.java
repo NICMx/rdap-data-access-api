@@ -28,6 +28,8 @@ public class ZoneModel {
 	private final static Logger logger = Logger.getLogger(ZoneModel.class.getName());
 
 	private final static String QUERY_GROUP = "Zone";
+	private final static String GET_ALL_QUERY="getAll";
+	private final static String STORE_QUERY="storeToDatabase";
 
 	private static QueryGroup queryGroup = null;
 
@@ -45,18 +47,11 @@ public class ZoneModel {
 
 	}
 
-	/**
-	 * Load all the zones stored in the database.
-	 * 
-	 * @param con
-	 *            Connection use to query a database.
-	 * @throws SQLException
-	 */
 	public static void loadAllFromDatabase(Connection con) throws SQLException {
 		zoneById = new HashMap<Integer, String>();
 		idByZone = new HashMap<String, Integer>();
 
-		String query = queryGroup.getQuery("getAll");
+		String query = queryGroup.getQuery(GET_ALL_QUERY);
 
 		PreparedStatement statement = con.prepareStatement(query);
 		ResultSet rs = statement.executeQuery();
@@ -73,14 +68,6 @@ public class ZoneModel {
 
 	}
 
-	/**
-	 * Stores a zone into the database
-	 * 
-	 * @param zoneName
-	 *            Zone name to be stored.
-	 * @return The zoneId for the <code>zoneName</code>.
-	 * @throws SQLException
-	 */
 	public static Integer storeToDatabase(String zoneName, Connection connection) throws SQLException {
 		Integer idByZoneName = getIdByZoneName(zoneName);
 
@@ -88,7 +75,7 @@ public class ZoneModel {
 			return idByZoneName;
 		}
 
-		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery("storeToDatabase"),
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(STORE_QUERY),
 				Statement.RETURN_GENERATED_KEYS)) {
 			statement.setString(1, zoneName);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
@@ -148,8 +135,6 @@ public class ZoneModel {
 	/**
 	 * validate if a address is in reverse lookup
 	 * 
-	 * @param address
-	 * @return
 	 */
 	public static boolean isReverseAddress(String address) {
 		return address.trim().endsWith(REVERSE_IP_V4) || address.trim().endsWith(REVERSE_IP_V6);

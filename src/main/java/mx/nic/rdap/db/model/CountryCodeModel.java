@@ -24,7 +24,8 @@ public class CountryCodeModel {
 
 	private static Map<Integer, String> countryNameById;
 	private static Map<String, Integer> idByCountryName;
-
+	private static final String GET_ALL_QUERY = "getAll";
+	
 	static {
 		try {
 			queryGroup = new QueryGroup(QUERY_GROUP);
@@ -36,15 +37,12 @@ public class CountryCodeModel {
 	/**
 	 * Load all the country codes stored in the database.
 	 * 
-	 * @param con
-	 *            Connection use to query a database.
-	 * @throws SQLException
 	 */
 	public static void loadAllFromDatabase(Connection con) throws SQLException {
 		countryNameById = new HashMap<Integer, String>();
 		idByCountryName = new HashMap<String, Integer>();
 
-		String query = queryGroup.getQuery("getAll");
+		String query = queryGroup.getQuery(GET_ALL_QUERY);
 
 		PreparedStatement statement = con.prepareStatement(query);
 		ResultSet rs = statement.executeQuery();

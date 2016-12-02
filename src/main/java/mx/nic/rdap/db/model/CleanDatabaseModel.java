@@ -30,13 +30,6 @@ public class CleanDatabaseModel {
 		}
 	}
 
-	/**
-	 * Clean the database of the server
-	 * 
-	 * @param rdapConnection
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static void cleanServerDatabase(Boolean migrateUser, Connection rdapConnection)
 			throws IOException, SQLException {
 		logger.log(Level.INFO, "******CLEANING RDAP DATABASE******");

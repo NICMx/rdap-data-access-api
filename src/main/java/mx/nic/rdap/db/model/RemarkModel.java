@@ -20,7 +20,7 @@ import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 
 /**
- * Model for the Remark Object
+ * Model for the {@link Remark} Object
  * 
  */
 public class RemarkModel {

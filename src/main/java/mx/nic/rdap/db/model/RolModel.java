@@ -38,6 +38,7 @@ public class RolModel {
 	private static final String NAMESERVER_GET_QUERY = "getNSRol";
 	private static final String AUTNUM_GET_QUERY = "getAutnumRol";
 	private static final String IP_NETWORK_GET_QUERY = "getIpNetworkRol";
+	private static final String MAIN_ENTITY_GET_QUERY="getMainEntityRol";
 
 	private static final String ENTITY_DELETE_QUERY = "deleteEntityEntityRoles";
 	private static final String NAMESERVER_DELETE_QUERY = "deleteNameserverEntityRoles";
@@ -45,6 +46,7 @@ public class RolModel {
 	private static final String AUTNUM_DELETE_QUERY = "deleteAutnumEntityRoles";
 	private static final String IP_NETWORK_DELETE_QUERY = "deleteIpNetworkEntityRoles";
 	private static final String MAIN_ENTITY_DELETE_QUERY = "deleteMainEntityRelation";
+	
 
 	private static QueryGroup queryGroup = null;
 
@@ -116,10 +118,6 @@ public class RolModel {
 		storeEntitiesRoles(entities, nsId, connection, NAMESERVER_STORE_QUERY);
 	}
 
-	/**
-	 * Stores all domain entity role relations into database on table
-	 * domain_entity_role
-	 */
 	public static void storeDomainEntityRoles(List<Entity> entities, Long domainId, Connection connection)
 			throws SQLException {
 		storeEntitiesRoles(entities, domainId, connection, DOMAIN_STORE_QUERY);
@@ -181,7 +179,7 @@ public class RolModel {
 		if (nestedEntitiesId.isEmpty()) {
 			return Collections.emptyList();
 		}
-		String query = queryGroup.getQuery("getMainEntityRol");
+		String query = queryGroup.getQuery(MAIN_ENTITY_GET_QUERY);
 
 		StringBuilder sb = new StringBuilder();
 		int i;

@@ -22,6 +22,13 @@ public class RdapUserModel {
 	private final static Logger logger = Logger.getLogger(RdapUserModel.class.getName());
 
 	private final static String QUERY_GROUP = "RdapUser";
+	private final static String GET_MAX_RESULTS_QUERY="getMaxSearchResults";
+	private final static String STORE_QUERY="storeToDatabase";
+	private final static String GET_BY_NAME_QUERY="getByName";
+	private final static String DELETE_ROLES_QUERY="deleteAllRdapUserRoles";
+	private final static String UPDATE_QUERY="updateInDatabase";
+	private final static String DELETE_QUERY="deleteAllRdapUsers";
+
 	private static QueryGroup queryGroup = null;
 
 	static {
@@ -35,15 +42,10 @@ public class RdapUserModel {
 	/**
 	 * Find the max search results for the autheticatedUser
 	 * 
-	 * @param username
-	 * @param connection
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
 	 */
 	public static Integer getMaxSearchResultsForAuthenticatedUser(String username, Connection connection)
 			throws IOException, SQLException {
-		String query = queryGroup.getQuery("getMaxSearchResults");
+		String query = queryGroup.getQuery(GET_MAX_RESULTS_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, username);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
@@ -59,8 +61,6 @@ public class RdapUserModel {
 	/**
 	 * Validate the required attributes for the rdapuser
 	 * 
-	 * @param nameserver
-	 * @throws RequiredValueNotFoundException
 	 */
 	private static void isValidForStore(RdapUserDAO user) throws RequiredValueNotFoundException {
 		if (user.getName() == null || user.getName().isEmpty())
@@ -71,20 +71,10 @@ public class RdapUserModel {
 			throw new RequiredValueNotFoundException("role", "RdapUser");
 	}
 
-	/**
-	 * Store a rdapuser in the database
-	 * 
-	 * @param user
-	 * @param connection
-	 * @throws SQLException
-	 * @throws IOException
-	 * @throws RequiredValueNotFoundException
-	 */
-
 	public static void storeToDatabase(RdapUserDAO user, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		isValidForStore(user);
-		String query = queryGroup.getQuery("storeToDatabase");
+		String query = queryGroup.getQuery(STORE_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			user.storeToDatabase(statement);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
@@ -93,16 +83,8 @@ public class RdapUserModel {
 		RdapUserRoleModel.storeRdapUserRoleToDatabase(user.getUserRole(), connection);
 	}
 
-	/**
-	 * Get a rdapuser object by it's name
-	 * 
-	 * @param name
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
-	 */
 	public static RdapUserDAO getByName(String name, Connection connection) throws IOException, SQLException {
-		String query = queryGroup.getQuery("getByName");
+		String query = queryGroup.getQuery(GET_BY_NAME_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, name);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
@@ -118,19 +100,17 @@ public class RdapUserModel {
 	}
 
 	/**
-	 * Clean the rdapuser and rdapuserrole tables in the migration
+	 * Clean the rdapuser and rdapUserRole tables in the migration
 	 * 
-	 * @param connection
-	 * @throws SQLException
 	 */
 	public static void cleanRdapUserDatabase(Connection connection) throws SQLException {
-		String query = queryGroup.getQuery("deleteAllRdapUserRoles");
+		String query = queryGroup.getQuery(DELETE_ROLES_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			statement.executeUpdate();
 
 		}
-		query = queryGroup.getQuery("deleteAllRdapUsers");
+		query = queryGroup.getQuery(DELETE_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			statement.executeUpdate();
@@ -153,7 +133,7 @@ public class RdapUserModel {
 			throws RequiredValueNotFoundException, SQLException {
 		isValidForUpdate(user);
 		// TODO See if authorization ends merged with user in database
-		String query = queryGroup.getQuery("updateInDatabase");
+		String query = queryGroup.getQuery(UPDATE_QUERY);
 		try (PreparedStatement statement = rdapConnection.prepareStatement(query)) {
 			user.updateInDatabase(statement);
 			logger.log(Level.INFO, "Executing query: " + statement.toString());

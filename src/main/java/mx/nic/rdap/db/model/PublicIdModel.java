@@ -30,6 +30,7 @@ public class PublicIdModel {
 	private static QueryGroup queryGroup = null;
 
 	private static final String STORE_QUERY = "storeToDatabase";
+	private static final String GET_ALL_QUERY = "getAll";
 	private static final String ENTITY_GET_QUERY = "getByEntity";
 	private static final String DOMAIN_GET_QUERY = "getByDomain";
 	private static final String ENTITY_STORE_QUERY = "storeEntityPublicIdsToDatabase";
@@ -108,7 +109,7 @@ public class PublicIdModel {
 	}
 
 	public static List<PublicId> getAll(Connection connection) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement("getAll")) {
+		try (PreparedStatement statement = connection.prepareStatement(GET_ALL_QUERY)) {
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
 			return processResultSet(resultSet);

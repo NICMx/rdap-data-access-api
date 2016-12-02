@@ -15,7 +15,7 @@ import mx.nic.rdap.core.catalog.Status;
 import mx.nic.rdap.db.QueryGroup;
 
 /**
- * Model for the {@link Status}
+ * Model for the {@link Status} Object
  * 
  */
 public class StatusModel {
@@ -52,46 +52,26 @@ public class StatusModel {
 		}
 	}
 
-	/**
-	 * Store a array of statement in the relational table nameserver_status
-	 * 
-	 */
 	public static void storeNameserverStatusToDatabase(List<Status> statusList, Long nameserverId,
 			Connection connection) throws IOException, SQLException {
 		storeRelationStatusToDatabase(statusList, nameserverId, connection, NAMESERVER_STORE_QUERY);
 	}
 
-	/**
-	 * Stores an array of statements in the relational table domain_status
-	 * 
-	 */
 	public static void storeDomainStatusToDatabase(List<Status> statusList, Long domainId, Connection connection)
 			throws IOException, SQLException {
 		storeRelationStatusToDatabase(statusList, domainId, connection, DOMAIN_STORE_QUERY);
 	}
 
-	/**
-	 * Stores an array of status in the relational table entity_status.
-	 * 
-	 */
 	public static void storeEntityStatusToDatabase(List<Status> statusList, Long entityId, Connection connection)
 			throws IOException, SQLException {
 		storeRelationStatusToDatabase(statusList, entityId, connection, ENTITY_STORE_QUERY);
 	}
 
-	/**
-	 * Stores an array of status in the relational table asn_status.
-	 * 
-	 */
 	public static void storeAutnumStatusToDatabase(List<Status> statusList, Long autnumId, Connection connection)
 			throws SQLException {
 		storeRelationStatusToDatabase(statusList, autnumId, connection, AUTNUM_STORE_QUERY);
 	}
 
-	/**
-	 * Stores an array of status in the relational table registrar_status.
-	 * 
-	 */
 	public static void storeIpNetworkStatusToDatabase(List<Status> statusList, Long ipNetworkId, Connection connection)
 			throws SQLException {
 		storeRelationStatusToDatabase(statusList, ipNetworkId, connection, IP_NETWORK_STORE_QUERY);
@@ -113,42 +93,23 @@ public class StatusModel {
 		}
 	}
 
-	/**
-	 * Get all Status for a Nameserver
-	 * 
-	 */
 	public static List<Status> getByNameServerId(Long nameserverId, Connection connection)
 			throws IOException, SQLException {
 		return getByRelationsId(nameserverId, connection, NAMESERVER_GET_QUERY);
 	}
 
-	/**
-	 * Get all status from a domain
-	 * 
-	 */
 	public static List<Status> getByDomainId(Long domainId, Connection connection) throws IOException, SQLException {
 		return getByRelationsId(domainId, connection, DOMAIN_GET_QUERY);
 	}
 
-	/**
-	 * Get all status from an entityId.
-	 * 
-	 */
 	public static List<Status> getByEntityId(Long entityId, Connection connection) throws IOException, SQLException {
 		return getByRelationsId(entityId, connection, ENTITY_GET_QUERY);
 	}
 
-	/**
-	 * Get all status with an autnums Id
-	 * 
-	 */
 	public static List<Status> getByAutnumId(Long autnumId, Connection connection) throws IOException, SQLException {
 		return getByRelationsId(autnumId, connection, AUTNUM_GET_QUERY);
 	}
 
-	/**
-	 * Get all status with an IpNetwork Id
-	 */
 	public static List<Status> getByIpNetworkId(Long ipNetworkId, Connection connection)
 			throws IOException, SQLException {
 		return getByRelationsId(ipNetworkId, connection, IP_NETWORK_GET_QUERY);
@@ -213,7 +174,7 @@ public class StatusModel {
 			Long ipNetworkId, Connection connection) throws SQLException, IOException {
 		if (!previousStatus.isEmpty())
 			deleteRelationByParentId(queryGroup.getQuery(IP_NETWORK_DELETE_QUERY), ipNetworkId, connection);
-		// storeIpNetworkStatusToDatabase(status, nameserverId, connection);
+		 storeIpNetworkStatusToDatabase(status, ipNetworkId, connection);
 	}
 
 	private static void deleteRelationByParentId(String query, Long objectId, Connection connection)
