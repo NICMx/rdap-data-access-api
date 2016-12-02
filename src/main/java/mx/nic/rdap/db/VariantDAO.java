@@ -20,10 +20,8 @@ public class VariantDAO extends Variant implements DatabaseObject {
 	}
 
 	/**
-	 * Constructor with result set
+	 * Construcs Variant using a {@link ResultSet}
 	 * 
-	 * @param resultSet
-	 * @throws SQLException
 	 */
 	public VariantDAO(ResultSet resultSet) throws SQLException {
 		super();

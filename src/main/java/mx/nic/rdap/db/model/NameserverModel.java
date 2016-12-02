@@ -47,7 +47,7 @@ public class NameserverModel {
 	private static final String FIND_BY_NAME_QUERY = "findByName";
 
 	private static final String SEARCH_BY_PARTIAL_NAME_QUERY = "searchByPartialName";
-	private static final String SEARCH_BY_NAME_QUERY = "findByName";
+	private static final String SEARCH_BY_NAME_QUERY = "searchByName";
 	private static final String SEARCH_BY_IP6_QUERY = "searchByIp6";
 	private static final String SEARCH_BY_IP4_QUERY = "searchByIp4";
 

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.VCardPostalInfo;
 
 /**
- * DAO for {@link VCardPostalInfo}
+ * Data access class for the {@link VCardPostalInfo} object
  * 
  */
 public class VCardPostalInfoDAO extends VCardPostalInfo implements DatabaseObject {

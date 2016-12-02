@@ -9,12 +9,13 @@ import java.util.Properties;
 
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 
+/**
+ * Manage the Datasource used in the database connection
+ */
 public class DatabaseSession {
 
 	private static BasicDataSource rdapDataSource;
 	private static BasicDataSource originDataSource;
-
-
 
 	private static void testDatabase(BasicDataSource ds) throws SQLException {
 		// http://stackoverflow.com/questions/3668506
@@ -36,15 +37,10 @@ public class DatabaseSession {
 		return rdapDataSource.getConnection();
 	}
 	
-	/**
-	 * Return a connection to the origin database
-	 * 
-	 * @param migrationDBProperties
-	 *            Information about the database origin of the migration data
-	 */
 	public static Connection getMigrationConnection() throws SQLException, IOException {
 		return originDataSource.getConnection();
 	}
+	
 	public static void initRdapConnection(Properties config) throws SQLException{
 		rdapDataSource = new BasicDataSource();
 		rdapDataSource.setDriverClassName(config.getProperty("driverClassName"));

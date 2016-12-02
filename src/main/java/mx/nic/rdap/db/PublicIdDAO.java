@@ -8,7 +8,6 @@ import mx.nic.rdap.core.db.PublicId;
 
 /**
  * Data access class for the {@link PublicId} object.
- * 
  */
 public class PublicIdDAO extends PublicId implements DatabaseObject {
 
@@ -21,10 +20,7 @@ public class PublicIdDAO extends PublicId implements DatabaseObject {
 	}
 
 	/**
-	 * Constructs PublicId with a ResultSet
-	 * 
-	 * @param resultSet
-	 * @throws SQLException
+	 * Constructs PublicId using a {@link ResultSet}
 	 */
 	public PublicIdDAO(ResultSet resultSet) throws SQLException {
 		super();

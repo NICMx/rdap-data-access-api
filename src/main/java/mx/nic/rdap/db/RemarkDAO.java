@@ -7,8 +7,7 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.Remark;
 
 /**
- * DAO for the remark Object.A remark structure denotes information about the
- * object class that contains it
+ * Data access class for the {@link Remark} Object.
  * 
  */
 public class RemarkDAO extends Remark implements DatabaseObject {
@@ -21,10 +20,8 @@ public class RemarkDAO extends Remark implements DatabaseObject {
 	}
 
 	/**
-	 * Construct the {@link Remark} from a resultSet
+	 * Construct Remark using a {@link ResultSet}
 	 * 
-	 * @param resultSet
-	 * @throws SQLException
 	 */
 	public RemarkDAO(ResultSet resultSet) throws SQLException {
 		super();

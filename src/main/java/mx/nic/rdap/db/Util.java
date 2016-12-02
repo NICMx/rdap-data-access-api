@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 import mx.nic.rdap.db.exception.InvalidValueException;;
 
 /**
- * @author L00000185
+ * Utilities to process Data
  *
  */
 public class Util {
@@ -33,8 +33,6 @@ public class Util {
 	/**
 	 * Validates if IpAddress is valid
 	 * 
-	 * @param ipAddress
-	 * @throws MalformedRequestException
 	 */
 	public static void validateIpAddress(String ipAddress) throws InvalidValueException {
 		// if the ipAddress contains ':' then InetAddress will try to parse it

@@ -7,9 +7,7 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.Entity;
 
 /**
- * DAO for the {@link Entity} Object.This object class represents the
- * information of organizations, corporations, governments, non-profits, clubs,
- * individual persons, and informal groups of people.
+ * Data access class for the {@link Entity} Object
  * 
  */
 public class EntityDAO extends Entity implements DatabaseObject {
@@ -22,7 +20,7 @@ public class EntityDAO extends Entity implements DatabaseObject {
 	}
 
 	/**
-	 * Construct Entity with a ResultSet
+	 * Construct Entity using a {@link ResultSet}
 	 * 
 	 */
 	public EntityDAO(ResultSet resultSet) throws SQLException {

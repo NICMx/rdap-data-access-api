@@ -21,9 +21,7 @@ public class SecureDNSDAO extends SecureDNS implements DatabaseObject {
 	}
 
 	/**
-	 * Construct the object SecurDNS from a resultset
-	 * 
-	 * @throws SQLException
+	 * Construct the object SecurDNS using a {@link ResultSet}
 	 */
 	public SecureDNSDAO(ResultSet resultSet) throws SQLException {
 		super();

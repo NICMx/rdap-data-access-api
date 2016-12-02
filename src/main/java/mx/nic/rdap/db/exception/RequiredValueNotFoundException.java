@@ -1,20 +1,12 @@
 package mx.nic.rdap.db.exception;
 
 /**
- * Generic problems with the validation of the objects
- * 
+ * Problems when a necessary value wasn't set
  */
 public class RequiredValueNotFoundException extends RdapDatabaseException {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 
-	 * @param attributeName
-	 *            the attribute missing
-	 * @param className
-	 *            the class
-	 */
 	public RequiredValueNotFoundException(String attributeName, String className) {
 		super("Missing required value: " + attributeName + " in Class: " + className);
 	}

@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * DAO for the RDAPUserRole. The object is a data structure of an rdap user role
+ *  Data access class for the RDAPUserRole. The object is a data structure of an rdap user role
  * information
  * 
  */
@@ -21,9 +21,7 @@ public class RdapUserRoleDAO implements DatabaseObject {
 	}
 
 	/**
-	 * Construct a RdapUserRole from a resultSet
-	 * 
-	 * @throws SQLException
+	 * Construct a RdapUserRole using a {@link ResultSet}
 	 */
 	public RdapUserRoleDAO(ResultSet resultSet) throws SQLException {
 		super();

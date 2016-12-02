@@ -8,13 +8,6 @@ public class InvalidadDataStructure extends RdapDatabaseException {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 
-	 * @param attributeName
-	 *            the attribute missing
-	 * @param className
-	 *            the class
-	 */
 	public InvalidadDataStructure(String dataStructureName, String expectedStructure) {
 		super("Invalid data structure:" + dataStructureName + " Must have the form" + expectedStructure);
 	}
