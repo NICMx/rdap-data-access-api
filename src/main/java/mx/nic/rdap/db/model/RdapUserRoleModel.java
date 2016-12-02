@@ -87,4 +87,20 @@ public class RdapUserRoleModel {
 		}
 	}
 
+	public static void updateRdapUserRolesInDatabase(String name, RdapUserRoleDAO userRole, Connection rdapConnection)
+			throws RequiredValueNotFoundException, SQLException {
+		deleteRelationByParentId(name, rdapConnection);
+		storeRdapUserRoleToDatabase(userRole, rdapConnection);
+
+	}
+
+	private static void deleteRelationByParentId(String name, Connection rdapConnection) throws SQLException {
+		String query = queryGroup.getQuery("deleteFromDatabase");
+		try (PreparedStatement statement = rdapConnection.prepareStatement(query)) {
+			statement.setString(1, name);
+			logger.log(Level.INFO, "Executing query: " + statement.toString());
+			statement.executeUpdate();
+		}
+	}
+
 }

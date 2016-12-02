@@ -338,7 +338,7 @@ public class NameserverModel {
 		}
 	}
 
-	private static NameserverDAO getByHandle(String handle, Connection rdapConnection)
+	public static NameserverDAO getByHandle(String handle, Connection rdapConnection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		if (handle == null || handle.isEmpty()) {
 			throw new RequiredValueNotFoundException("handle", "Nameserver");

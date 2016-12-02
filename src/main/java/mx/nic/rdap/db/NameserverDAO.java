@@ -56,14 +56,11 @@ public class NameserverDAO extends Nameserver implements DatabaseObject {
 		preparedStatement.setString(2, this.getLdhName());
 		preparedStatement.setString(3, this.getPort43());
 	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mx.nic.rdap.core.db.DatabaseObject#storeToDatabase(java.sql.
-	 * PreparedStatement)
+
+	/**
+	 * Same as storeToDatabase,but using different order and should use the
+	 * object id as criteria
 	 */
-	@Override
 	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
 		preparedStatement.setString(1, this.getLdhName());
 		preparedStatement.setString(2, this.getPort43());

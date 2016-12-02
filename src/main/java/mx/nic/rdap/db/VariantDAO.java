@@ -55,13 +55,4 @@ public class VariantDAO extends Variant implements DatabaseObject {
 		preparedStatement.setLong(2, this.getDomainId());
 	}
 
-	/* (non-Javadoc)
-	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.PreparedStatement)
-	 */
-	@Override
-	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

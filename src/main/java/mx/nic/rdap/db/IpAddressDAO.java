@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import mx.nic.rdap.core.db.IpAddress;
+import mx.nic.rdap.core.db.IpNetwork;
 
 /**
  * DAO for the {@link IpAddress} Object.Object representig an IpAddress,
@@ -76,15 +77,6 @@ public class IpAddressDAO extends IpAddress implements DatabaseObject {
 		preparedStatement.setString(4, this.getAddress().getHostAddress());
 		preparedStatement.setString(5, this.getAddress().getHostAddress());
 
-	}
-
-	/* (non-Javadoc)
-	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.PreparedStatement)
-	 */
-	@Override
-	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

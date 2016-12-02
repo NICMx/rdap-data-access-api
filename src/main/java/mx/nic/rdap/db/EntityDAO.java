@@ -56,13 +56,10 @@ public class EntityDAO extends Entity implements DatabaseObject {
 		preparedStatement.setString(2, getPort43());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.
-	 * PreparedStatement)
+	/**
+	 * Same as storeToDatabase,but using different order and should use the
+	 * object id as criteria
 	 */
-	@Override
 	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
 		preparedStatement.setString(1, getPort43());
 		preparedStatement.setLong(2, getId());

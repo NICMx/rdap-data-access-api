@@ -138,8 +138,39 @@ public class RdapUserModel {
 		}
 	}
 
-	public static void upsertToDatabase(RdapUserDAO user, Connection rdapConnection) {
-		// TODO Auto-generated method stub
-		
+	public static void upsertToDatabase(RdapUserDAO user, Connection rdapConnection)
+			throws SQLException, IOException, RequiredValueNotFoundException {
+		try {
+			RdapUserDAO previousUser = getByName(user.getName(), rdapConnection);
+			user.setId(previousUser.getId());
+			update(previousUser, user, rdapConnection);
+		} catch (SQLException | IOException e) {
+			storeToDatabase(user, rdapConnection);
+		}
+	}
+
+	private static void update(RdapUserDAO previousUser, RdapUserDAO user, Connection rdapConnection)
+			throws RequiredValueNotFoundException, SQLException {
+		isValidForUpdate(user);
+		// TODO See if authorization ends merged with user in database
+		String query = queryGroup.getQuery("updateInDatabase");
+		try (PreparedStatement statement = rdapConnection.prepareStatement(query)) {
+			user.updateInDatabase(statement);
+			logger.log(Level.INFO, "Executing query: " + statement.toString());
+			statement.executeUpdate();
+		}
+		RdapUserRoleModel.updateRdapUserRolesInDatabase(previousUser.getName(), user.getUserRole(), rdapConnection);
+	}
+
+	private static void isValidForUpdate(RdapUserDAO user) throws RequiredValueNotFoundException {
+		if (user.getId() == null)
+			throw new RequiredValueNotFoundException("id", "RdapUser");
+		if (user.getName() == null || user.getName().isEmpty())
+			throw new RequiredValueNotFoundException("name", "RdapUser");
+		if (user.getPass() == null || user.getPass().isEmpty())
+			throw new RequiredValueNotFoundException("password", "RdapUser");
+		if (user.getUserRole().getRoleName() == null || user.getUserRole().getRoleName().isEmpty())
+			throw new RequiredValueNotFoundException("role", "RdapUser");
+
 	}
 }

@@ -60,13 +60,4 @@ public class EventDAO extends Event implements DatabaseObject {
 		preparedStatement.setTimestamp(3, new Timestamp(this.getEventDate().getTime()));
 	}
 
-	/* (non-Javadoc)
-	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.PreparedStatement)
-	 */
-	@Override
-	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

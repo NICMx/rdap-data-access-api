@@ -72,15 +72,15 @@ public class AutnumModel {
 		RemarkModel.storeAutnumRemarksToDatabase(autnum.getRemarks(), autnumId, connection);
 		LinkModel.storeAutnumLinksToDatabase(autnum.getLinks(), autnumId, connection);
 		EventModel.storeAutnumEventsToDatabase(autnum.getEvents(), autnumId, connection);
-			for (Entity ent : autnum.getEntities()) {
-				Long entId = EntityModel.existsByHandle(ent.getHandle(), connection);
-				if (entId == null) {
-					throw new NullPointerException(
-							"Entity: " + ent.getHandle() + "was not inserted previously to the database");
-				}
-				ent.setId(entId);
+		for (Entity ent : autnum.getEntities()) {
+			Long entId = EntityModel.existsByHandle(ent.getHandle(), connection);
+			if (entId == null) {
+				throw new NullPointerException(
+						"Entity: " + ent.getHandle() + "was not inserted previously to the database");
 			}
-			RolModel.storeAutnumEntityRoles(autnum.getEntities(), autnumId, connection);
+			ent.setId(entId);
+		}
+		RolModel.storeAutnumEntityRoles(autnum.getEntities(), autnumId, connection);
 
 		return autnumId;
 	}

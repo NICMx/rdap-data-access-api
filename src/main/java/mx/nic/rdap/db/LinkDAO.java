@@ -79,13 +79,4 @@ public class LinkDAO extends Link implements DatabaseObject {
 		preparedStatement.setString(7, this.getType());
 	}
 
-	/* (non-Javadoc)
-	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.PreparedStatement)
-	 */
-	@Override
-	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

@@ -64,13 +64,10 @@ public class AutnumDAO extends Autnum implements DatabaseObject {
 		preparedStatement.setInt(7, this.getCountry());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.
-	 * PreparedStatement)
+	/**
+	 * Same as storeToDatabase,but using different order and should use the
+	 * object id as criteria
 	 */
-	@Override
 	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
 		preparedStatement.setLong(1, this.getStartAutnum());
 		preparedStatement.setLong(2, this.getEndAutnum());

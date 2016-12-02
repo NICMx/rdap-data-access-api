@@ -16,6 +16,7 @@ public class RdapUserDAO implements DatabaseObject {
 	private String pass;
 	private Integer maxSearchResults;
 	private RdapUserRoleDAO userRole;
+	// private String userRole;
 
 	/**
 	 * Default constructor
@@ -105,8 +106,6 @@ public class RdapUserDAO implements DatabaseObject {
 			preparedStatement.setInt(3, this.getMaxSearchResults());
 		else
 			preparedStatement.setNull(3, java.sql.Types.INTEGER);
-		;
-
 	}
 
 	/**
@@ -185,13 +184,17 @@ public class RdapUserDAO implements DatabaseObject {
 		this.userRole.setUserName(this.getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.PreparedStatement)
+	/**
+	 * Same as storeToDatabase,but using different order and should use the
+	 * object id as criteria
 	 */
-	@Override
 	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
-		// TODO Auto-generated method stub
-		
+		preparedStatement.setString(1, this.getPass());
+		if (this.getMaxSearchResults() != null)
+			preparedStatement.setInt(2, this.getMaxSearchResults());
+		else
+			preparedStatement.setNull(2, java.sql.Types.INTEGER);
+		preparedStatement.setLong(3, this.getId());
 	}
 
 }

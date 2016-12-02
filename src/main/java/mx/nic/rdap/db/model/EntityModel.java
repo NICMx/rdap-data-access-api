@@ -83,8 +83,6 @@ public class EntityModel {
 	public static long storeToDatabase(Entity entity, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		Long entityId = existsByHandle(entity.getHandle(), connection);
-		// TODO Validate if the entity exist then only store the entity's role,
-		// else insert the role and the entity
 		if (entityId != null) {
 			entity.setId(entityId);
 			return entityId;
@@ -453,7 +451,7 @@ public class EntityModel {
 			Long entId = EntityModel.existsByHandle(ent.getHandle(), connection);
 			if (entId == null) {
 				throw new NullPointerException(
-						"Entity: " + ent.getHandle() + " was not insert previously to the database");
+						"Entity: " + ent.getHandle() + " was not inserted previously to the database");
 			}
 			ent.setId(entId);
 		}

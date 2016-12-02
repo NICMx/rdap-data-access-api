@@ -14,11 +14,9 @@ import mx.nic.rdap.db.QueryGroup;
  * Model for the CountryCode table, read all CountryCodes in the
  * country_code_table and keeps it in memory for quickly access.
  *
- * TODO validate SQL tables and create SQL query in CountryCode.sql
  */
 
 public class CountryCodeModel {
-
 
 	private final static String QUERY_GROUP = "CountryCode";
 
