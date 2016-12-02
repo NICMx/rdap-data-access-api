@@ -1,5 +1,7 @@
 package mx.nic.rdap.db.exception;
-
+/**
+ * Generic problem with the database connection
+ */
 public class RdapDatabaseException extends Exception {
 
 	private static final long serialVersionUID = 3344319049605710358L;
