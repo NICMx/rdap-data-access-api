@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.Link;
 
 /**
- *  Data access class for the {@link Link} object.
+ * Data access class for the {@link Link} object.
  * 
  */
 public class LinkDAO extends Link implements DatabaseObject {
@@ -31,12 +31,10 @@ public class LinkDAO extends Link implements DatabaseObject {
 	 * Construct a "self" Link
 	 * 
 	 */
-	public LinkDAO(String objectClassName, String query) {
-		super();
-		// TODO get hostname and proyect name
-		this.setValue("http://example.com/" + objectClassName + "/" + query);
+	public LinkDAO(String contextPath, String objectClassName, String query) {
+		this.setValue("http://example.com" + contextPath + "/" + objectClassName + "/" + query);
 		this.setRel("self");
-		this.setHref("http://example.com/" + objectClassName + "/" + query);
+		this.setHref("http://example.com" + contextPath + "/" + objectClassName + "/" + query);
 		this.setType("application/rdap+json");
 	}
 
