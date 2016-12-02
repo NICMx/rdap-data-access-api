@@ -21,9 +21,6 @@ public class AutnumDAO extends Autnum implements DatabaseObject {
 
 	/**
 	 * Constructs an Autonomous System Number using a {@link ResultSet}
-	 * 
-	 * @param resultSet
-	 * @throws SQLException
 	 */
 	public AutnumDAO(ResultSet resultSet) throws SQLException {
 		super();

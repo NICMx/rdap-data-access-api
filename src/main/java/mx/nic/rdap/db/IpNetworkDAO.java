@@ -13,8 +13,26 @@ import mx.nic.rdap.core.catalog.IpVersion;
 import mx.nic.rdap.core.db.IpNetwork;
 import mx.nic.rdap.db.model.CountryCodeModel;
 
+/**
+ * Data access class for the {@link IpNetwork} object
+ */
 public class IpNetworkDAO extends IpNetwork implements DatabaseObject {
+	
+	/**
+	 * Default Constructor
+	 */
+	public IpNetworkDAO() {
+		super();
+	}
 
+	/**
+	 * Constructs an IpNetwork using a {@link ResultSet}
+	 */
+	public IpNetworkDAO(ResultSet resultSet) throws SQLException {
+		super();
+		loadFromDatabase(resultSet);
+	}
+	
 	@Override
 	public void loadFromDatabase(ResultSet rs) throws SQLException {
 		setId(rs.getLong("ine_id"));

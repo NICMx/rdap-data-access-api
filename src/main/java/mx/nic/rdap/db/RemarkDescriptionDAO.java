@@ -4,12 +4,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import mx.nic.rdap.core.db.Remark;
 import mx.nic.rdap.core.db.RemarkDescription;
 
 /**
- * A description of the {@link Remark}
- * 
+ * Data access class for the {@link RemarkDescription} object.
  */
 public class RemarkDescriptionDAO extends RemarkDescription implements DatabaseObject {
 
@@ -21,7 +19,7 @@ public class RemarkDescriptionDAO extends RemarkDescription implements DatabaseO
 	}
 
 	/**
-	 * @throws SQLException
+	 * Constructs RemarkDescription using a {@link ResultSet}
 	 * 
 	 */
 	public RemarkDescriptionDAO(ResultSet resultSet) throws SQLException {

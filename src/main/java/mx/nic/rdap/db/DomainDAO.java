@@ -20,10 +20,7 @@ public class DomainDAO extends Domain implements DatabaseObject {
 	}
 
 	/**
-	 * Construct Domain from a ResultSet
-	 * 
-	 * @param resultSet
-	 *            Information from a select statement on database
+	 * Construct Domain using a {@link ResultSet}
 	 */
 	public DomainDAO(ResultSet resultSet) throws SQLException {
 		super();
@@ -33,10 +30,6 @@ public class DomainDAO extends Domain implements DatabaseObject {
 	/**
 	 * Loads the information coming from the database in an instance of Domain
 	 * 
-	 * @param resultSet
-	 *            ResultSet from where all information is obtained
-	 * @throws SQLException
-	 *             If there is an error during ResultSet access
 	 */
 	@Override
 	public void loadFromDatabase(ResultSet resultSet) throws SQLException {

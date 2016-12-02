@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.Link;
 
 /**
- * DAO for the {@link Link} object.
+ *  Data access class for the {@link Link} object.
  * 
  */
 public class LinkDAO extends Link implements DatabaseObject {
@@ -20,9 +20,7 @@ public class LinkDAO extends Link implements DatabaseObject {
 	}
 
 	/**
-	 * Construct a Link from a resultSet
-	 * 
-	 * @throws SQLException
+	 * Construct a Link using a {@link ResultSet}
 	 */
 	public LinkDAO(ResultSet resultSet) throws SQLException {
 		super();
@@ -32,8 +30,6 @@ public class LinkDAO extends Link implements DatabaseObject {
 	/**
 	 * Construct a "self" Link
 	 * 
-	 * @param objectClassName
-	 * @param query
 	 */
 	public LinkDAO(String objectClassName, String query) {
 		super();

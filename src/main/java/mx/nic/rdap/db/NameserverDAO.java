@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.Nameserver;
 
 /**
- * DAO for the {@link Nameserver} object.
+ * Data access class for the {@link Nameserver} object.
  * 
  */
 public class NameserverDAO extends Nameserver implements DatabaseObject {
@@ -20,10 +20,8 @@ public class NameserverDAO extends Nameserver implements DatabaseObject {
 	}
 
 	/**
-	 * Contruct a NameserverDAO from a resulset
+	 * Contruct a NameserverDAO using a {@link ResultSet}
 	 * 
-	 * @param resultSet
-	 * @throws SQLException
 	 */
 	public NameserverDAO(ResultSet resultSet) throws SQLException {
 		super();

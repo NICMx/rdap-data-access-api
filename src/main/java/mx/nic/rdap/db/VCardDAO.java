@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import mx.nic.rdap.core.db.VCard;
 
 /**
- * DAO for {@link VCard}.
+ * Data access class for the {@link VCard} Object
  * 
  */
 public class VCardDAO extends VCard implements DatabaseObject {

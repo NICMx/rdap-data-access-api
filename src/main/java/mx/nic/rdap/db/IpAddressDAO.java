@@ -12,7 +12,7 @@ import mx.nic.rdap.core.db.IpAddress;
 import mx.nic.rdap.core.db.IpNetwork;
 
 /**
- * DAO for the {@link IpAddress} Object.Object representig an IpAddress,
+ * Data access class for the {@link IpAddress} Object.Object representig an IpAddress,
  * different to {@link IpNetwork}
  * 
  */
@@ -26,9 +26,8 @@ public class IpAddressDAO extends IpAddress implements DatabaseObject {
 	}
 
 	/**
-	 * Constructor that creates an IpAddressDAO from a resultSet
+	 * Construct an IpAddressDAO using a {@link ResultSet}
 	 * 
-	 * @throws SQLException
 	 */
 	public IpAddressDAO(ResultSet resultSet) throws SQLException {
 		super();
@@ -69,11 +68,8 @@ public class IpAddressDAO extends IpAddress implements DatabaseObject {
 	public void storeToDatabase(PreparedStatement preparedStatement) throws SQLException {
 		preparedStatement.setLong(1, this.getNameserverId());
 		preparedStatement.setInt(2, this.getType());
-		preparedStatement.setInt(3, this.getType());// To store the ipv6,use an
-													// if clause, the third
-													// parameter is the type to
-													// compare if is a ipv4 or a
-													// opv6
+		// To store the ipv6,use an if clause, the third parameter is the type to compare if is a ipv4 or a ipv6
+		preparedStatement.setInt(3, this.getType());
 		preparedStatement.setString(4, this.getAddress().getHostAddress());
 		preparedStatement.setString(5, this.getAddress().getHostAddress());
 

@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * DAO for the RDAPUser. The object is a data structure of an rdap user
+ *  Data access class for the RDAPUser. The object is a data structure of an rdap user
  * information
  * 
  */
@@ -16,7 +16,6 @@ public class RdapUserDAO implements DatabaseObject {
 	private String pass;
 	private Integer maxSearchResults;
 	private RdapUserRoleDAO userRole;
-	// private String userRole;
 
 	/**
 	 * Default constructor
@@ -26,8 +25,6 @@ public class RdapUserDAO implements DatabaseObject {
 
 	/**
 	 * Construct a RdapUser from a resultSet
-	 * 
-	 * @throws SQLException
 	 */
 	public RdapUserDAO(ResultSet resultSet) throws SQLException {
 		super();

@@ -20,10 +20,7 @@ public class DsDataDAO extends DsData implements DatabaseObject {
 	}
 
 	/**
-	 * Construct DsData from a ResultSet
-	 * 
-	 * @param resultSet
-	 * @throws SQLException
+	 * Construct DsData using a {@link ResultSet}
 	 */
 	public DsDataDAO(ResultSet resultSet) throws SQLException {
 		super();
