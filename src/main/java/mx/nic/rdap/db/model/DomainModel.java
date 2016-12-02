@@ -15,7 +15,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import mx.nic.rdap.core.db.Domain;
+import mx.nic.rdap.core.db.Entity;
 import mx.nic.rdap.core.db.IpNetwork;
+import mx.nic.rdap.core.db.Nameserver;
 import mx.nic.rdap.db.DomainDAO;
 import mx.nic.rdap.db.IpAddressDAO;
 import mx.nic.rdap.db.QueryGroup;
@@ -91,21 +93,42 @@ public class DomainModel {
 			domain.getSecureDNS().setDomainId(domainId);
 			SecureDNSModel.storeToDatabase(domain.getSecureDNS(), connection);
 		}
-
-		NameserverModel.storeDomainNameserversToDatabase(domain.getNameServers(), domainId, connection);
-
-		if (domain.getEntities().size() > 0) {
-			EntityModel.validateParentEntities(domain.getEntities(), connection);
-			RolModel.storeDomainEntityRoles(domain.getEntities(), domainId, connection);
-		}
-
 		PublicIdModel.storePublicIdByDomain(domain.getPublicIds(), domain.getId(), connection);
-
 		VariantModel.storeAllToDatabase(domain.getVariants(), domain.getId(), connection);
 
+		storeDomainNameservers(domain.getNameServers(), domainId, connection);
+		storeDomainEntities(domain.getEntities(), domainId, connection);
 		if (domain.getIpNetwork() != null) {
 			storeDomainIpNetworkRelationToDatabase(domainId, domain.getIpNetwork().getId(), connection);
 		}
+	}
+
+	private static void storeDomainNameservers(List<Nameserver> nameservers, Long domainId, Connection connection)
+			throws RequiredValueNotFoundException, SQLException, IOException {
+		if (nameservers.size() > 0) {
+			validateDomainNameservers(nameservers, connection);
+			NameserverModel.storeDomainNameserversToDatabase(nameservers, domainId, connection);
+		}
+	}
+
+	private static void validateDomainNameservers(List<Nameserver> nameservers, Connection connection)
+			throws RequiredValueNotFoundException, SQLException, IOException {
+		for (Nameserver ns : nameservers) {
+			Long nsId = NameserverModel.getByHandle(ns.getHandle(), connection).getId();
+			if (nsId == null) {
+				throw new NullPointerException(
+						"Nameserver: " + ns.getHandle() + "was not inserted previously to the database.");
+			}
+		}
+	}
+
+	private static void storeDomainEntities(List<Entity> entities, Long domainId, Connection connection)
+			throws SQLException {
+		if (entities.size() > 0) {
+			EntityModel.validateParentEntities(entities, connection);
+			RolModel.storeDomainEntityRoles(entities, domainId, connection);
+		}
+
 	}
 
 	private static void isValidForStore(DomainDAO domain) throws RequiredValueNotFoundException {
@@ -445,7 +468,8 @@ public class DomainModel {
 		int indexOf = domainName.indexOf('.');
 
 		if (indexOf <= 0) {
-			throw new InvalidValueException("Zone", "ZoneModel", "Domain");
+			throw new ObjectNotFoundException("Zone not found.");
+
 		}
 
 		String domainZone = domainName.substring(indexOf + 1, domainName.length());

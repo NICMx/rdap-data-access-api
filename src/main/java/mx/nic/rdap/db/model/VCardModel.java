@@ -137,12 +137,12 @@ public class VCardModel {
 			List<VCardPostalInfo> postalInfoList = VCardPostalInfoModel.getByVCardId(vCard.getId(), connection);
 			vCard.setPostalInfo(postalInfoList);
 		} catch (ObjectNotFoundException e) {
-			// TODO: a VCard couldn't hava postal info ?
+			// TODO: a VCard couldn't have postal info ?
 		}
 	}
 
 	/**
-	 * Proccess a resultSet and return one {@link VCard}.
+	 * Process a resultSet and return one {@link VCard}.
 	 * 
 	 */
 	private static VCard processResultSet(ResultSet resultSet, Connection connection) throws SQLException {

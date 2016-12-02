@@ -62,16 +62,16 @@ public class DomainDAO extends Domain implements DatabaseObject {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see mx.nic.rdap.db.DatabaseObject#updateInDatabase(java.sql.PreparedStatement)
+	/**
+	 * Same as storeToDatabase,but using different order and should use the
+	 * object id as criteria
 	 */
-	@Override
 	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
 		preparedStatement.setString(1, this.getLdhName());
 		preparedStatement.setString(2, this.getPort43());
 		preparedStatement.setInt(3, this.getZoneId());
-		preparedStatement.setLong(4,this.getId());
-		
+		preparedStatement.setLong(4, this.getId());
+
 	}
 
 }

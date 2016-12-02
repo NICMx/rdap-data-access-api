@@ -12,3 +12,6 @@ DELETE  FROM rdap.rdap_user_role;
 
 #deleteAllRdapUsers
 DELETE  FROM rdap.rdap_user;
+
+#updateInDatabase
+UPDATE rdap.rdap_user SET rus_pass=?, rus_max_search_results=? WHERE rus_id =?;
