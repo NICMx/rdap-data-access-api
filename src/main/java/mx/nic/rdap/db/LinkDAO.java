@@ -37,7 +37,7 @@ public class LinkDAO extends Link implements DatabaseObject {
 	 */
 	public LinkDAO(String objectClassName, String query) {
 		super();
-		// TODO configure the self value link.
+		// TODO get hostname and proyect name
 		this.setValue("http://example.com/" + objectClassName + "/" + query);
 		this.setRel("self");
 		this.setHref("http://example.com/" + objectClassName + "/" + query);
