@@ -31,10 +31,10 @@ public class LinkDAO extends Link implements DatabaseObject {
 	 * Construct a "self" Link
 	 * 
 	 */
-	public LinkDAO(String contextPath, String objectClassName, String query) {
-		this.setValue("http://example.com" + contextPath + "/" + objectClassName + "/" + query);
+	public LinkDAO(String header, String contextPath, String objectClassName, String query) {
+		this.setValue(header + contextPath + "/" + objectClassName + "/" + query);
 		this.setRel("self");
-		this.setHref("http://example.com" + contextPath + "/" + objectClassName + "/" + query);
+		this.setHref(header + contextPath + "/" + objectClassName + "/" + query);
 		this.setType("application/rdap+json");
 	}
 

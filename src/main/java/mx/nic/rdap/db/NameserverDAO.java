@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import mx.nic.rdap.core.db.Entity;
 import mx.nic.rdap.core.db.Nameserver;
 
 /**
@@ -63,6 +64,19 @@ public class NameserverDAO extends Nameserver implements DatabaseObject {
 		preparedStatement.setString(1, this.getLdhName());
 		preparedStatement.setString(2, this.getPort43());
 		preparedStatement.setLong(3, this.getId());
+	}
+
+	/**
+	 * Generates a link with the self information and add it to the domain
+	 */
+	public void addSelfLinks(String header, String contextPath) {
+		LinkDAO self = new LinkDAO(header, contextPath, "nameserver", this.getLdhName());
+		this.getLinks().add(self);
+
+		for (Entity ent : this.getEntities()) {
+			self = new LinkDAO(header, contextPath, "entity", ent.getHandle());
+			ent.getLinks().add(self);
+		}
 	}
 
 }

@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import mx.nic.rdap.core.db.Autnum;
+import mx.nic.rdap.core.db.Entity;
 
 /**
  * Data access class for the {@link Autnum} object.
@@ -74,6 +75,19 @@ public class AutnumDAO extends Autnum implements DatabaseObject {
 		preparedStatement.setInt(6, this.getCountry());
 		preparedStatement.setLong(7, this.getId());
 
+	}
+
+	/**
+	 * Generates a link with the self information and add it to the domain
+	 */
+	public void addSelfLinks(String header, String contextPath) {
+		LinkDAO self = new LinkDAO(header, contextPath, "autnum", this.getStartAutnum().toString());
+		this.getLinks().add(self);
+
+		for (Entity ent : this.getEntities()) {
+			self = new LinkDAO(header, contextPath, "entity", ent.getHandle());
+			ent.getLinks().add(self);
+		}
 	}
 
 }
