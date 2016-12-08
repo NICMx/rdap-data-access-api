@@ -25,6 +25,7 @@ import mx.nic.rdap.db.QueryGroup;
 import mx.nic.rdap.db.exception.InvalidValueException;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
+import mx.nic.rdap.db.struct.SearchResultStruct;
 
 /**
  * Model for the {@link Nameserver} Object
@@ -155,8 +156,12 @@ public class NameserverModel {
 		}
 	}
 
-	public static List<NameserverDAO> searchByName(String namePattern, Integer resultLimit, Connection connection)
+	public static SearchResultStruct searchByName(String namePattern, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
+		SearchResultStruct result = new SearchResultStruct();
+		// Hack to know is there is more domains that the limit, used for
+		// notices
+		resultLimit = resultLimit + 1;
 		String query = "";
 		String criteria = "";
 		List<NameserverDAO> nameservers = new ArrayList<NameserverDAO>();
@@ -179,17 +184,30 @@ public class NameserverModel {
 				}
 				do {
 					NameserverDAO nameserver = new NameserverDAO(resultSet);
-					NameserverModel.loadNestedObjects(nameserver, connection);
 					nameservers.add(nameserver);
 				} while (resultSet.next());
 
-				return nameservers;
+				resultLimit = resultLimit - 1;// Back to the original limit
+				if (nameservers.size() > resultLimit) {
+					result.setResultSetWasLimitedByUserConfiguration(true);
+					nameservers.remove(nameservers.size() - 1);
+				}
+				for (NameserverDAO nameserver : nameservers) {
+					loadNestedObjects(nameserver, connection);
+				}
+				result.setSearchResultsLimitForUser(resultLimit);
+				result.getResults().addAll(nameservers);
+				return result;
 			}
 		}
 	}
 
-	public static List<NameserverDAO> searchByIp(String ipaddressPattern, Integer resultLimit, Connection connection)
+	public static SearchResultStruct searchByIp(String ipaddressPattern, Integer resultLimit, Connection connection)
 			throws SQLException, IOException, InvalidValueException {
+		SearchResultStruct result = new SearchResultStruct();
+		// Hack to know is there is more domains that the limit, used for
+		// notices
+		resultLimit = resultLimit + 1;
 		String query = "";
 		List<NameserverDAO> nameservers = new ArrayList<NameserverDAO>();
 		try {
@@ -213,11 +231,20 @@ public class NameserverModel {
 				}
 				do {
 					NameserverDAO nameserver = new NameserverDAO(resultSet);
-					NameserverModel.loadNestedObjects(nameserver, connection);
 					nameservers.add(nameserver);
 				} while (resultSet.next());
 
-				return nameservers;
+				resultLimit = resultLimit - 1;// Back to the original limit
+				if (nameservers.size() > resultLimit) {
+					result.setResultSetWasLimitedByUserConfiguration(true);
+					nameservers.remove(nameservers.size() - 1);
+				}
+				for (NameserverDAO nameserver : nameservers) {
+					loadNestedObjects(nameserver, connection);
+				}
+				result.setSearchResultsLimitForUser(resultLimit);
+				result.getResults().addAll(nameservers);
+				return result;
 			}
 		}
 	}

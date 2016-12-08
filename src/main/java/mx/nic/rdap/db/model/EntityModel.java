@@ -23,6 +23,7 @@ import mx.nic.rdap.db.EntityDAO;
 import mx.nic.rdap.db.QueryGroup;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
+import mx.nic.rdap.db.struct.SearchResultStruct;
 
 /**
  * Model for the {@link Entity} Object
@@ -149,7 +150,7 @@ public class EntityModel {
 			entResult = processResultSet(resultSet, connection);
 		}
 
-		getNestedObjects(entResult, connection);
+		loadNestedObjects(entResult, connection);
 		return entResult;
 	}
 
@@ -162,11 +163,11 @@ public class EntityModel {
 			entResult = processResultSet(resultSet, connection);
 		}
 
-		getNestedObjects(entResult, connection);
+		loadNestedObjects(entResult, connection);
 		return entResult;
 	}
 
-	private static void getNestedObjects(Entity entity, Connection connection) throws SQLException, IOException {
+	private static void loadNestedObjects(Entity entity, Connection connection) throws SQLException, IOException {
 
 		Long entityId = entity.getId();
 		try {
@@ -336,20 +337,24 @@ public class EntityModel {
 		return;
 	}
 
-	public static List<EntityDAO> searchByHandle(String handle, Integer resultLimit, Connection connection)
+	public static SearchResultStruct searchByHandle(String handle, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
 		return searchBy(handle, resultLimit, connection, queryGroup.getQuery(SEARCH_BY_PARTIAL_HANDLE_QUERY),
 				queryGroup.getQuery(SEARCH_BY_HANDLE_QUERY));
 	}
 
-	public static List<EntityDAO> searchByVCardName(String handle, Integer resultLimit, Connection connection)
+	public static SearchResultStruct searchByVCardName(String handle, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
 		return searchBy(handle, resultLimit, connection, queryGroup.getQuery(SEARCH_BY_PARTIAL_NAME_QUERY),
 				queryGroup.getQuery(SEARCH_BY_NAME_QUERY));
 	}
 
-	private static List<EntityDAO> searchBy(String handle, Integer resultLimit, Connection connection,
+	private static SearchResultStruct searchBy(String handle, Integer resultLimit, Connection connection,
 			String searchByPartialQuery, String getByQuery) throws SQLException, IOException {
+		SearchResultStruct result = new SearchResultStruct();
+		// Hack to know is there is more domains that the limit, used for
+		// notices
+		resultLimit = resultLimit + 1;
 		String query;
 		String criteria;
 		List<EntityDAO> entities = new ArrayList<EntityDAO>();
@@ -375,12 +380,21 @@ public class EntityModel {
 			do {
 				EntityDAO ent = new EntityDAO();
 				ent.loadFromDatabase(rs);
-				getNestedObjects(ent, connection);
 				entities.add(ent);
 			} while (rs.next());
+			resultLimit = resultLimit - 1;// Back to the original limit
+			if (entities.size() > resultLimit) {
+				result.setResultSetWasLimitedByUserConfiguration(true);
+				entities.remove(entities.size() - 1);
+			}
+			for (EntityDAO ent : entities) {
+				loadNestedObjects(ent, connection);
+			}
+			result.setSearchResultsLimitForUser(resultLimit);
+			result.getResults().addAll(entities);
+			return result;
 		}
 
-		return entities;
 	}
 
 	/**

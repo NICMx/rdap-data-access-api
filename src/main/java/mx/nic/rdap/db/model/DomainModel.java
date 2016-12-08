@@ -25,6 +25,7 @@ import mx.nic.rdap.db.Util;
 import mx.nic.rdap.db.exception.InvalidValueException;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
+import mx.nic.rdap.db.struct.SearchResultStruct;
 
 /**
  * Model for the {@link Domain} Object
@@ -209,9 +210,12 @@ public class DomainModel {
 	 * Searches a domain by it´s name and TLD
 	 * 
 	 */
-	public static List<DomainDAO> searchByName(String name, String zone, Integer resultLimit, Connection connection)
+	public static SearchResultStruct searchByName(String name, String zone, Integer resultLimit, Connection connection)
 			throws SQLException, IOException, InvalidValueException {
-
+		SearchResultStruct result = new SearchResultStruct();
+		// Hack to know is there is more domains that the limit, used for
+		// notices
+		resultLimit = resultLimit + 1;
 		boolean isPartialZone = zone.contains("*");
 		boolean isPartialName = name.contains("*");
 		String query = null;
@@ -261,18 +265,25 @@ public class DomainModel {
 
 			logger.log(Level.INFO, "Executing query" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
-
 			if (!resultSet.next()) {
 				throw new ObjectNotFoundException("Object not found.");
 			}
 			List<DomainDAO> domains = new ArrayList<DomainDAO>();
 			do {
 				DomainDAO domain = new DomainDAO(resultSet);
-				loadNestedObjects(domain, connection);
 				domains.add(domain);
 			} while (resultSet.next());
-
-			return domains;
+			resultLimit = resultLimit - 1;// Back to the original limit
+			if (domains.size() > resultLimit) {
+				result.setResultSetWasLimitedByUserConfiguration(true);
+				domains.remove(domains.size() - 1);
+			}
+			for (DomainDAO domain : domains) {
+				loadNestedObjects(domain, connection);
+			}
+			result.setSearchResultsLimitForUser(resultLimit);
+			result.getResults().addAll(domains);
+			return result;
 		}
 	}
 
@@ -280,9 +291,12 @@ public class DomainModel {
 	 * Searches a domain by it's name when user don´t care about the TLD
 	 * 
 	 */
-	public static List<DomainDAO> searchByName(String domainName, Integer resultLimit, Connection connection)
+	public static SearchResultStruct searchByName(String domainName, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
-
+		SearchResultStruct result = new SearchResultStruct();
+		// Hack to know is there is more domains that the limit, used for
+		// notices
+		resultLimit = resultLimit + 1;
 		String query = null;
 		if (domainName.contains("*")) {
 			domainName = domainName.replaceAll("\\*", "%");
@@ -311,11 +325,19 @@ public class DomainModel {
 			List<DomainDAO> domains = new ArrayList<DomainDAO>();
 			do {
 				DomainDAO domain = new DomainDAO(resultSet);
-				loadNestedObjects(domain, connection);
 				domains.add(domain);
 			} while (resultSet.next());
-
-			return domains;
+			resultLimit = resultLimit - 1;// Back to the original limit
+			if (domains.size() > resultLimit) {
+				result.setResultSetWasLimitedByUserConfiguration(true);
+				domains.remove(domains.size() - 1);
+			}
+			for (DomainDAO domain : domains) {
+				loadNestedObjects(domain, connection);
+			}
+			result.setSearchResultsLimitForUser(resultLimit);
+			result.getResults().addAll(domains);
+			return result;
 		}
 	}
 
@@ -323,9 +345,12 @@ public class DomainModel {
 	 * Searches all domains with a nameserver by name
 	 * 
 	 */
-	public static List<DomainDAO> searchByNsLdhName(String name, Integer resultLimit, Connection connection)
+	public static SearchResultStruct searchByNsLdhName(String name, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
-
+		SearchResultStruct result = new SearchResultStruct();
+		// Hack to know is there is more domains that the limit, used for
+		// notices
+		resultLimit = resultLimit + 1;
 		name = name.replace("*", "%");
 		try (PreparedStatement statement = connection
 				.prepareStatement(queryGroup.getQuery(SEARCH_BY_NAMESERVER_LDH_QUERY))) {
@@ -340,10 +365,19 @@ public class DomainModel {
 			List<DomainDAO> domains = new ArrayList<DomainDAO>();
 			do {
 				DomainDAO domain = new DomainDAO(resultSet);
-				loadNestedObjects(domain, connection);
 				domains.add(domain);
 			} while (resultSet.next());
-			return domains;
+			resultLimit = resultLimit - 1;// Back to the original limit
+			if (domains.size() > resultLimit) {
+				result.setResultSetWasLimitedByUserConfiguration(true);
+				domains.remove(domains.size() - 1);
+			}
+			for (DomainDAO domain : domains) {
+				loadNestedObjects(domain, connection);
+			}
+			result.setSearchResultsLimitForUser(resultLimit);
+			result.getResults().addAll(domains);
+			return result;
 		}
 	}
 
@@ -351,8 +385,12 @@ public class DomainModel {
 	 * searches all domains with a nameserver by address
 	 * 
 	 */
-	public static List<DomainDAO> searchByNsIp(String ip, Integer resultLimit, Connection connection)
+	public static SearchResultStruct searchByNsIp(String ip, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
+		SearchResultStruct result = new SearchResultStruct();
+		// Hack to know is there is more domains that the limit, used for
+		// notices
+		resultLimit = resultLimit + 1;
 		IpAddressDAO ipAddress = new IpAddressDAO();
 		InetAddress address = InetAddress.getByName(ip);
 		ipAddress.setAddress(address);
@@ -380,7 +418,17 @@ public class DomainModel {
 				loadNestedObjects(domain, connection);
 				domains.add(domain);
 			} while (resultSet.next());
-			return domains;
+			resultLimit = resultLimit - 1;// Back to the original limit
+			if (domains.size() > resultLimit) {
+				result.setResultSetWasLimitedByUserConfiguration(true);
+				domains.remove(domains.size() - 1);
+			}
+			for (DomainDAO domain : domains) {
+				loadNestedObjects(domain, connection);
+			}
+			result.setSearchResultsLimitForUser(resultLimit);
+			result.getResults().addAll(domains);
+			return result;
 		}
 
 	}
