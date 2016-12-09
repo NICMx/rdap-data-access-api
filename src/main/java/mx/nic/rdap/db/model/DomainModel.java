@@ -509,18 +509,22 @@ public class DomainModel {
 	 * 
 	 */
 	public static void validateDomainZone(String domainName) throws InvalidValueException, ObjectNotFoundException {
+		String domainZone;
+
 		if (ZoneModel.isReverseAddress(domainName)) {
-			return;
+			domainZone = ZoneModel.getArpaZoneNameFromAddress(domainName);
+			if (domainZone == null) {
+				throw new ObjectNotFoundException("Zone not found.");
+			}
+		} else {
+			int indexOf = domainName.indexOf('.');
+			if (indexOf <= 0) {
+				throw new ObjectNotFoundException("Zone not found.");
+			}
+
+			domainZone = domainName.substring(indexOf + 1, domainName.length());
+
 		}
-
-		int indexOf = domainName.indexOf('.');
-
-		if (indexOf <= 0) {
-			throw new ObjectNotFoundException("Zone not found.");
-
-		}
-
-		String domainZone = domainName.substring(indexOf + 1, domainName.length());
 
 		if (!ZoneModel.existsZone(domainZone)) {
 			throw new ObjectNotFoundException("Zone not found.");

@@ -28,8 +28,8 @@ public class ZoneModel {
 	private final static Logger logger = Logger.getLogger(ZoneModel.class.getName());
 
 	private final static String QUERY_GROUP = "Zone";
-	private final static String GET_ALL_QUERY="getAll";
-	private final static String STORE_QUERY="storeToDatabase";
+	private final static String GET_ALL_QUERY = "getAll";
+	private final static String STORE_QUERY = "storeToDatabase";
 
 	private static QueryGroup queryGroup = null;
 
@@ -159,6 +159,18 @@ public class ZoneModel {
 
 		if (address.endsWith(REVERSE_IP_V6)) {
 			return getIdByZoneName(REVERSE_IP_V6);
+		}
+
+		return null;
+	}
+
+	public static String getArpaZoneNameFromAddress(String address) {
+		if (address.endsWith(REVERSE_IP_V4)) {
+			return REVERSE_IP_V4;
+		}
+
+		if (address.endsWith(REVERSE_IP_V6)) {
+			return REVERSE_IP_V6;
 		}
 
 		return null;
