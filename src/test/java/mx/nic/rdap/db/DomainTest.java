@@ -709,4 +709,55 @@ public class DomainTest extends DatabaseTest {
 		variantName.setLdhName(punycode);
 		return variantName;
 	}
+
+	@Test
+	public  void existByLdhName() {
+		try {
+			// Creates and inserts a zone
+			Integer zoneId = null;
+			zoneId = ZoneModel.storeToDatabase("mx", connection);
+			DomainModel.existByLdhName("mydomain", zoneId, connection);
+		} catch (SQLException s) {
+			fail();
+		}
+	}
+	
+	@Test
+	public  void existByNsIp() {
+		try {
+			DomainModel.existByNsIp("2001:db8:0:0:0:0:0:120", connection);
+		} catch (SQLException | UnknownHostException s) {
+			fail();
+		}
+	}
+	
+	@Test
+	public  void existByNsLdhName() {
+		try {
+			DomainModel.existByNsLdhName("myns", connection);
+		} catch (SQLException s) {
+			fail();
+		}
+	}
+	
+	@Test
+	public  void existByName() {
+		try {
+			String domainName="mydomain";
+			DomainModel.existByName(domainName,"mx", connection);
+		} catch (SQLException s) {
+			fail();
+		}
+	}
+	
+	@Test
+	public  void existByNameWithoutZone() {
+		try {
+			//dn1?.com.mx
+			String domainName="mydomainName";
+			DomainModel.existByName(domainName, connection);
+		} catch (SQLException s) {
+			fail();
+		}
+	}
 }

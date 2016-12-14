@@ -44,9 +44,9 @@ public class DummyDataTest extends DatabaseTest {
 
 	@Test
 	public void createDataDummy() throws RequiredValueNotFoundException, IOException {
-		int numberOfDomains = 800;
+		int numberOfDomains = 2000;
 		try {
-			for (int index = 401; index < numberOfDomains; index++) {
+			for (int index = 801; index < numberOfDomains; index++) {
 				String domainName = "DN" + index;
 				if (getRandomBoolean()) {
 					domainName = domainName
@@ -223,7 +223,7 @@ public class DummyDataTest extends DatabaseTest {
 			remark.setLanguage("EN");
 			String remTitle=title + "-Rem-" + index;
 			remark.setTitle(remTitle);
-			remark.setType("TypeNull");
+			remark.setType("random type");
 			if (hasLinks) {
 				remark.setLinks(createRandomLinks());
 			}

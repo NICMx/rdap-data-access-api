@@ -30,6 +30,7 @@ public class AutnumModel {
 
 	private static final String STORE_QUERY = "storeToDatabase";
 	private static final String GET_BY_RANGE = "getByRange";
+	private static final String EXIST_BY_RANGE = "existByRange";
 	private static final String GET_BY_ID = "getAutnumById";
 	private static final String GET_BY_HANDLE = "getAutnumByHandle";
 	private static final String UPDATE_QUERY = "updateInDatabase";
@@ -67,7 +68,7 @@ public class AutnumModel {
 		LinkModel.storeAutnumLinksToDatabase(autnum.getLinks(), autnumId, connection);
 		EventModel.storeAutnumEventsToDatabase(autnum.getEvents(), autnumId, connection);
 		for (Entity ent : autnum.getEntities()) {
-			Long entId = EntityModel.existsByHandle(ent.getHandle(), connection);
+			Long entId = EntityModel.getIdByHandle(ent.getHandle(), connection);
 			if (entId == null) {
 				throw new NullPointerException(
 						"Entity: " + ent.getHandle() + "was not inserted previously to the database");
@@ -118,6 +119,20 @@ public class AutnumModel {
 				AutnumDAO autnum = new AutnumDAO(resultSet);
 				loadNestedObjects(autnum, connection);
 				return autnum;
+			}
+		}
+	}
+
+	public static void existByRange(Long autnumValue, Connection connection) throws SQLException {
+		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(EXIST_BY_RANGE))) {
+			statement.setLong(1, autnumValue);
+			statement.setLong(2, autnumValue);
+			logger.log(Level.INFO, "Executing query: " + statement.toString());
+			try (ResultSet resultSet = statement.executeQuery()) {
+				resultSet.next();
+				if (resultSet.getInt(1) == 0) {
+					throw new ObjectNotFoundException("Object not found.");
+				}
 			}
 		}
 	}

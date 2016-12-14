@@ -21,6 +21,7 @@ import mx.nic.rdap.core.db.Nameserver;
 import mx.nic.rdap.core.db.Remark;
 import mx.nic.rdap.core.db.RemarkDescription;
 import mx.nic.rdap.core.db.struct.NameserverIpAddressesStruct;
+import mx.nic.rdap.db.exception.InvalidValueException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
 import mx.nic.rdap.db.model.NameserverModel;
 
@@ -267,4 +268,21 @@ public class NameserverTest extends DatabaseTest {
 		}
 	}
 
+	@Test
+	public void existByName(){
+		try{
+			NameserverModel.existByName("myns", connection);
+		}catch(SQLException  s){
+			fail();
+		}
+	}
+	
+	@Test
+	public void existByIp(){
+		try{
+			NameserverModel.existByIp("2001:db8:0:0:0:0:0:123", connection);
+		}catch(SQLException | InvalidValueException  s){
+			fail();
+		}
+	}
 }

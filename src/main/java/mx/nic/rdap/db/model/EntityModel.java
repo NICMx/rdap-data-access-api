@@ -54,6 +54,11 @@ public class EntityModel {
 	private final static String GET_AUTNUM_ENTITY_QUERY = "getAutnumEntitiesQuery";
 	private final static String GET_IP_NETWORK_ENTITY_QUERY = "getIpNetworkEntitiesQuery";
 
+	private final static String EXIST_BY_HANDLE_QUERY = "existByHandle";
+	private final static String EXIST_BY_PARTIAL_HANDLE_QUERY = "existByPartialHandle";
+	private final static String EXIST_BY_PARTIAL_NAME_QUERY = "existByPartialName";
+	private final static String EXIST_BY_NAME_QUERY = "existByName";
+
 	static {
 		try {
 			queryGroup = new QueryGroup(QUERY_GROUP);
@@ -62,7 +67,7 @@ public class EntityModel {
 		}
 	}
 
-	public static Long existsByHandle(String entityHandle, Connection connection) throws SQLException {
+	public static Long getIdByHandle(String entityHandle, Connection connection) throws SQLException {
 		String query = queryGroup.getQuery(GET_ID_BY_HANDLE_QUERY);
 		Long entId = null;
 		try (PreparedStatement statement = connection.prepareStatement(query);) {
@@ -83,7 +88,7 @@ public class EntityModel {
 
 	public static long storeToDatabase(Entity entity, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
-		Long entityId = existsByHandle(entity.getHandle(), connection);
+		Long entityId = getIdByHandle(entity.getHandle(), connection);
 		if (entityId != null) {
 			entity.setId(entityId);
 			return entityId;
@@ -462,12 +467,46 @@ public class EntityModel {
 
 	public static void validateParentEntities(List<Entity> entities, Connection connection) throws SQLException {
 		for (Entity ent : entities) {
-			Long entId = EntityModel.existsByHandle(ent.getHandle(), connection);
+			Long entId = EntityModel.getIdByHandle(ent.getHandle(), connection);
 			if (entId == null) {
 				throw new NullPointerException(
 						"Entity: " + ent.getHandle() + " was not inserted previously to the database");
 			}
 			ent.setId(entId);
+		}
+	}
+
+	public static void existByVCardName(String vcardName, Connection connection) throws SQLException {
+		existBy(vcardName, connection, queryGroup.getQuery(EXIST_BY_PARTIAL_NAME_QUERY),
+				queryGroup.getQuery(EXIST_BY_NAME_QUERY));
+	}
+
+	public static void existByHandle(String entityHandle, Connection connection) throws SQLException {
+		existBy(entityHandle, connection, queryGroup.getQuery(EXIST_BY_PARTIAL_HANDLE_QUERY),
+				queryGroup.getQuery(EXIST_BY_HANDLE_QUERY));
+	}
+
+	private static void existBy(String pattern, Connection connection, String searchByPartialQuery, String getByQuery)
+			throws SQLException {
+
+		String query;
+		String criteria;
+		if (pattern.contains("*")) {
+			query = searchByPartialQuery;
+			criteria = pattern.replace('*', '%');
+		} else {
+			query = getByQuery;
+			criteria = pattern;
+		}
+
+		try (PreparedStatement statement = connection.prepareStatement(query);) {
+			statement.setString(1, criteria);
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			ResultSet rs = statement.executeQuery();
+			rs.next();
+			if (rs.getInt(1) == 0) {
+				throw new ObjectNotFoundException("Object not found.");
+			}
 		}
 	}
 }

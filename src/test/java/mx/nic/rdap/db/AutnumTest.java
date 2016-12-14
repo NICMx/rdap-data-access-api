@@ -29,6 +29,16 @@ import mx.nic.rdap.db.model.EntityModel;
  */
 public class AutnumTest extends DatabaseTest {
 
+	
+	@Test
+	public void existByRange(){
+		try{
+			AutnumModel.existByRange(10l, connection);
+		}catch(SQLException s){
+			fail();
+		}
+	}
+	
 	@Test
 	public void upsertSimpleAutnum() {
 

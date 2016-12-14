@@ -33,10 +33,8 @@ import mx.nic.rdap.db.model.EntityModel;
  */
 public class EntityTest extends DatabaseTest {
 
-	
-	
 	@Test
-	public void insertMinimunEntity(){
+	public void insertMinimunEntity() {
 		Entity entity = createEntity(null, "minimunEntity", "www.rardhfelix.mx");
 		try {
 			EntityModel.storeToDatabase(entity, connection);
@@ -45,9 +43,9 @@ public class EntityTest extends DatabaseTest {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Test
-	public void upsertMinimunEntity(){
+	public void upsertMinimunEntity() {
 		try {
 			EntityDAO entity = createEntity(null, "minimunUpsertEntityNew", "www.rardhfelix.mx");
 			EntityModel.upsertToDatabase(entity, connection);
@@ -58,6 +56,7 @@ public class EntityTest extends DatabaseTest {
 			fail(e.getMessage());
 		}
 	}
+
 	/**
 	 * Creates a simple entity object and store it in the database, then get the
 	 * same entity from the database by its ID and Handle, finally compares the
@@ -427,7 +426,6 @@ public class EntityTest extends DatabaseTest {
 
 	}
 
-	
 	@Test
 	public void upsertComplexObject() {
 
@@ -443,19 +441,18 @@ public class EntityTest extends DatabaseTest {
 		pid.setType("DUMMY REGISTRARS PUBLIC IDS");
 		rar.getPublicIds().add(pid);
 		// Vcard data
-		VCard vCard = VCardTest.createVCardDao(null, "mi nombre rar" , "company" ,
-				"www.companytest.com", "correo@correo.com", "818282569" ,
-				"520448114561234", null, null);
+		VCard vCard = VCardTest.createVCardDao(null, "mi nombre rar", "company", "www.companytest.com",
+				"correo@correo.com", "818282569", "520448114561234", null, null);
 		List<VCardPostalInfo> postalInfoList = new ArrayList<>();
 		for (int i = 0; i < 2; i++) {
-			postalInfoList.add(VCardTest.createVCardPostalInfo(null, null, "mytype rar" , "MX", "monterrey",
+			postalInfoList.add(VCardTest.createVCardPostalInfo(null, null, "mytype rar", "MX", "monterrey",
 					"Luis Elizondo", null, null, "NL", "66666"));
 		}
 		rar.getVCardList().add(vCard);
 		// ----- END OF REGISTRAR -----
 		// ----- START OF ENT 1 ------
 		// create local instances;
-		Entity entity1 = createEntity(null, "ent1b" , "www.ent1.mx");
+		Entity entity1 = createEntity(null, "ent1b", "www.ent1.mx");
 
 		// Status data
 		List<Status> statusList = new ArrayList<Status>();
@@ -521,14 +518,13 @@ public class EntityTest extends DatabaseTest {
 		entity1.getEvents().addAll(events);
 
 		// Vcard data
-		VCard vCardEnt = VCardTest.createVCardDao(null, "mi nombre ent1", "company" ,
-				"www.companytest.com", "correo@correo.com", "818282569" ,
-				"520448114561234", null, null);
+		VCard vCardEnt = VCardTest.createVCardDao(null, "mi nombre ent1", "company", "www.companytest.com",
+				"correo@correo.com", "818282569", "520448114561234", null, null);
 
 		List<VCardPostalInfo> postalInfoListEnt = new ArrayList<>();
 		for (int i = 0; i < 3; i++) {
-			postalInfoListEnt.add(VCardTest.createVCardPostalInfo(null, null, "mytype ent1" , "MX",
-					"monterrey", "Luis Elizondo", null, null, "NL", "66666"));
+			postalInfoListEnt.add(VCardTest.createVCardPostalInfo(null, null, "mytype ent1", "MX", "monterrey",
+					"Luis Elizondo", null, null, "NL", "66666"));
 		}
 		vCard.setPostalInfo(postalInfoListEnt);
 		entity1.getVCardList().add(vCardEnt);
@@ -601,14 +597,13 @@ public class EntityTest extends DatabaseTest {
 		entity2.getEvents().addAll(eventList);
 
 		// Vcard data
-		VCard vCardEnt2 = VCardTest.createVCardDao(null, "mi nombre ent2", "company",
-				"www.companytest.com", "correo@correo.com", "818282569",
-				"520448114561234", null, null);
+		VCard vCardEnt2 = VCardTest.createVCardDao(null, "mi nombre ent2", "company", "www.companytest.com",
+				"correo@correo.com", "818282569", "520448114561234", null, null);
 
 		List<VCardPostalInfo> postalInfoListEnt2 = new ArrayList<>();
 		for (int i = 0; i < 3; i++) {
-			postalInfoListEnt2.add(VCardTest.createVCardPostalInfo(null, null, "mytype ent2", "MX",
-					"monterrey", "Luis Elizondo", null, null, "NL", "66666"));
+			postalInfoListEnt2.add(VCardTest.createVCardPostalInfo(null, null, "mytype ent2", "MX", "monterrey",
+					"Luis Elizondo", null, null, "NL", "66666"));
 		}
 		vCardEnt2.getPostalInfo().addAll(postalInfoListEnt2);
 		entity2.getVCardList().add(vCardEnt2);
@@ -617,22 +612,20 @@ public class EntityTest extends DatabaseTest {
 		rar.getEntities().add(entity1);
 		rar.getEntities().add(entity2);
 		try {
-			EntityModel.upsertToDatabase((EntityDAO)rar,connection);
+			EntityModel.upsertToDatabase((EntityDAO) rar, connection);
 			rar.setPort43("upserted");
-			rar.getEntities().get(0).getRemarks().get(0).getDescriptions().get(0).setDescription("Kings are dying like flies");
+			rar.getEntities().get(0).getRemarks().get(0).getDescriptions().get(0)
+					.setDescription("Kings are dying like flies");
 			rar.getEntities().get(1).getLinks().get(0).setRel("upserted");
-			EntityModel.upsertToDatabase((EntityDAO)rar,connection);
+			EntityModel.upsertToDatabase((EntityDAO) rar, connection);
 			connection.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
 
-
-
-
 	}
-	
+
 	@Test
 	public void createAndInsertRegistrar() {
 		Entity entity = createEntity(null, "rar_test", "whois.rar_test.com");
@@ -808,4 +801,21 @@ public class EntityTest extends DatabaseTest {
 		return entity;
 	}
 
+	@Test
+	public void existByHandle() {
+		try {
+			EntityModel.existByHandle("myEntHandle", connection);
+		} catch (SQLException s) {
+			fail();
+		}
+	}
+	
+	@Test
+	public void existByVcardName() {
+		try {
+			EntityModel.existByVCardName("Joe Jobs", connection);
+		} catch (SQLException s) {
+			fail();
+		}
+	}
 }

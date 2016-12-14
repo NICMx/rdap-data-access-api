@@ -2,7 +2,9 @@ package mx.nic.rdap.db;
 
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -317,4 +319,14 @@ public class IpNetworkTest extends DatabaseTest {
 		ipNetwork.setCidr(cidr);
 		return ipNetwork;
 	}
+	
+	@Test
+	public void exist(){
+		try{
+			IpNetworkModel.existByInetAddress("127.0.0.1", connection);
+		}catch(SQLException | IOException e){
+			fail();
+		}
+	}
+	
 }

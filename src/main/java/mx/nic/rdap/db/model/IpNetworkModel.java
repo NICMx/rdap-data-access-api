@@ -27,6 +27,7 @@ import mx.nic.rdap.db.exception.InvalidValueException;
 import mx.nic.rdap.db.exception.ObjectNotFoundException;
 import mx.nic.rdap.db.exception.RdapDatabaseException;
 import mx.nic.rdap.db.exception.RequiredValueNotFoundException;
+
 /**
  * Model for the {@link IpNetworkModel} Object
  * 
@@ -46,6 +47,8 @@ public class IpNetworkModel {
 	private static final String GET_BY_DOMAIN_ID = "getByDomainId";
 	private static final String GET_BY_HANDLE = "getByHandle";
 
+	private static final String EXIST_BY_IPV4 = "existByIPv4";
+	private static final String EXIST_BY_IPV6 = "existByIPv6";
 	private static final String UPDATE_QUERY = "updateInDatabase";
 
 	static {
@@ -118,7 +121,7 @@ public class IpNetworkModel {
 		LinkModel.storeIpNetworkLinksToDatabase(ipNetwork.getLinks(), ipNetwork.getId(), connection);
 		EventModel.storeIpNetworkEventsToDatabase(ipNetwork.getEvents(), ipNetwork.getId(), connection);
 		for (Entity ent : ipNetwork.getEntities()) {
-			Long entId = EntityModel.existsByHandle(ent.getHandle(), connection);
+			Long entId = EntityModel.getIdByHandle(ent.getHandle(), connection);
 			if (entId == null) {
 				throw new NullPointerException(
 						"Entity: " + ent.getHandle() + "was not inserted previously to the database");
@@ -397,5 +400,98 @@ public class IpNetworkModel {
 				connection);
 		RolModel.updateIpNetworkEntityRoles(previousNetwork.getEntities(), ipNetwork.getEntities(), networkId,
 				connection);
+	}
+
+	public static void existByInetAddress(String ipAddress, Integer cidr, Connection connection)
+			throws SQLException, IOException {
+		InetAddress inetAddress;
+		try {
+			inetAddress = IpUtils.validateIpAddress(ipAddress);
+		} catch (InvalidValueException e) {
+			throw new UnknownHostException(ipAddress);
+		}
+		existByInetAddress(inetAddress, cidr, connection);
+
+	}
+
+	public static void existByInetAddress(String ipAddress, Connection connection) throws SQLException, IOException {
+		InetAddress inetAddress;
+		try {
+			inetAddress = IpUtils.validateIpAddress(ipAddress);
+		} catch (InvalidValueException e) {
+			throw new UnknownHostException(ipAddress);
+		}
+		existByInetAddress(inetAddress, connection);
+
+	}
+
+	private static void existByInetAddress(InetAddress inetAddress, Connection connection)
+			throws SQLException, IOException {
+		existByInetAddress(inetAddress, IpUtils.getMaxValidCidr(inetAddress), connection);
+	}
+
+	private static void existByInetAddress(InetAddress inetAddress, Integer cidr, Connection connection)
+			throws SQLException, IOException {
+		if (inetAddress instanceof Inet4Address) {
+			existByInet4Address((Inet4Address) inetAddress, cidr, connection);
+		} else if (inetAddress instanceof Inet6Address) {
+			existByInet6Address((Inet6Address) inetAddress, cidr, connection);
+		} else {
+			throw new UnsupportedOperationException("Unsupported class:" + inetAddress.getClass().getName());
+		}
+	}
+
+	private static void existByInet4Address(Inet4Address inetAddress, Integer cidr, Connection connection)
+			throws UnknownHostException, SQLException {
+		InetAddress lastAddressFromNetwork = IpUtils.getLastAddressFromNetwork(inetAddress, cidr);
+
+		BigInteger start = IpUtils.addressToNumber(inetAddress);
+		BigInteger end = IpUtils.addressToNumber((Inet4Address) lastAddressFromNetwork);
+
+		String query = queryGroup.getQuery(EXIST_BY_IPV4);
+		try (PreparedStatement statement = connection.prepareStatement(query);) {
+			statement.setInt(1, cidr);
+			statement.setString(2, start.toString());
+			statement.setString(3, end.toString());
+			ResultSet rs = statement.executeQuery();
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+			rs.next();
+			if (rs.getInt(1) == 0) {
+				throw new ObjectNotFoundException("Object not found.");
+			}
+
+		}
+
+	}
+
+	private static void existByInet6Address(Inet6Address inetAddress, Integer cidr, Connection connection)
+			throws UnknownHostException, SQLException {
+		InetAddress lastAddressFromNetwork = IpUtils.getLastAddressFromNetwork(inetAddress, cidr);
+
+		BigInteger startUpperPart = IpUtils.inet6AddressToUpperPart(inetAddress);
+		BigInteger startLowerPart = IpUtils.inet6AddressToLowerPart(inetAddress);
+
+		BigInteger endUpperPart = IpUtils.inet6AddressToUpperPart((Inet6Address) lastAddressFromNetwork);
+		BigInteger endLowerPart = IpUtils.inet6AddressToLowerPart((Inet6Address) lastAddressFromNetwork);
+
+		String query = queryGroup.getQuery(EXIST_BY_IPV6);
+		try (PreparedStatement statement = connection.prepareStatement(query);) {
+			statement.setInt(1, cidr);
+			statement.setString(2, startUpperPart.toString());
+			statement.setString(3, startLowerPart.toString());
+
+			statement.setString(4, endUpperPart.toString());
+			statement.setString(5, endLowerPart.toString());
+
+			ResultSet rs = statement.executeQuery();
+			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
+
+			rs.next();
+			if (rs.getInt(1) == 0) {
+				throw new ObjectNotFoundException("Object not found.");
+			}
+
+		}
+
 	}
 }

@@ -49,3 +49,15 @@ SELECT * FROM rdap.entity ent JOIN rdap.entity_contact eco ON eco.ent_id=ent.ent
 #updateInDatabase
 UPDATE rdap.entity SET ent_port43=? WHERE ent_id=?;
 
+#existByHandle
+SELECT EXISTS(SELECT 1 FROM rdap.entity e WHERE e.ent_handle = ?);
+
+#existByPartialName
+SELECT EXISTS(SELECT 1 FROM rdap.entity ent JOIN rdap.entity_contact eco ON eco.ent_id=ent.ent_id JOIN rdap.vcard vca ON vca.vca_id=eco.vca_id WHERE vca.vca_name LIKE ?);
+
+#existByName
+SELECT EXISTS(SELECT 1 FROM rdap.entity ent JOIN rdap.entity_contact eco ON eco.ent_id=ent.ent_id JOIN rdap.vcard vca ON vca.vca_id=eco.vca_id WHERE vca.vca_name = ?);
+
+#existByPartialHandle
+SELECT EXISTS(SELECT 1  FROM rdap.entity e WHERE e.ent_handle LIKE ?);
+

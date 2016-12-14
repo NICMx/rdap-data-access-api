@@ -16,10 +16,6 @@ SELECT * FROM rdap.nameserver nse WHERE nse.nse_ldh_name=?;
 #getByDomainId
 SELECT nse.* FROM rdap.nameserver nse JOIN rdap.domain_nameservers dom ON dom.nse_id=nse.nse_id WHERE dom.dom_id=?;
 
-#existByName
-SELECT 1 FROM rdap.nameserver nse WHERE nse.nse_ldh_name=?;
-
-
 #searchByPartialName
 SELECT DISTINCT(nse.nse_id), nse.nse_handle,nse.nse_ldh_name, nse.nse_port43 FROM rdap.nameserver nse WHERE nse.nse_ldh_name like ? ORDER BY 1 LIMIT ?;
 
@@ -37,3 +33,16 @@ SELECT * FROM rdap.nameserver nse;
 
 #deleteDomainNameserversRelation
 DELETE FROM rdap.domain_nameservers WHERE dom_id=?;
+
+#existByName
+SELECT EXISTS(SELECT 1 FROM rdap.nameserver nse WHERE nse.nse_ldh_name=?);
+
+#existByPartialName
+SELECT EXISTS(SELECT 1  FROM rdap.nameserver nse WHERE nse.nse_ldh_name like ? );
+
+
+#existByIp4
+SELECT EXISTS(SELECT 1 FROM rdap.nameserver nse join rdap.ip_address ipa on ipa.nse_id=nse.nse_id WHERE ipa.iad_value=INET_ATON(?));
+
+#existByIp6
+SELECT EXISTS(SELECT 1 FROM rdap.nameserver nse join rdap.ip_address ipa on ipa.nse_id=nse.nse_id WHERE ipa.iad_value=INET6_ATON(?));
