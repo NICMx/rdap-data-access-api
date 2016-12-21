@@ -49,7 +49,6 @@ public class RdapUserTest extends DatabaseTest {
 			user.setUserRole(role);
 			RdapUserModel.storeToDatabase(user, connection);
 			RdapUserModel.getByName(userName, connection);
-			connection.close();
 			assert true;
 		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
 			e.printStackTrace();
@@ -61,8 +60,6 @@ public class RdapUserTest extends DatabaseTest {
 	public void cleanUsersTableTest() throws IOException {
 		try {
 			RdapUserModel.cleanRdapUserDatabase(connection);
-			connection.commit();
-			connection.close();
 			assert true;
 		} catch (SQLException e) {
 			e.printStackTrace();
