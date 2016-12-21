@@ -88,9 +88,6 @@ DELETE  FROM rdap.variant;
 #30_delete_secure_dns
 DELETE  FROM rdap.secure_dns;
 
-#31_delete_zone
-DELETE  FROM rdap.zone;
-
 #32_delete_asn_entity_roles
 DELETE  FROM rdap.asn_entity_roles;
 
@@ -159,3 +156,6 @@ DELETE  FROM rdap.ip_network;
 
 #54_delete_asn
 DELETE  FROM rdap.autonomous_system_number;
+
+#55_delete_zone
+DELETE  FROM rdap.zone;
