@@ -93,14 +93,14 @@ public class DummyDataTest extends DatabaseTest {
 		if (hasEvents) {
 			domain.setEvents(createRandomEvents());
 		}
-		
-		DomainModel.storeToDatabase(domain, connection);
+
+		DomainModel.storeToDatabase(domain, false, connection);
 	}
 
 	private static List<Nameserver> createNameservers(String name, boolean hasEntities, boolean hasRemarks,
 			boolean hasLinks, boolean hasEvents) throws RequiredValueNotFoundException, IOException, SQLException {
 		List<Nameserver> nameservers = new ArrayList<Nameserver>();
-		 
+
 		int numberOfNameservers = ThreadLocalRandom.current().nextInt(1, 3);
 		for (int index = 0; index < numberOfNameservers; index++) {
 			Nameserver nameserver = new NameserverDAO();
@@ -143,8 +143,8 @@ public class DummyDataTest extends DatabaseTest {
 			}
 
 			if (hasEntities) {
-				nameserver.setEntities(createRandomEntities(nameserver.getPunycodeName(), 
-						getRandomBoolean(), getRandomBoolean(), getRandomBoolean(), getRandomBoolean()));
+				nameserver.setEntities(createRandomEntities(nameserver.getPunycodeName(), getRandomBoolean(),
+						getRandomBoolean(), getRandomBoolean(), getRandomBoolean()));
 			}
 			if (hasRemarks) {
 				nameserver.setRemarks(createRandomRemarks(nameserver.getLdhName(), getRandomBoolean()));
@@ -168,7 +168,7 @@ public class DummyDataTest extends DatabaseTest {
 		for (int index = 0; index < numberOfEntities; index++) {
 			Entity entity = new EntityDAO();
 			String entName = name.concat("-Ent-" + index);
-			entity.setHandle(entName+"-Handle");
+			entity.setHandle(entName + "-Handle");
 			entity.setPort43("whois.mx");
 			List<Status> statusList = new ArrayList<Status>();
 			statusList.add(Status.ACTIVE);
@@ -176,12 +176,12 @@ public class DummyDataTest extends DatabaseTest {
 				statusList.add(Status.ASSOCIATED);
 			entity.setStatus(statusList);
 			if (getRandomBoolean())
-			entity.getRoles().add(Rol.SPONSOR);
+				entity.getRoles().add(Rol.SPONSOR);
 			if (getRandomBoolean())
 				entity.getRoles().add(Rol.REGISTRANT);
 			if (getRandomBoolean())
 				entity.getRoles().add(Rol.RESELLER);
-			
+
 			if (getRandomBoolean()) {
 				PublicId pid = new PublicIdDAO();
 				pid.setPublicId(entName + "-PId");
@@ -191,14 +191,14 @@ public class DummyDataTest extends DatabaseTest {
 
 			// Vcard data
 			if (getRandomBoolean()) {
-			VCard vCard = VCardTest.createVCardDao(null, entName, "company", "www."+entName+".com",
-					null, null,null, null, null);
-			List<VCardPostalInfo> postalInfoList = new ArrayList<>();
-			for (int i = 0; i < 2; i++) {
-				postalInfoList.add(VCardTest.createVCardPostalInfo(null, null, null, "MX", "monterrey",
-						null, null, null, "NL", null));
-			}
-			entity.getVCardList().add(vCard);
+				VCard vCard = VCardTest.createVCardDao(null, entName, "company", "www." + entName + ".com", null, null,
+						null, null, null);
+				List<VCardPostalInfo> postalInfoList = new ArrayList<>();
+				for (int i = 0; i < 2; i++) {
+					postalInfoList.add(VCardTest.createVCardPostalInfo(null, null, null, "MX", "monterrey", null, null,
+							null, "NL", null));
+				}
+				entity.getVCardList().add(vCard);
 			}
 			if (hasRemarks) {
 				entity.setRemarks(createRandomRemarks(entName, getRandomBoolean()));
@@ -221,7 +221,7 @@ public class DummyDataTest extends DatabaseTest {
 		for (int index = 0; index < numberOfRemarks; index++) {
 			Remark remark = new RemarkDAO();
 			remark.setLanguage("EN");
-			String remTitle=title + "-Rem-" + index;
+			String remTitle = title + "-Rem-" + index;
 			remark.setTitle(remTitle);
 			remark.setType("random type");
 			if (hasLinks) {
@@ -262,7 +262,7 @@ public class DummyDataTest extends DatabaseTest {
 			else
 				event.setEventAction(EventAction.REGISTRATION);
 			event.setEventDate(new Date());
-			event.setEventActor( "-EA-" + index);
+			event.setEventActor("-EA-" + index);
 			if (getRandomBoolean()) {
 				event.setLinks(createRandomLinks());
 			}

@@ -68,8 +68,9 @@ public class NameserverModel {
 		}
 	}
 
-	private static void isValidForStore(Nameserver nameserver) throws RequiredValueNotFoundException {
-		if (nameserver.getHandle() == null || nameserver.getHandle().isEmpty())
+	private static void isValidForStore(Nameserver nameserver, boolean useNameserverAsAttribute)
+			throws RequiredValueNotFoundException {
+		if (!useNameserverAsAttribute && (nameserver.getHandle() == null || nameserver.getHandle().isEmpty()))
 			throw new RequiredValueNotFoundException("handle", "Nameserver");
 		if (nameserver.getPunycodeName() == null || nameserver.getPunycodeName().isEmpty())
 			throw new RequiredValueNotFoundException("ldhName", "Nameserver");
@@ -84,9 +85,15 @@ public class NameserverModel {
 			throw new RequiredValueNotFoundException("handle", "Nameserver");
 	}
 
+	// Store as object
 	public static void storeToDatabase(Nameserver nameserver, Connection connection)
+			throws RequiredValueNotFoundException, IOException, SQLException {
+		storeToDatabase(nameserver, false, connection);
+	}
+
+	public static void storeToDatabase(Nameserver nameserver, boolean useNameserverAsAttribute, Connection connection)
 			throws IOException, SQLException, RequiredValueNotFoundException {
-		isValidForStore(nameserver);
+		isValidForStore(nameserver, useNameserverAsAttribute);
 		String query = queryGroup.getQuery(STORE_QUERY);
 		Long nameserverId = null;
 		try (PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
@@ -475,5 +482,14 @@ public class NameserverModel {
 			}
 
 		}
+	}
+
+	public static void storeDomainNameserversAsAttributesToDatabase(List<Nameserver> nameservers, Long domainId,
+			Connection connection) throws RequiredValueNotFoundException, SQLException, IOException {
+		for (Nameserver ns : nameservers) {
+			NameserverModel.storeToDatabase(ns, true, connection);
+		}
+		storeDomainNameserversToDatabase(nameservers, domainId, connection);
+
 	}
 }

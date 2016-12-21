@@ -75,7 +75,7 @@ public class DomainModel {
 		}
 	}
 
-	public static Long storeToDatabase(Domain domain, Connection connection)
+	public static Long storeToDatabase(Domain domain, boolean useNameserverAsAttribute, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		String query = queryGroup.getQuery(STORE_QUERY);
 		Long domainId;
@@ -90,11 +90,11 @@ public class DomainModel {
 			domain.setId(domainId);
 		}
 
-		storeNestedObjects(domain, connection);
+		storeNestedObjects(domain, useNameserverAsAttribute, connection);
 		return domainId;
 	}
 
-	public static void storeNestedObjects(Domain domain, Connection connection)
+	public static void storeNestedObjects(Domain domain, boolean useNameserverAsAttribute, Connection connection)
 			throws SQLException, IOException, RequiredValueNotFoundException {
 		Long domainId = domain.getId();
 		RemarkModel.storeDomainRemarksToDatabase(domain.getRemarks(), domainId, connection);
@@ -108,15 +108,23 @@ public class DomainModel {
 		PublicIdModel.storePublicIdByDomain(domain.getPublicIds(), domain.getId(), connection);
 		VariantModel.storeAllToDatabase(domain.getVariants(), domain.getId(), connection);
 
-		storeDomainNameservers(domain.getNameServers(), domainId, connection);
+		if (domain.getNameServers().size() > 0) {
+			if (useNameserverAsAttribute) {
+				NameserverModel.storeDomainNameserversAsAttributesToDatabase(domain.getNameServers(), domainId,
+						connection);
+			} else {
+				storeDomainNameserversAsObjects(domain.getNameServers(), domainId, connection);
+			}
+
+		}
 		storeDomainEntities(domain.getEntities(), domainId, connection);
 		if (domain.getIpNetwork() != null) {
 			storeDomainIpNetworkRelationToDatabase(domainId, domain.getIpNetwork().getId(), connection);
 		}
 	}
 
-	private static void storeDomainNameservers(List<Nameserver> nameservers, Long domainId, Connection connection)
-			throws RequiredValueNotFoundException, SQLException, IOException {
+	private static void storeDomainNameserversAsObjects(List<Nameserver> nameservers, Long domainId,
+			Connection connection) throws RequiredValueNotFoundException, SQLException, IOException {
 		if (nameservers.size() > 0) {
 			validateDomainNameservers(nameservers, connection);
 			NameserverModel.storeDomainNameserversToDatabase(nameservers, domainId, connection);
@@ -131,6 +139,7 @@ public class DomainModel {
 				throw new NullPointerException(
 						"Nameserver: " + ns.getHandle() + "was not inserted previously to the database.");
 			}
+			ns.setId(nsId);
 		}
 	}
 
@@ -554,14 +563,14 @@ public class DomainModel {
 	 * multiple unique constraints, instead will check if the nameserver
 	 * exist,then update it on insert it,if not exist.
 	 */
-	public static void upsertToDatabase(DomainDAO domain, Connection rdapConnection)
+	public static void upsertToDatabase(DomainDAO domain, boolean useNameserverAsAttribute, Connection rdapConnection)
 			throws SQLException, RequiredValueNotFoundException, IOException {
 		try {
 			DomainDAO previousDomain = getByHandle(domain.getHandle(), rdapConnection);
 			domain.setId(previousDomain.getId());
 			update(previousDomain, domain, rdapConnection);
 		} catch (ObjectNotFoundException onfe) {
-			storeToDatabase(domain, rdapConnection);
+			storeToDatabase(domain, useNameserverAsAttribute, rdapConnection);
 		}
 	}
 

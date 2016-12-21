@@ -106,7 +106,7 @@ public class PublicIdTest extends DatabaseTest {
 		dom.setSecureDNS(secureDNS);
 
 		try {
-			DomainModel.storeToDatabase(dom, connection);
+			DomainModel.storeToDatabase(dom, false, connection);
 		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
 			e.printStackTrace();
 			fail();

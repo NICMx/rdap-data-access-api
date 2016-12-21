@@ -66,7 +66,7 @@ public class DomainTest extends DatabaseTest {
 
 		Long domId = null;
 		try {
-			domId = DomainModel.storeToDatabase(dom, connection);
+			domId = DomainModel.storeToDatabase(dom, false, connection);
 		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
 			e.printStackTrace();
 			fail();
@@ -109,9 +109,9 @@ public class DomainTest extends DatabaseTest {
 		dom.setZoneId(zoneId);
 
 		try {
-			DomainModel.upsertToDatabase(dom, connection);
+			DomainModel.upsertToDatabase(dom, false, connection);
 			dom.setPunycodeName("bbb");
-			DomainModel.upsertToDatabase(dom, connection);
+			DomainModel.upsertToDatabase(dom, false, connection);
 		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
 			e.printStackTrace();
 			fail();
@@ -286,7 +286,7 @@ public class DomainTest extends DatabaseTest {
 
 		Long domainId = null;
 		try {
-			domainId = DomainModel.storeToDatabase(domain, connection);
+			domainId = DomainModel.storeToDatabase(domain, false, connection);
 		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -481,10 +481,10 @@ public class DomainTest extends DatabaseTest {
 		domain.setSecureDNS(secureDns);
 
 		try {
-			DomainModel.upsertToDatabase(domain, connection);
+			DomainModel.upsertToDatabase(domain, false, connection);
 			domain.getEntities().get(0).setPort43("Myupsertedregistrar");
 			domain.setPort43("MyUpsertedDomain");
-			DomainModel.upsertToDatabase(domain, connection);
+			DomainModel.upsertToDatabase(domain, false, connection);
 
 		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
 			e.printStackTrace();
@@ -711,7 +711,7 @@ public class DomainTest extends DatabaseTest {
 	}
 
 	@Test
-	public  void existByLdhName() {
+	public void existByLdhName() {
 		try {
 			// Creates and inserts a zone
 			Integer zoneId = null;
@@ -721,40 +721,40 @@ public class DomainTest extends DatabaseTest {
 			fail();
 		}
 	}
-	
+
 	@Test
-	public  void existByNsIp() {
+	public void existByNsIp() {
 		try {
 			DomainModel.existByNsIp("2001:db8:0:0:0:0:0:120", connection);
 		} catch (SQLException | UnknownHostException s) {
 			fail();
 		}
 	}
-	
+
 	@Test
-	public  void existByNsLdhName() {
+	public void existByNsLdhName() {
 		try {
 			DomainModel.existByNsLdhName("myns", connection);
 		} catch (SQLException s) {
 			fail();
 		}
 	}
-	
+
 	@Test
-	public  void existByName() {
+	public void existByName() {
 		try {
-			String domainName="mydomain";
-			DomainModel.existByName(domainName,"mx", connection);
+			String domainName = "mydomain";
+			DomainModel.existByName(domainName, "mx", connection);
 		} catch (SQLException s) {
 			fail();
 		}
 	}
-	
+
 	@Test
-	public  void existByNameWithoutZone() {
+	public void existByNameWithoutZone() {
 		try {
-			//dn1?.com.mx
-			String domainName="mydomainName";
+			// dn1?.com.mx
+			String domainName = "mydomainName";
 			DomainModel.existByName(domainName, connection);
 		} catch (SQLException s) {
 			fail();
