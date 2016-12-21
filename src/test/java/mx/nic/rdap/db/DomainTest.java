@@ -75,9 +75,9 @@ public class DomainTest extends DatabaseTest {
 		Domain domainById = null;
 		Domain findByLdhName = null;
 		try {
-			domainById = DomainModel.getDomainById(domId, connection);
+			domainById = DomainModel.getDomainById(domId,false, connection);
 			try {
-				findByLdhName = DomainModel.findByLdhName(dom.getLdhName(), zoneId, connection);
+				findByLdhName = DomainModel.findByLdhName(dom.getLdhName(), zoneId,false, connection);
 			} catch (InvalidValueException e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -302,9 +302,9 @@ public class DomainTest extends DatabaseTest {
 		Domain domainById = null;
 		Domain findByLdhName = null;
 		try {
-			domainById = DomainModel.getDomainById(domainId, connection);
+			domainById = DomainModel.getDomainById(domainId,false, connection);
 			try {
-				findByLdhName = DomainModel.findByLdhName(domain.getLdhName(), zoneId, connection);
+				findByLdhName = DomainModel.findByLdhName(domain.getLdhName(),zoneId,false, connection);
 			} catch (InvalidValueException e) {
 				e.printStackTrace();
 				fail(e.getMessage());

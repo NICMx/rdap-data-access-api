@@ -262,9 +262,10 @@ public class NameserverModel {
 
 	/**
 	 * Find nameservers that belongs from a domain by the domain's id
+	 * @param useNameserverAsDomainAttribute if true, don't have to load nested objects
 	 * 
 	 */
-	public static List<Nameserver> getByDomainId(Long domainId, Connection connection)
+	public static List<Nameserver> getByDomainId(Long domainId, boolean useNameserverAsDomainAttribute, Connection connection)
 			throws SQLException, IOException {
 		String query = queryGroup.getQuery(DOMAIN_GET_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -277,6 +278,7 @@ public class NameserverModel {
 				List<Nameserver> nameservers = new ArrayList<Nameserver>();
 				do {
 					Nameserver nameserver = new NameserverDAO(resultSet);
+					if(!useNameserverAsDomainAttribute)
 					NameserverModel.loadNestedObjects(nameserver, connection);
 					nameservers.add(nameserver);
 				} while (resultSet.next());
