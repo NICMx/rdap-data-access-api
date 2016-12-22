@@ -1,8 +1,10 @@
 package mx.nic.rdap.db;
 
+import java.net.IDN;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 import mx.nic.rdap.core.db.Domain;
 import mx.nic.rdap.core.db.Entity;
@@ -52,9 +54,21 @@ public class DomainDAO extends Domain implements DatabaseObject {
 	@Override
 	public void storeToDatabase(PreparedStatement preparedStatement) throws SQLException {
 		preparedStatement.setString(1, this.getHandle());
-		preparedStatement.setString(2, this.getLdhName());
-		preparedStatement.setString(3, this.getPort43());
-		preparedStatement.setInt(4, this.getZoneId());
+
+		String domName = this.getLdhName();
+		String ldhName = IDN.toASCII(domName);
+		String unicodeName = IDN.toUnicode(domName);
+
+		if (ldhName.equals(unicodeName)) {
+			preparedStatement.setString(2, ldhName);
+			preparedStatement.setNull(3, Types.VARCHAR);
+		} else {
+			preparedStatement.setString(2, ldhName);
+			preparedStatement.setString(3, unicodeName);
+		}
+
+		preparedStatement.setString(4, this.getPort43());
+		preparedStatement.setInt(5, this.getZoneId());
 
 	}
 
@@ -63,10 +77,22 @@ public class DomainDAO extends Domain implements DatabaseObject {
 	 * object id as criteria
 	 */
 	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
+
+		String domName = this.getLdhName();
+		String ldhName = IDN.toASCII(domName);
+		String unicodeName = IDN.toUnicode(domName);
+		if (ldhName.equals(unicodeName)) {
+			preparedStatement.setString(1, ldhName);
+			preparedStatement.setNull(2, Types.VARCHAR);
+		} else {
+			preparedStatement.setString(1, ldhName);
+			preparedStatement.setString(2, unicodeName);
+		}
 		preparedStatement.setString(1, this.getLdhName());
-		preparedStatement.setString(2, this.getPort43());
-		preparedStatement.setInt(3, this.getZoneId());
-		preparedStatement.setLong(4, this.getId());
+
+		preparedStatement.setString(3, this.getPort43());
+		preparedStatement.setInt(4, this.getZoneId());
+		preparedStatement.setLong(5, this.getId());
 	}
 
 	/**

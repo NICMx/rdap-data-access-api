@@ -39,8 +39,8 @@ public class DomainModel {
 	private final static String QUERY_GROUP = "Domain";
 
 	private static QueryGroup queryGroup = null;
-	private static final String STORE_QUERY = "storeToDatabase";
-	private static final String UPDATE_QUERY = "updateInDatabase";
+	private static final String STORE_QUERY = "storeToDatabase"; // TODO
+	private static final String UPDATE_QUERY = "updateInDatabase"; // TODO
 
 	private static final String STORE_IP_NETWORK_RELATION_QUERY = "storeDomainIpNetworkRelation";
 	private static final String GET_BY_LDH_QUERY = "getByLdhName";
@@ -170,8 +170,8 @@ public class DomainModel {
 		}
 	}
 
-	public static DomainDAO findByLdhName(String name, Integer zoneId, boolean useNameserverAsDomainAttribute, Connection connection)
-			throws SQLException, IOException, InvalidValueException {
+	public static DomainDAO findByLdhName(String name, Integer zoneId, boolean useNameserverAsDomainAttribute,
+			Connection connection) throws SQLException, IOException, InvalidValueException {
 		String query = queryGroup.getQuery(GET_BY_LDH_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, IDN.toASCII(name));
@@ -182,7 +182,7 @@ public class DomainModel {
 					throw new ObjectNotFoundException("Object not found.");
 				}
 				DomainDAO domain = new DomainDAO(resultSet);
-				loadNestedObjects(domain,useNameserverAsDomainAttribute, connection);
+				loadNestedObjects(domain, useNameserverAsDomainAttribute, connection);
 				return domain;
 			}
 		}
@@ -203,7 +203,8 @@ public class DomainModel {
 		}
 	}
 
-	public static Domain getDomainById(Long domainId,boolean useNameserverAsDomainAttribute, Connection connection) throws SQLException, IOException {
+	public static Domain getDomainById(Long domainId, boolean useNameserverAsDomainAttribute, Connection connection)
+			throws SQLException, IOException {
 		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_BY_ID_QUERY))) {
 			statement.setLong(1, domainId);
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
@@ -212,13 +213,14 @@ public class DomainModel {
 					throw new ObjectNotFoundException("Object not found.");
 				}
 				Domain domain = new DomainDAO(resultSet);
-				loadNestedObjects(domain,useNameserverAsDomainAttribute, connection);
+				loadNestedObjects(domain, useNameserverAsDomainAttribute, connection);
 				return domain;
 			}
 		}
 	}
 
-	public static DomainDAO getByHandle(String handle,boolean useNameserverAsDomainAttribute, Connection connection) throws SQLException, IOException {
+	public static DomainDAO getByHandle(String handle, boolean useNameserverAsDomainAttribute, Connection connection)
+			throws SQLException, IOException {
 		try (PreparedStatement statement = connection.prepareStatement(queryGroup.getQuery(GET_BY_HANDLE_QUERY))) {
 			statement.setString(1, handle);
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
@@ -227,7 +229,7 @@ public class DomainModel {
 					throw new ObjectNotFoundException("Object not found.");
 				}
 				DomainDAO domain = new DomainDAO(resultSet);
-				loadNestedObjects(domain,useNameserverAsDomainAttribute, connection);
+				loadNestedObjects(domain, useNameserverAsDomainAttribute, connection);
 				return domain;
 			}
 		}
@@ -237,7 +239,8 @@ public class DomainModel {
 	 * Searches a domain by it´s name and TLD
 	 * 
 	 */
-	public static SearchResultStruct searchByName(String name, String zone, Integer resultLimit,boolean useNameserverAsDomainAttribute, Connection connection)
+	public static SearchResultStruct searchByName(String name, String zone, Integer resultLimit,
+			boolean useNameserverAsDomainAttribute, Connection connection)
 			throws SQLException, IOException, InvalidValueException {
 		SearchResultStruct result = new SearchResultStruct();
 		// Hack to know is there is more domains that the limit, used for
@@ -306,7 +309,7 @@ public class DomainModel {
 				domains.remove(domains.size() - 1);
 			}
 			for (DomainDAO domain : domains) {
-				loadNestedObjects(domain,useNameserverAsDomainAttribute, connection);
+				loadNestedObjects(domain, useNameserverAsDomainAttribute, connection);
 			}
 			result.setSearchResultsLimitForUser(resultLimit);
 			result.getResults().addAll(domains);
@@ -318,8 +321,8 @@ public class DomainModel {
 	 * Searches a domain by it's name when user don´t care about the TLD
 	 * 
 	 */
-	public static SearchResultStruct searchByName(String domainName, Integer resultLimit,boolean useNameserverAsDomainAttribute, Connection connection)
-			throws SQLException, IOException {
+	public static SearchResultStruct searchByName(String domainName, Integer resultLimit,
+			boolean useNameserverAsDomainAttribute, Connection connection) throws SQLException, IOException {
 		SearchResultStruct result = new SearchResultStruct();
 		// Hack to know is there is more domains that the limit, used for
 		// notices
@@ -360,7 +363,7 @@ public class DomainModel {
 				domains.remove(domains.size() - 1);
 			}
 			for (DomainDAO domain : domains) {
-				loadNestedObjects(domain,useNameserverAsDomainAttribute, connection);
+				loadNestedObjects(domain, useNameserverAsDomainAttribute, connection);
 			}
 			result.setSearchResultsLimitForUser(resultLimit);
 			result.getResults().addAll(domains);
@@ -372,8 +375,8 @@ public class DomainModel {
 	 * Searches all domains with a nameserver by name
 	 * 
 	 */
-	public static SearchResultStruct searchByNsLdhName(String name, Integer resultLimit,boolean useNameserverAsDomainAttribute, Connection connection)
-			throws SQLException, IOException {
+	public static SearchResultStruct searchByNsLdhName(String name, Integer resultLimit,
+			boolean useNameserverAsDomainAttribute, Connection connection) throws SQLException, IOException {
 		SearchResultStruct result = new SearchResultStruct();
 		// Hack to know is there is more domains that the limit, used for
 		// notices
@@ -400,7 +403,7 @@ public class DomainModel {
 				domains.remove(domains.size() - 1);
 			}
 			for (DomainDAO domain : domains) {
-				loadNestedObjects(domain,useNameserverAsDomainAttribute, connection);
+				loadNestedObjects(domain, useNameserverAsDomainAttribute, connection);
 			}
 			result.setSearchResultsLimitForUser(resultLimit);
 			result.getResults().addAll(domains);
@@ -412,8 +415,8 @@ public class DomainModel {
 	 * searches all domains with a nameserver by address
 	 * 
 	 */
-	public static SearchResultStruct searchByNsIp(String ip, Integer resultLimit,boolean useNameserverAsDomainAttribute, Connection connection)
-			throws SQLException, IOException {
+	public static SearchResultStruct searchByNsIp(String ip, Integer resultLimit,
+			boolean useNameserverAsDomainAttribute, Connection connection) throws SQLException, IOException {
 		SearchResultStruct result = new SearchResultStruct();
 		// Hack to know is there is more domains that the limit, used for
 		// notices
@@ -442,7 +445,7 @@ public class DomainModel {
 			List<DomainDAO> domains = new ArrayList<DomainDAO>();
 			do {
 				DomainDAO domain = new DomainDAO(resultSet);
-				loadNestedObjects(domain,useNameserverAsDomainAttribute, connection);
+				loadNestedObjects(domain, useNameserverAsDomainAttribute, connection);
 				domains.add(domain);
 			} while (resultSet.next());
 			resultLimit = resultLimit - 1;// Back to the original limit
@@ -451,7 +454,7 @@ public class DomainModel {
 				domains.remove(domains.size() - 1);
 			}
 			for (DomainDAO domain : domains) {
-				loadNestedObjects(domain,useNameserverAsDomainAttribute, connection);
+				loadNestedObjects(domain, useNameserverAsDomainAttribute, connection);
 			}
 			result.setSearchResultsLimitForUser(resultLimit);
 			result.getResults().addAll(domains);
@@ -462,10 +465,13 @@ public class DomainModel {
 
 	/**
 	 * Load the nested object of the domain
-	 * @param useNameserverAsDomainAttribute if false, load all the nameserver object
+	 * 
+	 * @param useNameserverAsDomainAttribute
+	 *            if false, load all the nameserver object
 	 * 
 	 */
-	public static void loadNestedObjects(Domain domain, boolean useNameserverAsDomainAttribute, Connection connection) throws SQLException, IOException {
+	public static void loadNestedObjects(Domain domain, boolean useNameserverAsDomainAttribute, Connection connection)
+			throws SQLException, IOException {
 		Long domainId = domain.getId();
 
 		// Retrieve the events
@@ -512,7 +518,8 @@ public class DomainModel {
 		}
 		// Retrieve the domainsNs
 		try {
-			domain.getNameServers().addAll(NameserverModel.getByDomainId(domainId,useNameserverAsDomainAttribute, connection));
+			domain.getNameServers()
+					.addAll(NameserverModel.getByDomainId(domainId, useNameserverAsDomainAttribute, connection));
 		} catch (ObjectNotFoundException onfe) {
 			// Do nothing, nameservers is not required
 		}
@@ -567,7 +574,7 @@ public class DomainModel {
 	public static void upsertToDatabase(DomainDAO domain, boolean useNameserverAsAttribute, Connection rdapConnection)
 			throws SQLException, RequiredValueNotFoundException, IOException {
 		try {
-			DomainDAO previousDomain = getByHandle(domain.getHandle(),useNameserverAsAttribute, rdapConnection);
+			DomainDAO previousDomain = getByHandle(domain.getHandle(), useNameserverAsAttribute, rdapConnection);
 			domain.setId(previousDomain.getId());
 			update(previousDomain, domain, rdapConnection);
 		} catch (ObjectNotFoundException onfe) {

@@ -1,8 +1,8 @@
 #storeToDatabase
-INSERT INTO rdap.domain(dom_handle,dom_ldh_name,dom_port43,zone_id) VALUES (?,?,?,?);
+INSERT INTO rdap.domain(dom_handle,dom_ldh_name,dom_unicode_name,dom_port43,zone_id) VALUES (?,?,?,?,?);
 
 #updateInDatabase
-UPDATE rdap.domain SET dom_ldh_name=?,dom_port43=?,zone_id=? WHERE dom_id=?;
+UPDATE rdap.domain SET dom_ldh_name=?,dom_unicode_name=?,dom_port43=?,zone_id=? WHERE dom_id=?;
 
 #getByHandle
 SELECT * FROM rdap.domain WHERE dom_handle=?;

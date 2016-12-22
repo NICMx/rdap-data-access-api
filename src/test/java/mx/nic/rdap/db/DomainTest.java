@@ -53,7 +53,7 @@ public class DomainTest extends DatabaseTest {
 
 		Domain dom = new DomainDAO();
 		dom.setHandle("dummyhandle");
-		dom.setPunycodeName("xn--fo-5ja");
+		dom.setPunycodeName("niño");
 
 		Integer zoneId = null;
 		try {
@@ -75,9 +75,10 @@ public class DomainTest extends DatabaseTest {
 		Domain domainById = null;
 		Domain findByLdhName = null;
 		try {
-			domainById = DomainModel.getDomainById(domId,false, connection);
+			domainById = DomainModel.getDomainById(domId, false, connection);
 			try {
-				findByLdhName = DomainModel.findByLdhName(dom.getLdhName(), zoneId,false, connection);
+				findByLdhName = DomainModel.findByLdhName(dom.getLdhName(), zoneId, false, connection);
+				System.out.println(findByLdhName.getLdhName());
 			} catch (InvalidValueException e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -97,7 +98,7 @@ public class DomainTest extends DatabaseTest {
 
 		DomainDAO dom = new DomainDAO();
 		dom.setHandle("upsert1");
-		dom.setPunycodeName("aaa");
+		dom.setPunycodeName("aaaá");
 
 		Integer zoneId = null;
 		try {
@@ -110,7 +111,7 @@ public class DomainTest extends DatabaseTest {
 
 		try {
 			DomainModel.upsertToDatabase(dom, false, connection);
-			dom.setPunycodeName("bbb");
+			dom.setPunycodeName("bbbó");
 			DomainModel.upsertToDatabase(dom, false, connection);
 		} catch (SQLException | IOException | RequiredValueNotFoundException e) {
 			e.printStackTrace();
@@ -302,9 +303,9 @@ public class DomainTest extends DatabaseTest {
 		Domain domainById = null;
 		Domain findByLdhName = null;
 		try {
-			domainById = DomainModel.getDomainById(domainId,false, connection);
+			domainById = DomainModel.getDomainById(domainId, false, connection);
 			try {
-				findByLdhName = DomainModel.findByLdhName(domain.getLdhName(),zoneId,false, connection);
+				findByLdhName = DomainModel.findByLdhName(domain.getLdhName(), zoneId, false, connection);
 			} catch (InvalidValueException e) {
 				e.printStackTrace();
 				fail(e.getMessage());
@@ -734,7 +735,7 @@ public class DomainTest extends DatabaseTest {
 	@Test
 	public void existByNsLdhName() {
 		try {
-			DomainModel.existByNsLdhName("myns", connection);
+			DomainModel.existByNsLdhName("ns1.xn--fo-5ja.example", connection);
 		} catch (SQLException s) {
 			fail();
 		}
@@ -754,9 +755,10 @@ public class DomainTest extends DatabaseTest {
 	public void existByNameWithoutZone() {
 		try {
 			// dn1?.com.mx
-			String domainName = "mydomainName";
+			String domainName = "foo-1529344176";
 			DomainModel.existByName(domainName, connection);
 		} catch (SQLException s) {
+			s.printStackTrace();
 			fail();
 		}
 	}
