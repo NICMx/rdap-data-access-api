@@ -56,8 +56,8 @@ public class NameserverModel {
 	private static final String DOMAIN_STORE_QUERY = "storeDomainNameserversToDatabase";
 	private static final String DOMAIN_DELETE_RELATION_QUERY = "deleteDomainNameserversRelation";
 
-	private static final String EXIST_BY_PARTIAL_NAME_QUERY = "existByPartialName";
-	private static final String EXIST_BY_NAME_QUERY = "existByName";
+	private static final String EXIST_BY_PARTIAL_NAME_QUERY = "existByPartialName"; // TODO
+	private static final String EXIST_BY_NAME_QUERY = "existByName"; // TODO
 	private static final String EXIST_BY_IP6_QUERY = "existByIp6";
 	private static final String EXIST_BY_IP4_QUERY = "existByIp4";
 	static {
@@ -152,9 +152,11 @@ public class NameserverModel {
 	}
 
 	public static NameserverDAO findByName(String name, Connection connection) throws IOException, SQLException {
+		// TODO test
 		String query = queryGroup.getQuery(FIND_BY_NAME_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, IDN.toASCII(name));
+			statement.setString(2, IDN.toUnicode(name));
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			try (ResultSet resultSet = statement.executeQuery()) {
 				if (!resultSet.next()) {
@@ -177,16 +179,18 @@ public class NameserverModel {
 		String criteria = "";
 		List<NameserverDAO> nameservers = new ArrayList<NameserverDAO>();
 		if (namePattern.contains("*")) {// check if is a partial search
-
+			// TODO test
 			query = queryGroup.getQuery(SEARCH_BY_PARTIAL_NAME_QUERY);
 			criteria = namePattern.replace('*', '%');
 		} else {
+			// TODO test
 			query = queryGroup.getQuery(SEARCH_BY_NAME_QUERY);
 			criteria = namePattern;
 		}
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, criteria);
-			statement.setInt(2, resultLimit);
+			statement.setString(2, criteria);
+			statement.setInt(3, resultLimit);
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			try (ResultSet resultSet = statement.executeQuery()) {
 
@@ -262,11 +266,13 @@ public class NameserverModel {
 
 	/**
 	 * Find nameservers that belongs from a domain by the domain's id
-	 * @param useNameserverAsDomainAttribute if true, don't have to load nested objects
+	 * 
+	 * @param useNameserverAsDomainAttribute
+	 *            if true, don't have to load nested objects
 	 * 
 	 */
-	public static List<Nameserver> getByDomainId(Long domainId, boolean useNameserverAsDomainAttribute, Connection connection)
-			throws SQLException, IOException {
+	public static List<Nameserver> getByDomainId(Long domainId, boolean useNameserverAsDomainAttribute,
+			Connection connection) throws SQLException, IOException {
 		String query = queryGroup.getQuery(DOMAIN_GET_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setLong(1, domainId);
@@ -278,8 +284,8 @@ public class NameserverModel {
 				List<Nameserver> nameservers = new ArrayList<Nameserver>();
 				do {
 					Nameserver nameserver = new NameserverDAO(resultSet);
-					if(!useNameserverAsDomainAttribute)
-					NameserverModel.loadNestedObjects(nameserver, connection);
+					if (!useNameserverAsDomainAttribute)
+						NameserverModel.loadNestedObjects(nameserver, connection);
 					nameservers.add(nameserver);
 				} while (resultSet.next());
 				return nameservers;
@@ -441,15 +447,17 @@ public class NameserverModel {
 		String query = "";
 		String criteria = "";
 		if (namePattern.contains("*")) {// check if is a partial search
-
+			// TODO test
 			query = queryGroup.getQuery(EXIST_BY_PARTIAL_NAME_QUERY);
 			criteria = namePattern.replace('*', '%');
 		} else {
+			// TODO test
 			query = queryGroup.getQuery(EXIST_BY_NAME_QUERY);
 			criteria = namePattern;
 		}
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, IDN.toASCII(criteria));
+			statement.setString(2, IDN.toASCII(criteria));
 			logger.log(Level.INFO, "Executing QUERY:" + statement.toString());
 			try (ResultSet resultSet = statement.executeQuery()) {
 				resultSet.next();

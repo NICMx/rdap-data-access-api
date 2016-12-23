@@ -269,7 +269,7 @@ public class NameserverTest extends DatabaseTest {
 	@Test
 	public void existByName() {
 		try {
-			NameserverModel.existByName("ns1.xn--fo-5ja.example", connection);
+			NameserverModel.existByName("ns1.fóo.example", connection);
 		} catch (SQLException s) {
 			fail();
 		}

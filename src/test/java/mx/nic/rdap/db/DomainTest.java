@@ -716,8 +716,8 @@ public class DomainTest extends DatabaseTest {
 		try {
 			// Creates and inserts a zone
 			Integer zoneId = null;
-			zoneId = ZoneModel.storeToDatabase("mx", connection);
-			DomainModel.existByLdhName("mydomain", zoneId, connection);
+			zoneId = ZoneModel.storeToDatabase("com", connection);
+			DomainModel.existByLdhName("uncamión", zoneId, connection);
 		} catch (SQLException s) {
 			fail();
 		}
@@ -744,9 +744,10 @@ public class DomainTest extends DatabaseTest {
 	@Test
 	public void existByName() {
 		try {
-			String domainName = "mydomain";
-			DomainModel.existByName(domainName, "mx", connection);
+			String domainName = "xn--uncamin-q0a";
+			DomainModel.existByName(domainName, "com", connection);
 		} catch (SQLException s) {
+			s.printStackTrace();
 			fail();
 		}
 	}
@@ -755,7 +756,7 @@ public class DomainTest extends DatabaseTest {
 	public void existByNameWithoutZone() {
 		try {
 			// dn1?.com.mx
-			String domainName = "foo-1529344176";
+			String domainName = "uncami*";
 			DomainModel.existByName(domainName, connection);
 		} catch (SQLException s) {
 			s.printStackTrace();

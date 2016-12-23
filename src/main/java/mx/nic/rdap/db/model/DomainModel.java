@@ -39,8 +39,8 @@ public class DomainModel {
 	private final static String QUERY_GROUP = "Domain";
 
 	private static QueryGroup queryGroup = null;
-	private static final String STORE_QUERY = "storeToDatabase"; // TODO
-	private static final String UPDATE_QUERY = "updateInDatabase"; // TODO
+	private static final String STORE_QUERY = "storeToDatabase";
+	private static final String UPDATE_QUERY = "updateInDatabase";
 
 	private static final String STORE_IP_NETWORK_RELATION_QUERY = "storeDomainIpNetworkRelation";
 	private static final String GET_BY_LDH_QUERY = "getByLdhName";
@@ -175,7 +175,8 @@ public class DomainModel {
 		String query = queryGroup.getQuery(GET_BY_LDH_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, IDN.toASCII(name));
-			statement.setInt(2, zoneId);
+			statement.setString(2, IDN.toUnicode(name));
+			statement.setInt(3, zoneId);
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
 			try (ResultSet resultSet = statement.executeQuery()) {
 				if (!resultSet.next()) {
@@ -192,7 +193,8 @@ public class DomainModel {
 		String query = queryGroup.getQuery(EXIST_BY_LDH_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, IDN.toASCII(name));
-			statement.setInt(2, zoneId);
+			statement.setString(2, name);
+			statement.setInt(3, zoneId);
 			logger.log(Level.INFO, "Executing QUERY: " + statement.toString());
 			try (ResultSet resultSet = statement.executeQuery()) {
 				resultSet.next();
@@ -284,13 +286,15 @@ public class DomainModel {
 					statement.setInt(i, zoneIds.get(i - 1));
 				}
 				statement.setString(zoneIds.size() + 1, name);
-				statement.setString(zoneIds.size() + 2, zone);
-				statement.setInt(zoneIds.size() + 3, resultLimit);
+				statement.setString(zoneIds.size() + 2, name);
+				statement.setString(zoneIds.size() + 3, zone);
+				statement.setInt(zoneIds.size() + 4, resultLimit);
 			} else {
 				statement.setString(1, name);
+				statement.setString(2, name);
 				Integer zoneId = ZoneModel.getIdByZoneName(zone);
-				statement.setInt(2, zoneId);
-				statement.setInt(3, resultLimit);
+				statement.setInt(3, zoneId);
+				statement.setInt(4, resultLimit);
 			}
 
 			logger.log(Level.INFO, "Executing query" + statement.toString());
@@ -345,7 +349,8 @@ public class DomainModel {
 			}
 
 			statement.setString(zoneIds.size() + 1, domainName);
-			statement.setInt(zoneIds.size() + 2, resultLimit);
+			statement.setString(zoneIds.size() + 2, domainName);
+			statement.setInt(zoneIds.size() + 3, resultLimit);
 			logger.log(Level.INFO, "Executing query" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
 
@@ -385,7 +390,8 @@ public class DomainModel {
 		try (PreparedStatement statement = connection
 				.prepareStatement(queryGroup.getQuery(SEARCH_BY_NAMESERVER_LDH_QUERY))) {
 			statement.setString(1, name);
-			statement.setInt(2, resultLimit);
+			statement.setString(2, name);
+			statement.setInt(3, resultLimit);
 			logger.log(Level.INFO, "Executing query" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
 
@@ -719,11 +725,13 @@ public class DomainModel {
 					statement.setInt(i, zoneIds.get(i - 1));
 				}
 				statement.setString(zoneIds.size() + 1, name);
-				statement.setString(zoneIds.size() + 2, zone);
+				statement.setString(zoneIds.size() + 2, name);
+				statement.setString(zoneIds.size() + 3, zone);
 			} else {
 				statement.setString(1, name);
+				statement.setString(2, name);
 				Integer zoneId = ZoneModel.getIdByZoneName(zone);
-				statement.setInt(2, zoneId);
+				statement.setInt(3, zoneId);
 			}
 
 			logger.log(Level.INFO, "Executing query" + statement.toString());
@@ -755,6 +763,7 @@ public class DomainModel {
 			}
 
 			statement.setString(zoneIds.size() + 1, domainName);
+			statement.setString(zoneIds.size() + 2, domainName);
 			logger.log(Level.INFO, "Executing query" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
 			resultSet.next();
