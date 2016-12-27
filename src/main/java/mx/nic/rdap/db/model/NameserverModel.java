@@ -56,8 +56,8 @@ public class NameserverModel {
 	private static final String DOMAIN_STORE_QUERY = "storeDomainNameserversToDatabase";
 	private static final String DOMAIN_DELETE_RELATION_QUERY = "deleteDomainNameserversRelation";
 
-	private static final String EXIST_BY_PARTIAL_NAME_QUERY = "existByPartialName"; // TODO
-	private static final String EXIST_BY_NAME_QUERY = "existByName"; // TODO
+	private static final String EXIST_BY_PARTIAL_NAME_QUERY = "existByPartialName";
+	private static final String EXIST_BY_NAME_QUERY = "existByName";
 	private static final String EXIST_BY_IP6_QUERY = "existByIp6";
 	private static final String EXIST_BY_IP4_QUERY = "existByIp4";
 	static {
@@ -152,7 +152,6 @@ public class NameserverModel {
 	}
 
 	public static NameserverDAO findByName(String name, Connection connection) throws IOException, SQLException {
-		// TODO test
 		String query = queryGroup.getQuery(FIND_BY_NAME_QUERY);
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, IDN.toASCII(name));
@@ -179,11 +178,9 @@ public class NameserverModel {
 		String criteria = "";
 		List<NameserverDAO> nameservers = new ArrayList<NameserverDAO>();
 		if (namePattern.contains("*")) {// check if is a partial search
-			// TODO test
 			query = queryGroup.getQuery(SEARCH_BY_PARTIAL_NAME_QUERY);
 			criteria = namePattern.replace('*', '%');
 		} else {
-			// TODO test
 			query = queryGroup.getQuery(SEARCH_BY_NAME_QUERY);
 			criteria = namePattern;
 		}
@@ -447,11 +444,9 @@ public class NameserverModel {
 		String query = "";
 		String criteria = "";
 		if (namePattern.contains("*")) {// check if is a partial search
-			// TODO test
 			query = queryGroup.getQuery(EXIST_BY_PARTIAL_NAME_QUERY);
 			criteria = namePattern.replace('*', '%');
 		} else {
-			// TODO test
 			query = queryGroup.getQuery(EXIST_BY_NAME_QUERY);
 			criteria = namePattern;
 		}
