@@ -804,12 +804,12 @@ public class EntityTest extends DatabaseTest {
 	@Test
 	public void existByHandle() {
 		try {
-			EntityModel.existByHandle("myEntHandle", connection);
+			EntityModel.existByHandle("NS-1-xn--dn1-kkhcom.mx1-Ent-1-Handle", connection);
 		} catch (SQLException s) {
 			fail();
 		}
 	}
-	
+
 	@Test
 	public void existByVcardName() {
 		try {

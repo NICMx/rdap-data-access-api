@@ -677,6 +677,7 @@ public class DomainModel {
 		try (PreparedStatement statement = connection
 				.prepareStatement(queryGroup.getQuery(EXIST_BY_NAMESERVER_LDH_QUERY))) {
 			statement.setString(1, name);
+			statement.setString(2, name);
 			logger.log(Level.INFO, "Executing query" + statement.toString());
 			ResultSet resultSet = statement.executeQuery();
 			resultSet.next();
