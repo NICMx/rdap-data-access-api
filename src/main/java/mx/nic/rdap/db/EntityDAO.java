@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import mx.nic.rdap.core.db.Entity;
-import mx.nic.rdap.core.db.IpNetwork;
 
 /**
  * Data access class for the {@link Entity} Object
@@ -62,24 +61,6 @@ public class EntityDAO extends Entity implements DatabaseObject {
 	public void updateInDatabase(PreparedStatement preparedStatement) throws SQLException {
 		preparedStatement.setString(1, getPort43());
 		preparedStatement.setLong(2, getId());
-	}
-
-	/**
-	 * Generates a link with the self information and add it to the domain
-	 */
-	public void addSelfLinks(String header, String contextPath) {
-		LinkDAO self = new LinkDAO(header, contextPath, "entity", this.getHandle());
-		this.getLinks().add(self);
-
-		for (Entity ent : this.getEntities()) {
-			self = new LinkDAO(header, contextPath, "entity", ent.getHandle());
-			ent.getLinks().add(self);
-		}
-
-		for (IpNetwork ip : this.getIpNetworks()) {
-			self = new LinkDAO(header, contextPath, "ip", ip.getStartAddress().getHostAddress() + "/" + ip.getCidr());
-			ip.getLinks().add(self);
-		}
 	}
 
 }

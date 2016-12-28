@@ -7,9 +7,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import mx.nic.rdap.core.db.Domain;
-import mx.nic.rdap.core.db.Entity;
-import mx.nic.rdap.core.db.Nameserver;
-import mx.nic.rdap.db.model.ZoneModel;
 
 /**
  * Data access class for the {@link Domain} object.
@@ -93,30 +90,6 @@ public class DomainDAO extends Domain implements DatabaseObject {
 		preparedStatement.setString(3, this.getPort43());
 		preparedStatement.setInt(4, this.getZoneId());
 		preparedStatement.setLong(5, this.getId());
-	}
-
-	/**
-	 * Generates a link with the self information and add it to the domain
-	 */
-	public void addSelfLinks(String header, String contextPath) {
-		LinkDAO self = new LinkDAO(header, contextPath, "domain",
-				this.getLdhName() + "." + ZoneModel.getZoneNameById(this.getZoneId()));
-		this.getLinks().add(self);
-
-		for (Nameserver ns : this.getNameServers()) {
-			self = new LinkDAO(header, contextPath, "nameserver", ns.getLdhName());
-			ns.getLinks().add(self);
-		}
-
-		for (Entity ent : this.getEntities()) {
-			self = new LinkDAO(header, contextPath, "entity", ent.getHandle());
-			ent.getLinks().add(self);
-		}
-
-		if (this.getIpNetwork() != null) {
-			self = new LinkDAO(header, contextPath, "ip", this.getIpNetwork().getStartAddress().getHostAddress());
-			this.getIpNetwork().getLinks().add(self);
-		}
 	}
 
 }

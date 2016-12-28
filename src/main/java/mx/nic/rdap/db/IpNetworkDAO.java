@@ -10,7 +10,6 @@ import java.sql.Types;
 
 import mx.nic.rdap.IpUtils;
 import mx.nic.rdap.core.catalog.IpVersion;
-import mx.nic.rdap.core.db.Entity;
 import mx.nic.rdap.core.db.IpNetwork;
 import mx.nic.rdap.db.model.CountryCodeModel;
 
@@ -120,18 +119,4 @@ public class IpNetworkDAO extends IpNetwork implements DatabaseObject {
 
 	}
 
-	/**
-	 * Generates a link with the self information and add it to the domain
-	 */
-	public void addSelfLinks(String header, String contextPath) {
-		LinkDAO self = new LinkDAO(header, contextPath, "ip",
-				this.getStartAddress().getHostAddress() + "/" + this.getCidr());
-		this.getLinks().add(self);
-
-		for (Entity ent : this.getEntities()) {
-			self = new LinkDAO(header, contextPath, "entity", ent.getHandle());
-			ent.getLinks().add(self);
-		}
-
-	}
 }
