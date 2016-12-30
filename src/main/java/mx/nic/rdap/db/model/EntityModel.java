@@ -59,6 +59,9 @@ public class EntityModel {
 	private final static String EXIST_BY_PARTIAL_NAME_QUERY = "existByPartialName";
 	private final static String EXIST_BY_NAME_QUERY = "existByName";
 
+	private final static String SEARCH_BY_HANDLE_REGEX_QUERY = "searchByRegexHandle";
+	private final static String SEARCH_BY_NAME_REGEX_QUERY = "searchByRegexName";
+
 	static {
 		try {
 			queryGroup = new QueryGroup(QUERY_GROUP);
@@ -344,33 +347,47 @@ public class EntityModel {
 
 	public static SearchResultStruct searchByHandle(String handle, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
-		return searchBy(handle, resultLimit, connection, queryGroup.getQuery(SEARCH_BY_PARTIAL_HANDLE_QUERY),
-				queryGroup.getQuery(SEARCH_BY_HANDLE_QUERY));
+		String query = null;
+		if (handle.contains("*")) {
+			query = queryGroup.getQuery(SEARCH_BY_PARTIAL_HANDLE_QUERY);
+			handle = handle.replace("*", "%");
+		} else {
+			query = queryGroup.getQuery(SEARCH_BY_HANDLE_QUERY);
+		}
+
+		return searchBy(handle, resultLimit, connection, query);
 	}
 
-	public static SearchResultStruct searchByVCardName(String handle, Integer resultLimit, Connection connection)
+	public static SearchResultStruct searchByVCardName(String vcardName, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
-		return searchBy(handle, resultLimit, connection, queryGroup.getQuery(SEARCH_BY_PARTIAL_NAME_QUERY),
-				queryGroup.getQuery(SEARCH_BY_NAME_QUERY));
+		String query = null;
+		if (vcardName.contains("*")) {
+			vcardName = vcardName.replace("*", "%");
+			query = queryGroup.getQuery(SEARCH_BY_PARTIAL_NAME_QUERY);
+		} else {
+			query = queryGroup.getQuery(SEARCH_BY_NAME_QUERY);
+		}
+
+		return searchBy(vcardName, resultLimit, connection, query);
 	}
 
-	private static SearchResultStruct searchBy(String handle, Integer resultLimit, Connection connection,
-			String searchByPartialQuery, String getByQuery) throws SQLException, IOException {
+	public static SearchResultStruct searchByRegexHandle(String regexHandle, Integer resultLimit, Connection connection)
+			throws SQLException, IOException {
+		return searchBy(regexHandle, resultLimit, connection, queryGroup.getQuery(SEARCH_BY_HANDLE_REGEX_QUERY));
+	}
+
+	public static SearchResultStruct searchByRegexName(String regexName, Integer resultLimit, Connection connection)
+			throws SQLException, IOException {
+		return searchBy(regexName, resultLimit, connection, queryGroup.getQuery(SEARCH_BY_NAME_REGEX_QUERY));
+	}
+
+	private static SearchResultStruct searchBy(String criteria, Integer resultLimit, Connection connection,
+			String query) throws SQLException, IOException {
 		SearchResultStruct result = new SearchResultStruct();
 		// Hack to know is there is more domains that the limit, used for
 		// notices
 		resultLimit = resultLimit + 1;
-		String query;
-		String criteria;
 		List<EntityDAO> entities = new ArrayList<EntityDAO>();
-		if (handle.contains("*")) {
-
-			query = searchByPartialQuery;
-			criteria = handle.replace('*', '%');
-		} else {
-			query = getByQuery;
-			criteria = handle;
-		}
 
 		try (PreparedStatement statement = connection.prepareStatement(query);) {
 			statement.setString(1, criteria);

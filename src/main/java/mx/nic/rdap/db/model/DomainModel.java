@@ -67,6 +67,10 @@ public class DomainModel {
 
 	private static final String DELETE_IP_NETWORK_RELATION_QUERY = "deleteDomainIpNetworkRelation";
 
+	private static final String SEARCH_BY_REGEX_NAME_WITH_ZONE = "searchByRegexNameWithZone";
+	private static final String SEARCH_BY_REGEX_NAME_WITHOUT_ZONE = "searchByRegexNameWithOutZone";
+	private static final String SEARCH_BY_REGEX_NAMESERVER_LDH_QUERY = "searchByRegexNsLdhName";
+
 	static {
 		try {
 			queryGroup = new QueryGroup(QUERY_GROUP);
@@ -242,8 +246,7 @@ public class DomainModel {
 	 * 
 	 */
 	public static SearchResultStruct searchByName(String name, String zone, Integer resultLimit,
-			boolean useNameserverAsDomainAttribute, Connection connection)
-			throws SQLException, IOException, InvalidValueException {
+			boolean useNameserverAsDomainAttribute, Connection connection) throws SQLException, IOException {
 		SearchResultStruct result = new SearchResultStruct();
 		// Hack to know is there is more domains that the limit, used for
 		// notices
@@ -321,24 +324,78 @@ public class DomainModel {
 		}
 	}
 
-	/**
-	 * Searches a domain by it's name when user don´t care about the TLD
-	 * 
-	 */
 	public static SearchResultStruct searchByName(String domainName, Integer resultLimit,
 			boolean useNameserverAsDomainAttribute, Connection connection) throws SQLException, IOException {
-		SearchResultStruct result = new SearchResultStruct();
-		// Hack to know is there is more domains that the limit, used for
-		// notices
-		resultLimit = resultLimit + 1;
-		String query = null;
+		String query;
 		if (domainName.contains("*")) {
 			domainName = domainName.replaceAll("\\*", "%");
 			query = queryGroup.getQuery(SEARCH_BY_PARTIAL_NAME_WITHOUT_ZONE_QUERY);
 		} else {
 			query = queryGroup.getQuery(SEARCH_BY_NAME_WITHOUT_ZONE_QUERY);
 		}
+		return searchByName(domainName, resultLimit, useNameserverAsDomainAttribute, connection, query);
+	}
 
+	public static SearchResultStruct searchByRegexName(String regexName, Integer resultLimit,
+			boolean useNameserverAsDomainAttribute, Connection connection) throws SQLException, IOException {
+		String query = queryGroup.getQuery(SEARCH_BY_REGEX_NAME_WITHOUT_ZONE);
+		return searchByName(regexName, resultLimit, useNameserverAsDomainAttribute, connection, query);
+	}
+
+	public static SearchResultStruct searchByRegexName(String name, String zone, Integer resultLimit,
+			boolean useNameserverAsDomainAttribute, Connection connection) throws SQLException, IOException {
+		SearchResultStruct result = new SearchResultStruct();
+		// Hack to know is there is more domains that the limit, used for
+		// notices
+		resultLimit = resultLimit + 1;
+		String query = queryGroup.getQuery(SEARCH_BY_REGEX_NAME_WITH_ZONE);
+		List<Integer> zoneIds = ZoneModel.getValidZoneIds();
+
+		try (PreparedStatement statement = connection.prepareStatement(query);) {
+
+			for (int i = 1; i <= zoneIds.size(); i++) {
+				statement.setInt(i, zoneIds.get(i - 1));
+			}
+			statement.setString(zoneIds.size() + 1, name);
+			statement.setString(zoneIds.size() + 2, name);
+			statement.setString(zoneIds.size() + 3, zone);
+			statement.setInt(zoneIds.size() + 4, resultLimit);
+
+			logger.log(Level.INFO, "Executing query" + statement.toString());
+			ResultSet resultSet = statement.executeQuery();
+			if (!resultSet.next()) {
+				throw new ObjectNotFoundException("Object not found.");
+			}
+			List<DomainDAO> domains = new ArrayList<DomainDAO>();
+			do {
+				DomainDAO domain = new DomainDAO(resultSet);
+				domains.add(domain);
+			} while (resultSet.next());
+			resultLimit = resultLimit - 1;// Back to the original limit
+			if (domains.size() > resultLimit) {
+				result.setResultSetWasLimitedByUserConfiguration(true);
+				domains.remove(domains.size() - 1);
+			}
+			for (DomainDAO domain : domains) {
+				loadNestedObjects(domain, useNameserverAsDomainAttribute, connection);
+			}
+			result.setSearchResultsLimitForUser(resultLimit);
+			result.getResults().addAll(domains);
+			return result;
+		}
+	}
+
+	/**
+	 * Searches a domain by it's name when user don´t care about the TLD
+	 * 
+	 */
+	private static SearchResultStruct searchByName(String domainName, Integer resultLimit,
+			boolean useNameserverAsDomainAttribute, Connection connection, String query)
+			throws SQLException, IOException {
+		SearchResultStruct result = new SearchResultStruct();
+		// Hack to know is there is more domains that the limit, used for
+		// notices
+		resultLimit = resultLimit + 1;
 		List<Integer> zoneIds = ZoneModel.getValidZoneIds();
 		query = Util.createDynamicQueryWithInClause(zoneIds.size(), query);
 
@@ -376,19 +433,31 @@ public class DomainModel {
 		}
 	}
 
+	public static SearchResultStruct searchByRegexNsLdhName(String name, Integer resultLimit,
+			boolean useNameserverAsDomainAttribute, Connection connection) throws SQLException, IOException {
+		String query = queryGroup.getQuery(SEARCH_BY_REGEX_NAMESERVER_LDH_QUERY);
+		return searchByNsLdhName(name, resultLimit, useNameserverAsDomainAttribute, connection, query);
+	}
+
+	public static SearchResultStruct searchByNsLdhName(String name, Integer resultLimit,
+			boolean useNameserverAsDomainAttribute, Connection connection) throws SQLException, IOException {
+		String query = queryGroup.getQuery(SEARCH_BY_NAMESERVER_LDH_QUERY);
+		name = name.replace("*", "%");
+		return searchByNsLdhName(name, resultLimit, useNameserverAsDomainAttribute, connection, query);
+	}
+
 	/**
 	 * Searches all domains with a nameserver by name
 	 * 
 	 */
-	public static SearchResultStruct searchByNsLdhName(String name, Integer resultLimit,
-			boolean useNameserverAsDomainAttribute, Connection connection) throws SQLException, IOException {
+	private static SearchResultStruct searchByNsLdhName(String name, Integer resultLimit,
+			boolean useNameserverAsDomainAttribute, Connection connection, String query)
+			throws SQLException, IOException {
 		SearchResultStruct result = new SearchResultStruct();
 		// Hack to know is there is more domains that the limit, used for
 		// notices
 		resultLimit = resultLimit + 1;
-		name = name.replace("*", "%");
-		try (PreparedStatement statement = connection
-				.prepareStatement(queryGroup.getQuery(SEARCH_BY_NAMESERVER_LDH_QUERY))) {
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, name);
 			statement.setString(2, name);
 			statement.setInt(3, resultLimit);

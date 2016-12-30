@@ -26,7 +26,7 @@ SELECT DISTINCT (ent.ent_id),  ent.ent_handle, ent.ent_port43 FROM rdap.entity e
 SELECT DISTINCT (ent.ent_id),  ent.ent_handle, ent.ent_port43 FROM rdap.entity ent JOIN rdap.asn_entity_roles rol ON rol.ent_id WHERE rol.asn_id = ?;
 
 #getIpNetworkEntitiesQuery
-SELECT DISTINCT (ent.ent_id),  ent.ent_handle, ent.ent_port43 FROM rdap.entity ent JOIN rdap.ipn_entity_roles rol ON rol.ent_id = ent.ent_id WHERE rol.ine_id = ?;
+SELECT DISTINCT (ent.ent_id),  ent.ent_handle, ent.ent_port43 FROM rdap.entity ent JOIN rdap.ip_network_entity_roles rol ON rol.ent_id = ent.ent_id WHERE rol.ine_id = ?;
 
 #getIdByHandle
 SELECT ent_id FROM rdap.entity ent WHERE ent.ent_handle = ?;
@@ -61,3 +61,8 @@ SELECT EXISTS(SELECT 1 FROM rdap.entity ent JOIN rdap.entity_contact eco ON eco.
 #existByPartialHandle
 SELECT EXISTS(SELECT 1  FROM rdap.entity e WHERE e.ent_handle LIKE ?);
 
+#searchByRegexHandle
+SELECT * FROM rdap.entity e WHERE e.ent_handle REGEXP ? ORDER BY 1 LIMIT ?;
+
+#searchByRegexName
+SELECT DISTINCT (ent.ent_id),  ent.ent_handle, ent.ent_port43 FROM rdap.entity ent JOIN rdap.entity_contact eco ON eco.ent_id=ent.ent_id JOIN rdap.vcard vca ON vca.vca_id=eco.vca_id WHERE vca.vca_name REGEXP ? ORDER BY 1 LIMIT ?;

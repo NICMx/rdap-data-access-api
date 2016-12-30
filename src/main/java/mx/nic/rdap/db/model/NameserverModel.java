@@ -60,6 +60,8 @@ public class NameserverModel {
 	private static final String EXIST_BY_NAME_QUERY = "existByName";
 	private static final String EXIST_BY_IP6_QUERY = "existByIp6";
 	private static final String EXIST_BY_IP4_QUERY = "existByIp4";
+
+	private static final String SEARCH_BY_NAME_REGEX_QUERY = "searchByRegexName";
 	static {
 		try {
 			queryGroup = new QueryGroup(QUERY_GROUP);
@@ -170,20 +172,29 @@ public class NameserverModel {
 
 	public static SearchResultStruct searchByName(String namePattern, Integer resultLimit, Connection connection)
 			throws SQLException, IOException {
+		String query = null;
+		if (namePattern.contains("*")) {// check if is a partial search
+			query = queryGroup.getQuery(SEARCH_BY_PARTIAL_NAME_QUERY);
+			namePattern = namePattern.replace('*', '%');
+		} else {
+			query = queryGroup.getQuery(SEARCH_BY_NAME_QUERY);
+		}
+		return searchByName(namePattern, resultLimit, connection, query);
+	}
+
+	public static SearchResultStruct searchByRegexName(String namePattern, Integer resultLimit, Connection connection)
+			throws SQLException, IOException {
+		return searchByName(namePattern, resultLimit, connection, queryGroup.getQuery(SEARCH_BY_NAME_REGEX_QUERY));
+	}
+
+	private static SearchResultStruct searchByName(String namePattern, Integer resultLimit, Connection connection,
+			String query) throws SQLException, IOException {
 		SearchResultStruct result = new SearchResultStruct();
 		// Hack to know is there is more domains that the limit, used for
 		// notices
 		resultLimit = resultLimit + 1;
-		String query = "";
-		String criteria = "";
+		String criteria = namePattern;
 		List<NameserverDAO> nameservers = new ArrayList<NameserverDAO>();
-		if (namePattern.contains("*")) {// check if is a partial search
-			query = queryGroup.getQuery(SEARCH_BY_PARTIAL_NAME_QUERY);
-			criteria = namePattern.replace('*', '%');
-		} else {
-			query = queryGroup.getQuery(SEARCH_BY_NAME_QUERY);
-			criteria = namePattern;
-		}
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			statement.setString(1, criteria);
 			statement.setString(2, criteria);

@@ -71,3 +71,12 @@ INSERT INTO rdap.domain_networks VALUES (?, ?);
 
 #deleteDomainIpNetworkRelation
 DELETE FROM rdap.domain_networks WHERE dom_id=?;
+
+#searchByRegexNameWithZone
+SELECT DISTINCT(d.dom_id), d.dom_handle, d.dom_ldh_name, d.dom_port43, d.zone_id FROM rdap.domain d JOIN rdap.zone z on d.zone_id = z.zone_id AND z.zone_id IN (?) WHERE (d.dom_ldh_name REGEXP ? OR d.dom_unicode_name REGEXP ?) AND z.zone_name REGEXP ? LIMIT ?;
+
+#searchByRegexNameWithOutZone
+SELECT DISTINCT(d.dom_id), d.dom_handle, d.dom_ldh_name, d.dom_port43, d.zone_id FROM rdap.domain d WHERE d.zone_id IN (?) AND (d.dom_ldh_name REGEXP ? OR d.dom_unicode_name REGEXP ?) ORDER BY 1 LIMIT ?;
+
+#searchByRegexNsLdhName
+SELECT DISTINCT (dom.dom_id), dom.dom_ldh_name, dom.dom_handle, dom.dom_port43, dom.zone_id FROM rdap.domain dom JOIN rdap.domain_nameservers dom_ns ON dom_ns.dom_id = dom.dom_id JOIN rdap.nameserver ns ON ns.nse_id = dom_ns.nse_id WHERE  (ns.nse_ldh_name REGEXP ? OR ns.nse_unicode_name REGEXP ?) ORDER BY 1 LIMIT ?;
