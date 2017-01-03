@@ -350,6 +350,7 @@ public class DomainModel {
 		resultLimit = resultLimit + 1;
 		String query = queryGroup.getQuery(SEARCH_BY_REGEX_NAME_WITH_ZONE);
 		List<Integer> zoneIds = ZoneModel.getValidZoneIds();
+		query = Util.createDynamicQueryWithInClause(zoneIds.size(), query);
 
 		try (PreparedStatement statement = connection.prepareStatement(query);) {
 
