@@ -7,6 +7,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.security.InvalidParameterException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import mx.nic.rdap.db.exception.InvalidValueException;
@@ -58,10 +60,40 @@ public class IpUtils {
 	public static final int IPV6_PART_SIZE = 8;
 	private static final BigInteger IPV4_MAX_VALUE = FIRST_OCTECT_LIMIT; // 0xFFFF_FFFF
 
+	private static Map<BigInteger, Short> ipv4CidrMap;
+	private static Map<BigInteger, Short> ipv6CidrMap;
+
+	public static void loadIpv4Cidr() {
+		ipv4CidrMap = new HashMap<>(34);
+		loadMap(ipv4CidrMap, (short) MAX_IPV4_CIDR);
+	}
+
+	public static void loadIpv6Cidr() {
+		ipv6CidrMap = new HashMap<>(130);
+		loadMap(ipv6CidrMap, (short) MAX_IPV6_CIDR);
+	}
+
+	private static void loadMap(Map<BigInteger, Short> ipCidrMap, Short maxCidr) {
+		String bitValue = "1";
+		for (short i = 0; i <= maxCidr; i++) {
+			BigInteger bi = new BigInteger(bitValue, 2);
+			bitValue = bitValue + "0";
+			ipCidrMap.put(bi, (short) (maxCidr - i));
+		}
+
+	}
+
 	public static BigInteger addressToNumber(Inet4Address address) {
 		byte[] byteAddress = address.getAddress();
 		byte[] number = new byte[IPV4_ADDRESS_ARRAY_SIZE + 1];
 		System.arraycopy(byteAddress, 0, number, 1, IPV4_ADDRESS_ARRAY_SIZE);
+		return new BigInteger(number);
+	}
+
+	public static BigInteger inet6AddressToNumber(Inet6Address address) {
+		byte[] byteAddress = address.getAddress();
+		byte[] number = new byte[IPV6_ADDRESS_ARRAY_SIZE + 1];
+		System.arraycopy(byteAddress, 0, number, 1, IPV6_ADDRESS_ARRAY_SIZE);
 		return new BigInteger(number);
 	}
 
@@ -392,6 +424,38 @@ public class IpUtils {
 		System.arraycopy(src, srcPos, dest, destPos, length);
 
 		return InetAddress.getByAddress(dest);
+	}
+
+	public static Short getCidrLenghtFromInetAddress(InetAddress startAddress, InetAddress endAddress)
+			throws InvalidValueException {
+		if (startAddress == null || endAddress == null) {
+			throw new InvalidValueException("Address cannot be null.");
+		}
+		BigInteger hostNumbers = null;
+		Map<BigInteger, Short> ipCidrMap = null;
+
+		if (startAddress instanceof Inet4Address && endAddress instanceof Inet4Address) {
+			BigInteger start = IpUtils.addressToNumber((Inet4Address) startAddress);
+			BigInteger end = IpUtils.addressToNumber((Inet4Address) endAddress);
+			hostNumbers = end.subtract(start).add(BigInteger.ONE);
+			ipCidrMap = ipv4CidrMap;
+		} else if (startAddress instanceof Inet6Address && endAddress instanceof Inet6Address) {
+			BigInteger start = IpUtils.inet6AddressToNumber((Inet6Address) startAddress);
+			BigInteger end = IpUtils.inet6AddressToNumber((Inet6Address) endAddress);
+			hostNumbers = end.subtract(start).add(BigInteger.ONE);
+			ipCidrMap = ipv6CidrMap;
+		} else {
+			throw new InvalidValueException("Both InetAddress must be the Inet4Address or Inet6Address. StartAddress :'"
+					+ startAddress.getHostAddress() + "', EndAddress : '" + endAddress.getHostAddress() + "'");
+		}
+
+		Short result = ipCidrMap.get(hostNumbers);
+		if (result == null) {
+			throw new InvalidValueException("InetAddresses are not a valid range. StartAddress :'"
+					+ startAddress.getHostAddress() + "', EndAddress : '" + endAddress.getHostAddress() + "'");
+		}
+
+		return result;
 	}
 
 }
