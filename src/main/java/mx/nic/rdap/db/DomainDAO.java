@@ -38,6 +38,10 @@ public class DomainDAO extends Domain implements DatabaseObject {
 		this.setId(resultSet.getLong("dom_id"));
 		this.setHandle(resultSet.getString("dom_handle"));
 		this.setPunycodeName(resultSet.getString("dom_ldh_name"));
+		if (resultSet.getString("dom_unicode_name") == null || resultSet.getString("dom_unicode_name").isEmpty()) {
+			this.setUnicodeName(null);
+		} else
+			this.setUnicodeName(resultSet.getString("dom_unicode_name"));
 		this.setPort43(resultSet.getString("dom_port43"));
 		this.setZoneId(resultSet.getInt("zone_id"));
 	}

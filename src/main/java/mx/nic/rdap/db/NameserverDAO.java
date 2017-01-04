@@ -41,6 +41,10 @@ public class NameserverDAO extends Nameserver implements DatabaseObject {
 		this.setId(resultSet.getLong("nse_id"));
 		this.setHandle(resultSet.getString("nse_handle"));
 		this.setPunycodeName(resultSet.getString("nse_ldh_name"));
+		if (resultSet.getString("nse_unicode_name") == null || resultSet.getString("nse_unicode_name").isEmpty()) {
+			this.setUnicodeName(null);
+		} else
+			this.setUnicodeName(resultSet.getString("nse_unicode_name"));
 		this.setPort43(resultSet.getString("nse_port43"));
 	}
 
