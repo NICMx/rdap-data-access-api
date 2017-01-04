@@ -177,7 +177,7 @@ public class IpNetworkModel {
 	}
 
 	private static IpNetwork getByInet4Address(Inet4Address inetAddress, Integer cidr, Connection connection)
-			throws UnknownHostException, SQLException {
+			throws UnknownHostException, SQLException, InvalidValueException {
 		InetAddress lastAddressFromNetwork = IpUtils.getLastAddressFromNetwork(inetAddress, cidr);
 
 		BigInteger start = IpUtils.addressToNumber(inetAddress);
@@ -203,7 +203,7 @@ public class IpNetworkModel {
 	}
 
 	private static IpNetwork getByInet6Address(Inet6Address inetAddress, Integer cidr, Connection connection)
-			throws UnknownHostException, SQLException {
+			throws UnknownHostException, SQLException, InvalidValueException {
 		InetAddress lastAddressFromNetwork = IpUtils.getLastAddressFromNetwork(inetAddress, cidr);
 
 		BigInteger startUpperPart = IpUtils.inet6AddressToUpperPart(inetAddress);
@@ -236,28 +236,13 @@ public class IpNetworkModel {
 		return ipDao;
 	}
 
-	public static IpNetwork getByInetAddress(InetAddress inetAddress, Integer cidr, Connection connection)
-			throws SQLException, IOException {
-		IpNetwork result = null;
-		if (inetAddress instanceof Inet4Address) {
-			result = getByInet4Address((Inet4Address) inetAddress, cidr, connection);
-		} else if (inetAddress instanceof Inet6Address) {
-			result = getByInet6Address((Inet6Address) inetAddress, cidr, connection);
-		} else {
-			throw new UnsupportedOperationException("Unsupported class:" + inetAddress.getClass().getName());
-		}
-
-		loadNestedObjects(result, connection);
-
-		return result;
-	}
-
 	public static IpNetwork getByInetAddress(InetAddress inetAddress, Connection connection)
-			throws SQLException, IOException {
+			throws SQLException, IOException, InvalidValueException {
 		return getByInetAddress(inetAddress, IpUtils.getMaxValidCidr(inetAddress), connection);
 	}
 
-	public static IpNetwork getByInetAddress(String ipAddress, Connection connection) throws SQLException, IOException {
+	public static IpNetwork getByInetAddress(String ipAddress, Connection connection)
+			throws SQLException, IOException, InvalidValueException {
 		InetAddress inetAddress;
 		try {
 			inetAddress = IpUtils.validateIpAddress(ipAddress);
@@ -268,7 +253,7 @@ public class IpNetworkModel {
 	}
 
 	public static IpNetwork getByInetAddress(String ipAddress, Integer cidr, Connection connection)
-			throws SQLException, IOException {
+			throws SQLException, IOException, InvalidValueException {
 		InetAddress inetAddress;
 		try {
 			inetAddress = IpUtils.validateIpAddress(ipAddress);
@@ -276,6 +261,24 @@ public class IpNetworkModel {
 			throw new UnknownHostException(ipAddress);
 		}
 		return getByInetAddress(inetAddress, cidr, connection);
+	}
+
+	public static IpNetwork getByInetAddress(InetAddress inetAddress, Integer cidr, Connection connection)
+			throws SQLException, IOException, InvalidValueException {
+		IpNetwork result = null;
+		if (inetAddress instanceof Inet4Address) {
+			IpUtils.validateIpv4Cidr(cidr);
+			result = getByInet4Address((Inet4Address) inetAddress, cidr, connection);
+		} else if (inetAddress instanceof Inet6Address) {
+			IpUtils.validateIpv6Cidr(cidr);
+			result = getByInet6Address((Inet6Address) inetAddress, cidr, connection);
+		} else {
+			throw new UnsupportedOperationException("Unsupported class:" + inetAddress.getClass().getName());
+		}
+
+		loadNestedObjects(result, connection);
+
+		return result;
 	}
 
 	public static IpNetwork getByDomainId(long domainId, Connection connection) throws SQLException, IOException {
@@ -330,7 +333,7 @@ public class IpNetworkModel {
 	}
 
 	public static IpNetworkDAO getByHandle(String handle, Connection connection) throws SQLException, IOException {
-		String query = queryGroup.getQuery(GET_BY_HANDLE);// TOODO);
+		String query = queryGroup.getQuery(GET_BY_HANDLE);
 		IpNetworkDAO result = null;
 		try (PreparedStatement statement = connection.prepareStatement(query);) {
 			statement.setString(1, handle);
@@ -403,7 +406,7 @@ public class IpNetworkModel {
 	}
 
 	public static void existByInetAddress(String ipAddress, Integer cidr, Connection connection)
-			throws SQLException, IOException {
+			throws SQLException, IOException, InvalidValueException {
 		InetAddress inetAddress;
 		try {
 			inetAddress = IpUtils.validateIpAddress(ipAddress);
@@ -414,7 +417,8 @@ public class IpNetworkModel {
 
 	}
 
-	public static void existByInetAddress(String ipAddress, Connection connection) throws SQLException, IOException {
+	public static void existByInetAddress(String ipAddress, Connection connection)
+			throws SQLException, IOException, InvalidValueException {
 		InetAddress inetAddress;
 		try {
 			inetAddress = IpUtils.validateIpAddress(ipAddress);
@@ -426,15 +430,17 @@ public class IpNetworkModel {
 	}
 
 	private static void existByInetAddress(InetAddress inetAddress, Connection connection)
-			throws SQLException, IOException {
+			throws SQLException, IOException, InvalidValueException {
 		existByInetAddress(inetAddress, IpUtils.getMaxValidCidr(inetAddress), connection);
 	}
 
 	private static void existByInetAddress(InetAddress inetAddress, Integer cidr, Connection connection)
-			throws SQLException, IOException {
+			throws SQLException, IOException, InvalidValueException {
 		if (inetAddress instanceof Inet4Address) {
+			IpUtils.validateIpv4Cidr(cidr);
 			existByInet4Address((Inet4Address) inetAddress, cidr, connection);
 		} else if (inetAddress instanceof Inet6Address) {
+			IpUtils.validateIpv6Cidr(cidr);
 			existByInet6Address((Inet6Address) inetAddress, cidr, connection);
 		} else {
 			throw new UnsupportedOperationException("Unsupported class:" + inetAddress.getClass().getName());
@@ -442,7 +448,7 @@ public class IpNetworkModel {
 	}
 
 	private static void existByInet4Address(Inet4Address inetAddress, Integer cidr, Connection connection)
-			throws UnknownHostException, SQLException {
+			throws UnknownHostException, SQLException, InvalidValueException {
 		InetAddress lastAddressFromNetwork = IpUtils.getLastAddressFromNetwork(inetAddress, cidr);
 
 		BigInteger start = IpUtils.addressToNumber(inetAddress);
@@ -465,7 +471,7 @@ public class IpNetworkModel {
 	}
 
 	private static void existByInet6Address(Inet6Address inetAddress, Integer cidr, Connection connection)
-			throws UnknownHostException, SQLException {
+			throws UnknownHostException, SQLException, InvalidValueException {
 		InetAddress lastAddressFromNetwork = IpUtils.getLastAddressFromNetwork(inetAddress, cidr);
 
 		BigInteger startUpperPart = IpUtils.inet6AddressToUpperPart(inetAddress);

@@ -155,9 +155,7 @@ public class IpUtils {
 	}
 
 	private static void validateIpCidr(InetAddress inetAddress, int cidr, int maxCidr) throws InvalidValueException {
-		if (cidr > maxCidr || cidr < MIN_CIRD) {
-			throw new InvalidValueException("Invalid cidr,  max valid : " + maxCidr + ", input : " + cidr);
-		}
+		validateCidr(cidr, maxCidr);
 		if (cidr == maxCidr) {
 			return;
 		}
@@ -206,7 +204,8 @@ public class IpUtils {
 		}
 	}
 
-	public static InetAddress getLastAddressFromNetwork(InetAddress inetAddress, int cidr) throws UnknownHostException {
+	public static InetAddress getLastAddressFromNetwork(InetAddress inetAddress, int cidr)
+			throws UnknownHostException, InvalidValueException {
 		if (inetAddress instanceof Inet4Address) {
 			return getLastAddressFromNetwork(inetAddress, cidr, MAX_IPV4_CIDR);
 		} else if (inetAddress instanceof Inet6Address) {
@@ -217,10 +216,8 @@ public class IpUtils {
 	}
 
 	private static InetAddress getLastAddressFromNetwork(InetAddress inetAddress, int cidr, int maxCidr)
-			throws UnknownHostException {
-		if (cidr > maxCidr || cidr < MIN_CIRD) {
-			throw new RuntimeException("Invalid CIDR");
-		}
+			throws UnknownHostException, InvalidValueException {
+		validateCidr(cidr, maxCidr);
 		if (cidr == maxCidr) {
 			return inetAddress;
 		}
@@ -279,7 +276,7 @@ public class IpUtils {
 		validateLastIpCidr(inetAddress, cidr);
 	}
 
-	public static void validateLastIpCidr(InetAddress inetAddress, int cidr) {
+	public static void validateLastIpCidr(InetAddress inetAddress, int cidr) throws InvalidValueException {
 		if (inetAddress instanceof Inet4Address) {
 			validateLastIpCidr(inetAddress, cidr, MAX_IPV4_CIDR);
 		} else if (inetAddress instanceof Inet6Address) {
@@ -289,10 +286,9 @@ public class IpUtils {
 		}
 	}
 
-	private static void validateLastIpCidr(InetAddress inetAddress, int cidr, int maxCidr) {
-		if (cidr > maxCidr || cidr < MIN_CIRD) {
-			throw new RuntimeException("Invalid CIDR");
-		}
+	private static void validateLastIpCidr(InetAddress inetAddress, int cidr, int maxCidr)
+			throws InvalidValueException {
+		validateCidr(cidr, maxCidr);
 		if (cidr == maxCidr) {
 			return;
 		}
@@ -458,4 +454,17 @@ public class IpUtils {
 		return result;
 	}
 
+	public static void validateIpv4Cidr(int cidr) throws InvalidValueException {
+		validateCidr(cidr, MAX_IPV4_CIDR);
+	}
+
+	public static void validateIpv6Cidr(int cidr) throws InvalidValueException {
+		validateCidr(cidr, MAX_IPV6_CIDR);
+	}
+
+	private static void validateCidr(int cidr, int maxCidr) throws InvalidValueException {
+		if (cidr > maxCidr || cidr < MIN_CIRD) {
+			throw new InvalidValueException("Invalid cidr,  max valid : " + maxCidr + ", input : " + cidr);
+		}
+	}
 }

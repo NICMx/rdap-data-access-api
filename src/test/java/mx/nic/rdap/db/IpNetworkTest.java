@@ -319,14 +319,14 @@ public class IpNetworkTest extends DatabaseTest {
 		ipNetwork.setCidr(cidr);
 		return ipNetwork;
 	}
-	
+
 	@Test
-	public void exist(){
-		try{
+	public void exist() throws InvalidValueException {
+		try {
 			IpNetworkModel.existByInetAddress("127.0.0.1", connection);
-		}catch(SQLException | IOException e){
+		} catch (SQLException | IOException e) {
 			fail();
 		}
 	}
-	
+
 }
