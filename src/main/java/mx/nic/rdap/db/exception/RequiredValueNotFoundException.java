@@ -11,4 +11,19 @@ public class RequiredValueNotFoundException extends RdapDatabaseException {
 		super("Missing required value: " + attributeName + " in Class: " + className);
 	}
 
+	public RequiredValueNotFoundException() {
+	}
+
+	public RequiredValueNotFoundException(String message) {
+		super(message);
+	}
+
+	public RequiredValueNotFoundException(Throwable cause) {
+		super(cause);
+	}
+
+	public RequiredValueNotFoundException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
 }

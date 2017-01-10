@@ -16,4 +16,8 @@ public class InvalidadDataStructure extends RdapDatabaseException {
 		super();
 	}
 
+	public InvalidadDataStructure(String message) {
+		super(message);
+	}
+
 }

@@ -19,12 +19,12 @@ public class IpUtils {
 	 * This regex string match with ###.###.###.n or ###.###.n or #.n or n,
 	 * where ###. is 000 or 0 to 255, and n is any integer number
 	 */
-	private static String IP4_GENERIC_REGEX = "(((0|1)?[0-9]{0,2}|2[0-4][0-9]|25[0-5])\\.){0,3}\\d*[^\\.]";
+	private static final String IP4_GENERIC_REGEX = "(((0|1)?[0-9]{0,2}|2[0-4][0-9]|25[0-5])\\.){0,3}\\d*[^\\.]";
 
 	/**
 	 * Compiled pattern of <code>IP4_GENERIC_REGEX<code>
 	 */
-	private static Pattern IP4_GENERIC_PATTERN = Pattern.compile(IP4_GENERIC_REGEX);
+	private static final Pattern IP4_GENERIC_PATTERN = Pattern.compile(IP4_GENERIC_REGEX);
 
 	private static final BigInteger FIRST_OCTECT_LIMIT = new BigInteger("4294967295"); // 0xFFFF_FFFF
 	private static final BigInteger SECOND_OCTECT_LIMIT = new BigInteger(0xFF_FFFF + "");// 16777215
@@ -57,7 +57,7 @@ public class IpUtils {
 	private final static byte SEVEN_BIT_WILDCARD = (byte) 0b0111_1111;
 	private final static byte EIGHT_BIT_WILDCARD = (byte) 0b1111_1111;
 
-	public static final int IPV6_PART_SIZE = 8;
+	private static final int IPV6_PART_SIZE = 8;
 	private static final BigInteger IPV4_MAX_VALUE = FIRST_OCTECT_LIMIT; // 0xFFFF_FFFF
 
 	private static Map<BigInteger, Short> ipv4CidrMap;
