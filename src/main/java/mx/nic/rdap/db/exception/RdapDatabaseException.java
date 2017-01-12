@@ -1,6 +1,7 @@
 package mx.nic.rdap.db.exception;
+
 /**
- * Generic problem with the database connection
+ * Generic problem in data access implementation.
  */
 public class RdapDatabaseException extends Exception {
 

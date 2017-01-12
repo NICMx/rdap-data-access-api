@@ -6,7 +6,8 @@ import java.util.List;
 import mx.nic.rdap.core.db.RdapObject;
 
 /**
- * Used to answer a search request
+ * Used to answer a search request. It contains a list of {@link RdapObject}
+ * objects, depending on the search query it might truncate the result.
  */
 public class SearchResultStruct {
 
