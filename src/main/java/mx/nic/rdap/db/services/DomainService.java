@@ -42,8 +42,8 @@ public class DomainService {
 		return service;
 	}
 
-	public static Long storeToDatabase(Domain domain) throws RdapDatabaseException {
-		return implementation.storeToDatabase(domain);
+	public static Long storeToDatabase(Domain domain, Boolean useNsAsAttribute) throws RdapDatabaseException {
+		return implementation.storeToDatabase(domain, useNsAsAttribute);
 	}
 
 	public static Domain getByName(String domainName, Boolean useNsAsAttribute) throws RdapDatabaseException {
