@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>mx.nic.rdap</groupId>
-	<artifactId>rdap-db</artifactId>
+	<artifactId>rdap-data-access-api</artifactId>
 	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
