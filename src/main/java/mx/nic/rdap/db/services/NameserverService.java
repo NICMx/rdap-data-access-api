@@ -51,22 +51,22 @@ public class NameserverService {
 		return implementation.getByName(name);
 	}
 
-	public static SearchResultStruct searchByName(String namePattern, Integer resultLimit)
+	public static SearchResultStruct<Nameserver> searchByName(String namePattern, Integer resultLimit)
 			throws RdapDatabaseException {
 		return implementation.searchByName(namePattern, resultLimit);
 	}
 
-	public static SearchResultStruct searchByIp(String ipaddressPattern, Integer resultLimit)
+	public static SearchResultStruct<Nameserver> searchByIp(String ipaddressPattern, Integer resultLimit)
 			throws RdapDatabaseException {
 		return implementation.searchByIp(ipaddressPattern, resultLimit);
 	}
 
-	public static SearchResultStruct searchByRegexName(String namePattern, Integer resultLimit)
+	public static SearchResultStruct<Nameserver> searchByRegexName(String namePattern, Integer resultLimit)
 			throws RdapDatabaseException {
 		return implementation.searchByRegexName(namePattern, resultLimit);
 	}
 
-	public static SearchResultStruct searchByRegexIp(String ipaddressPattern, Integer resultLimit)
+	public static SearchResultStruct<Nameserver> searchByRegexIp(String ipaddressPattern, Integer resultLimit)
 			throws RdapDatabaseException {
 		return implementation.searchByRegexIp(ipaddressPattern, resultLimit);
 	}

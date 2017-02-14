@@ -50,32 +50,32 @@ public class DomainService {
 		return implementation.getByName(domainName, useNsAsAttribute);
 	}
 
-	public static SearchResultStruct searchByName(String domainName, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDatabaseException {
+	public static SearchResultStruct<Domain> searchByName(String domainName, Integer resultLimit,
+			boolean useNsAsAttribute) throws RdapDatabaseException {
 		return implementation.searchByName(domainName, resultLimit, useNsAsAttribute);
 	}
 
-	public static SearchResultStruct searchByNsName(String nsName, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDatabaseException {
+	public static SearchResultStruct<Domain> searchByNsName(String nsName, Integer resultLimit,
+			boolean useNsAsAttribute) throws RdapDatabaseException {
 		return implementation.searchByNsName(nsName, resultLimit, useNsAsAttribute);
 	}
 
-	public static SearchResultStruct searchByNsIp(String ip, Integer resultLimit, boolean useNsAsAttribute)
+	public static SearchResultStruct<Domain> searchByNsIp(String ip, Integer resultLimit, boolean useNsAsAttribute)
 			throws RdapDatabaseException {
 		return implementation.searchByNsIp(ip, resultLimit, useNsAsAttribute);
 	}
 
-	public static SearchResultStruct searchByRegexName(String regexName, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDatabaseException {
+	public static SearchResultStruct<Domain> searchByRegexName(String regexName, Integer resultLimit,
+			boolean useNsAsAttribute) throws RdapDatabaseException {
 		return implementation.searchByRegexName(regexName, resultLimit, useNsAsAttribute);
 	}
 
-	public static SearchResultStruct searchByRegexNsName(String name, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDatabaseException {
+	public static SearchResultStruct<Domain> searchByRegexNsName(String name, Integer resultLimit,
+			boolean useNsAsAttribute) throws RdapDatabaseException {
 		return implementation.searchByRegexNsName(name, resultLimit, useNsAsAttribute);
 	}
 
-	public static SearchResultStruct searchByRegexNsIp(String ip, Integer resultLimit, boolean useNsAsAttribute)
+	public static SearchResultStruct<Domain> searchByRegexNsIp(String ip, Integer resultLimit, boolean useNsAsAttribute)
 			throws RdapDatabaseException {
 		return implementation.searchByRegexNsIp(ip, resultLimit, useNsAsAttribute);
 	}

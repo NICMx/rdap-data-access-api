@@ -52,7 +52,7 @@ public interface DomainSpi {
 	 *         objects related to the <code>namePattern</code>.
 	 * @throws RdapDatabaseException
 	 */
-	public SearchResultStruct searchByName(String domainName, Integer resultLimit, boolean useNsAsAttribute)
+	public SearchResultStruct<Domain> searchByName(String domainName, Integer resultLimit, boolean useNsAsAttribute)
 			throws RdapDatabaseException;
 
 	/**
@@ -71,7 +71,7 @@ public interface DomainSpi {
 	 *         objects related to the <code>nsName</code>
 	 * @throws RdapDatabaseException
 	 */
-	public SearchResultStruct searchByNsName(String nsName, Integer resultLimit, boolean useNsAsAttribute)
+	public SearchResultStruct<Domain> searchByNsName(String nsName, Integer resultLimit, boolean useNsAsAttribute)
 			throws RdapDatabaseException;
 
 	/**
@@ -89,7 +89,7 @@ public interface DomainSpi {
 	 *         objects related to the <code>ip</code>
 	 * @throws RdapDatabaseException
 	 */
-	public SearchResultStruct searchByNsIp(String ip, Integer resultLimit, boolean useNsAsAttribute)
+	public SearchResultStruct<Domain> searchByNsIp(String ip, Integer resultLimit, boolean useNsAsAttribute)
 			throws RdapDatabaseException;
 
 	/**
@@ -108,7 +108,7 @@ public interface DomainSpi {
 	 *         objects related to the <code>regexName</code>
 	 * @throws RdapDatabaseException
 	 */
-	public SearchResultStruct searchByRegexName(String regexName, Integer resultLimit, boolean useNsAsAttribute)
+	public SearchResultStruct<Domain> searchByRegexName(String regexName, Integer resultLimit, boolean useNsAsAttribute)
 			throws RdapDatabaseException;
 
 	/**
@@ -126,8 +126,8 @@ public interface DomainSpi {
 	 *         objects related to the <code>regexNsName</code>
 	 * @throws RdapDatabaseException
 	 */
-	public SearchResultStruct searchByRegexNsName(String regexNsName, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDatabaseException;
+	public SearchResultStruct<Domain> searchByRegexNsName(String regexNsName, Integer resultLimit,
+			boolean useNsAsAttribute) throws RdapDatabaseException;
 
 	/**
 	 * Search for domains by their nameserver's ip address using a regular
@@ -145,7 +145,7 @@ public interface DomainSpi {
 	 *         objects related to the <code>ip</code>
 	 * @throws RdapDatabaseException
 	 */
-	public SearchResultStruct searchByRegexNsIp(String ip, Integer resultLimit, boolean useNsAsAttribute)
+	public SearchResultStruct<Domain> searchByRegexNsIp(String ip, Integer resultLimit, boolean useNsAsAttribute)
 			throws RdapDatabaseException;
 
 	/**

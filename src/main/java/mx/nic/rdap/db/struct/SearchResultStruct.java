@@ -9,9 +9,9 @@ import mx.nic.rdap.core.db.RdapObject;
  * Used to answer a search request. It contains a list of {@link RdapObject}
  * objects, depending on the search query it might truncate the result.
  */
-public class SearchResultStruct {
+public class SearchResultStruct<T extends RdapObject> {
 
-	List<RdapObject> results;
+	List<T> results;
 
 	// The search limit param did its job?
 	Boolean resultSetWasLimitedByUserConfiguration;
@@ -19,15 +19,15 @@ public class SearchResultStruct {
 	Integer searchResultsLimitForUser;
 
 	public SearchResultStruct() {
-		results = new ArrayList<RdapObject>();
+		results = new ArrayList<T>();
 		resultSetWasLimitedByUserConfiguration = false;
 	}
 
-	public List<RdapObject> getResults() {
+	public List<T> getResults() {
 		return results;
 	}
 
-	public void setResults(List<RdapObject> results) {
+	public void setResults(List<T> results) {
 		this.results = results;
 	}
 

@@ -44,7 +44,8 @@ public interface NameserverSpi {
 	 *         objects related to the <code>namePattern</code>.
 	 * @throws RdapDatabaseException
 	 */
-	public SearchResultStruct searchByName(String namePattern, Integer resultLimit) throws RdapDatabaseException;
+	public SearchResultStruct<Nameserver> searchByName(String namePattern, Integer resultLimit)
+			throws RdapDatabaseException;
 
 	/**
 	 * Gets a List of {@link Nameserver} objects using their ip addresses
@@ -56,7 +57,8 @@ public interface NameserverSpi {
 	 * @return A {@link SearchResultStruct} with a List of {@link Nameserver}
 	 *         objects related to the <code>ipaddressPattern</code>.
 	 */
-	public SearchResultStruct searchByIp(String ipaddressPattern, Integer resultLimit) throws RdapDatabaseException;
+	public SearchResultStruct<Nameserver> searchByIp(String ipaddressPattern, Integer resultLimit)
+			throws RdapDatabaseException;
 
 	/**
 	 * Gets a List of {@link Nameserver} objects using a regular expression
@@ -70,7 +72,8 @@ public interface NameserverSpi {
 	 * @return A {@link SearchResultStruct} with a List of {@link Nameserver}
 	 *         objects related to the <code>namePattern</code>.
 	 */
-	public SearchResultStruct searchByRegexName(String namePattern, Integer resultLimit) throws RdapDatabaseException;
+	public SearchResultStruct<Nameserver> searchByRegexName(String namePattern, Integer resultLimit)
+			throws RdapDatabaseException;
 
 	/**
 	 * Gets a List of {@link Nameserver} objects using a regular expression
@@ -84,7 +87,7 @@ public interface NameserverSpi {
 	 * @return A {@link SearchResultStruct} with a List of {@link Nameserver}
 	 *         objects related to the <code>ipaddressPattern</code>.
 	 */
-	public SearchResultStruct searchByRegexIp(String ipaddressPattern, Integer resultLimit)
+	public SearchResultStruct<Nameserver> searchByRegexIp(String ipaddressPattern, Integer resultLimit)
 			throws RdapDatabaseException;
 
 	/**

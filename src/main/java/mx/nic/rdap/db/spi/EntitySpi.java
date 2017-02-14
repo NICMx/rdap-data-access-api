@@ -43,7 +43,7 @@ public interface EntitySpi {
 	 * @return A List of {@link Entity} objects related to the
 	 *         <code>handle</code>.
 	 */
-	public SearchResultStruct searchByHandle(String handle, Integer resultLimit) throws RdapDatabaseException;
+	public SearchResultStruct<Entity> searchByHandle(String handle, Integer resultLimit) throws RdapDatabaseException;
 
 	/**
 	 * Gets a List of {@link Entity} objects using a search pattern referring to
@@ -58,7 +58,8 @@ public interface EntitySpi {
 	 * @return A {@link SearchResultStruct} with a List of {@link Entity}
 	 *         objects related to the <code>vCardName</code>.
 	 */
-	public SearchResultStruct searchByVCardName(String vCardName, Integer resultLimit) throws RdapDatabaseException;
+	public SearchResultStruct<Entity> searchByVCardName(String vCardName, Integer resultLimit)
+			throws RdapDatabaseException;
 
 	/**
 	 * Gets a List of {@link Entity} objects using a regular expression
@@ -72,7 +73,8 @@ public interface EntitySpi {
 	 * @return A {@link SearchResultStruct} with a List of {@link Entity}
 	 *         objects related to the <code>regexHandle</code>.
 	 */
-	public SearchResultStruct searchByRegexHandle(String regexHandle, Integer resultLimit) throws RdapDatabaseException;
+	public SearchResultStruct<Entity> searchByRegexHandle(String regexHandle, Integer resultLimit)
+			throws RdapDatabaseException;
 
 	/**
 	 * Gets a List of {@link Entity} objects using a regular expression
@@ -86,7 +88,7 @@ public interface EntitySpi {
 	 * @return A {@link SearchResultStruct} with a List of {@link Entity}
 	 *         objects related to the <code>vCardName</code>.
 	 */
-	public SearchResultStruct searchByRegexVCardName(String vCardName, Integer resultLimit)
+	public SearchResultStruct<Entity> searchByRegexVCardName(String vCardName, Integer resultLimit)
 			throws RdapDatabaseException;
 
 	/**

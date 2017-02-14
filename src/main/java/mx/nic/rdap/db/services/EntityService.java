@@ -54,21 +54,22 @@ public class EntityService {
 		return implementation.getByHandle(entityHandle);
 	}
 
-	public static SearchResultStruct searchByHandle(String handle, Integer resultLimit) throws RdapDatabaseException {
+	public static SearchResultStruct<Entity> searchByHandle(String handle, Integer resultLimit)
+			throws RdapDatabaseException {
 		return implementation.searchByHandle(handle, resultLimit);
 	}
 
-	public static SearchResultStruct searchByVCardName(String handle, Integer resultLimit)
+	public static SearchResultStruct<Entity> searchByVCardName(String handle, Integer resultLimit)
 			throws RdapDatabaseException {
 		return implementation.searchByVCardName(handle, resultLimit);
 	}
 
-	public static SearchResultStruct searchByRegexHandle(String regexHandle, Integer resultLimit)
+	public static SearchResultStruct<Entity> searchByRegexHandle(String regexHandle, Integer resultLimit)
 			throws RdapDatabaseException {
 		return implementation.searchByRegexHandle(regexHandle, resultLimit);
 	}
 
-	public static SearchResultStruct searchByRegexVCardName(String regexName, Integer resultLimit)
+	public static SearchResultStruct<Entity> searchByRegexVCardName(String regexName, Integer resultLimit)
 			throws RdapDatabaseException {
 		return implementation.searchByRegexVCardName(regexName, resultLimit);
 
