@@ -11,16 +11,6 @@ import mx.nic.rdap.db.struct.SearchResultStruct;
 public interface NameserverSpi {
 
 	/**
-	 * Stores a {@link Nameserver} object to database.
-	 * 
-	 * @param nameserver
-	 *            The object to be stored.
-	 * @return The ID assigned to the object.
-	 * @throws RdapDatabaseException
-	 */
-	public void storeToDatabase(Nameserver nameserver) throws RdapDatabaseException;
-
-	/**
 	 * Gets a {@link Nameserver} object by its name.
 	 * 
 	 * @param name

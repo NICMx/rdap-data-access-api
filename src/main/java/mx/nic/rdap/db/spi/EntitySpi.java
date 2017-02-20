@@ -11,15 +11,6 @@ import mx.nic.rdap.db.struct.SearchResultStruct;
 public interface EntitySpi {
 
 	/**
-	 * Stores an {@link Entity} object to database.
-	 * 
-	 * @param entity
-	 *            The object to be stored.
-	 * @return The ID assigned to the object.
-	 */
-	public long storeToDatabase(Entity entity) throws RdapDatabaseException;
-
-	/**
 	 * Gets an {@link Entity} object by its handle.
 	 * 
 	 * @param entityHandle

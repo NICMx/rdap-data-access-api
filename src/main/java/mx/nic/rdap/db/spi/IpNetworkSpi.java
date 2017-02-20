@@ -11,15 +11,6 @@ import mx.nic.rdap.db.exception.RdapDatabaseException;
 public interface IpNetworkSpi {
 
 	/**
-	 * Stores an {@link IpNetwork} object to database.
-	 * 
-	 * @param ipNetwork
-	 *            The object to be stored.
-	 * @return The ID assigned to the object.
-	 */
-	public Long storeToDatabase(IpNetwork ipNetwork) throws RdapDatabaseException;
-
-	/**
 	 * Gets an {@link IpNetwork} object by its ipAddress.
 	 * 
 	 * @param ipAddress

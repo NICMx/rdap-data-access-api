@@ -46,10 +46,6 @@ public class EntityService {
 		implementation.existByHandle(entityHandle);
 	}
 
-	public static long storeToDatabase(Entity entity) throws RdapDatabaseException {
-		return implementation.storeToDatabase(entity);
-	}
-
 	public static Entity getByHandle(String entityHandle) throws RdapDatabaseException {
 		return implementation.getByHandle(entityHandle);
 	}

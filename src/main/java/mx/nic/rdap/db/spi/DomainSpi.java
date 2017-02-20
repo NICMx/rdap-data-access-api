@@ -10,17 +10,6 @@ import mx.nic.rdap.db.struct.SearchResultStruct;
  */
 public interface DomainSpi {
 
-	/**
-	 * Stores a {@link Domain} object to database.
-	 * 
-	 * @param domain
-	 *            the object to be stored
-	 * @param useNsAsAttribute
-	 *            value which defines if nameservers are being used as
-	 *            attributes or as objects.
-	 * @return The ID assigned to the object.
-	 */
-	public Long storeToDatabase(Domain domain, Boolean useNsAsAttribute) throws RdapDatabaseException;
 
 	/**
 	 * Search for a {@link Domain} by its fqdn.

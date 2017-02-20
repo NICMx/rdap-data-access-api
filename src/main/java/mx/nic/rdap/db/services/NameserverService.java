@@ -43,10 +43,6 @@ public class NameserverService {
 		return service;
 	}
 
-	public static void storeToDatabase(Nameserver nameserver) throws RdapDatabaseException {
-		implementation.storeToDatabase(nameserver);
-	}
-
 	public static Nameserver getByName(String name) throws RdapDatabaseException {
 		return implementation.getByName(name);
 	}

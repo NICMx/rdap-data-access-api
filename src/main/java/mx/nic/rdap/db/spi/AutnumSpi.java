@@ -9,15 +9,6 @@ import mx.nic.rdap.db.exception.RdapDatabaseException;
 public interface AutnumSpi {
 
 	/**
-	 * Stores an {@link Autnum} object to database.
-	 * 
-	 * @param autnum
-	 *            The object to be stored.
-	 * @return The ID assigned to the object.
-	 */
-	public Long storeToDatabase(Autnum autnum) throws RdapDatabaseException;
-
-	/**
 	 * Gets an {@link Autnum} object by its registered block.
 	 * 
 	 * @param autnumValue
