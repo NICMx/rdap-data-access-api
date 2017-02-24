@@ -2,13 +2,13 @@ package mx.nic.rdap.db.spi;
 
 import mx.nic.rdap.core.db.Domain;
 import mx.nic.rdap.core.db.Nameserver;
-import mx.nic.rdap.db.exception.RdapDatabaseException;
+import mx.nic.rdap.db.exception.RdapDataAccessException;
 import mx.nic.rdap.db.struct.SearchResultStruct;
 
 /**
  * Interface for {@link Domain} DAO functions.
  */
-public interface DomainSpi {
+public interface DomainDAO {
 
 
 	/**
@@ -20,9 +20,9 @@ public interface DomainSpi {
 	 *            Boolean value which defines if nameservers are being used as
 	 *            attributes or as objects.
 	 * @return a {@link Domain} related to <code>ldhName</code>
-	 * @throws RdapDatabaseException
+	 * @throws RdapDataAccessException
 	 */
-	public Domain getByName(String domainName, Boolean useNsAsAttribute) throws RdapDatabaseException;
+	public Domain getByName(String domainName, Boolean useNsAsAttribute) throws RdapDataAccessException;
 
 	/**
 	 * Search for domains by a ldhName in full or partial form, as well as by a
@@ -39,10 +39,10 @@ public interface DomainSpi {
 	 *            attributes or as objects.
 	 * @return A {@link SearchResultStruct} with a List of {@link Nameserver}
 	 *         objects related to the <code>namePattern</code>.
-	 * @throws RdapDatabaseException
+	 * @throws RdapDataAccessException
 	 */
 	public SearchResultStruct<Domain> searchByName(String domainName, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDatabaseException;
+			throws RdapDataAccessException;
 
 	/**
 	 * Search for domains by their nameserver's name in full or partial form.
@@ -58,10 +58,10 @@ public interface DomainSpi {
 	 *            attributes or as objects.
 	 * @return A {@link SearchResultStruct} containing a list of {@link Domain}
 	 *         objects related to the <code>nsName</code>
-	 * @throws RdapDatabaseException
+	 * @throws RdapDataAccessException
 	 */
 	public SearchResultStruct<Domain> searchByNsName(String nsName, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDatabaseException;
+			throws RdapDataAccessException;
 
 	/**
 	 * Search for domains by their nameserver' ip in full or partial form.
@@ -76,10 +76,10 @@ public interface DomainSpi {
 	 *            attributes or as objects.
 	 * @return A {@link SearchResultStruct} containing a list of {@link Domain}
 	 *         objects related to the <code>ip</code>
-	 * @throws RdapDatabaseException
+	 * @throws RdapDataAccessException
 	 */
 	public SearchResultStruct<Domain> searchByNsIp(String ip, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDatabaseException;
+			throws RdapDataAccessException;
 
 	/**
 	 * Search for domains by their names, either unicode or ldh, using a regular
@@ -95,10 +95,10 @@ public interface DomainSpi {
 	 *            attributes or as objects.
 	 * @return A {@link SearchResultStruct} containing a list of {@link Domain}
 	 *         objects related to the <code>regexName</code>
-	 * @throws RdapDatabaseException
+	 * @throws RdapDataAccessException
 	 */
 	public SearchResultStruct<Domain> searchByRegexName(String regexName, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDatabaseException;
+			throws RdapDataAccessException;
 
 	/**
 	 * Search for domains by their nameserver's name using a regular expression.
@@ -113,10 +113,10 @@ public interface DomainSpi {
 	 *            attributes or as objects.
 	 * @return A {@link SearchResultStruct} containing a list of {@link Domain}
 	 *         objects related to the <code>regexNsName</code>
-	 * @throws RdapDatabaseException
+	 * @throws RdapDataAccessException
 	 */
 	public SearchResultStruct<Domain> searchByRegexNsName(String regexNsName, Integer resultLimit,
-			boolean useNsAsAttribute) throws RdapDatabaseException;
+			boolean useNsAsAttribute) throws RdapDataAccessException;
 
 	/**
 	 * Search for domains by their nameserver's ip address using a regular
@@ -132,10 +132,10 @@ public interface DomainSpi {
 	 *            attributes or as objects.
 	 * @return A {@link SearchResultStruct} containing a list of {@link Domain}
 	 *         objects related to the <code>ip</code>
-	 * @throws RdapDatabaseException
+	 * @throws RdapDataAccessException
 	 */
 	public SearchResultStruct<Domain> searchByRegexNsIp(String ip, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDatabaseException;
+			throws RdapDataAccessException;
 
 	/**
 	 * Verifies if a {@link Domain} object exists by it's name.
@@ -143,7 +143,7 @@ public interface DomainSpi {
 	 * @param domainName
 	 *            A string representing a domain´s name.
 	 * @return A boolean value that is true if the {@link Domain} exists.
-	 * @throws RdapDatabaseException
+	 * @throws RdapDataAccessException
 	 */
-	public boolean existByName(String domainName) throws RdapDatabaseException;
+	public boolean existByName(String domainName) throws RdapDataAccessException;
 }

@@ -4,7 +4,7 @@ package mx.nic.rdap.db.exception;
  * An error signaling that the method the user requested is not implemented
  * database. Going to become an HTTP 400.
  */
-public class NotImplementedException extends RdapDatabaseException {
+public class NotImplementedException extends RdapDataAccessException {
 
 	/**
 	 * Random Serial

@@ -1,12 +1,12 @@
 package mx.nic.rdap.db.spi;
 
 import mx.nic.rdap.core.db.Autnum;
-import mx.nic.rdap.db.exception.RdapDatabaseException;
+import mx.nic.rdap.db.exception.RdapDataAccessException;
 
 /**
  * Interface for {@link Autnum} DAO functions.
  */
-public interface AutnumSpi {
+public interface AutnumDAO {
 
 	/**
 	 * Gets an {@link Autnum} object by its registered block.
@@ -16,7 +16,7 @@ public interface AutnumSpi {
 	 *            block.
 	 * @return The {@link Autnum} object related to <code>autnumValue</code>.
 	 */
-	public Autnum getByRange(Long autnumValue) throws RdapDatabaseException;
+	public Autnum getByRange(Long autnumValue) throws RdapDataAccessException;
 
 	/**
 	 * Verifies if an {@link Autnum} object exists by it's registered block.
@@ -26,6 +26,6 @@ public interface AutnumSpi {
 	 *            block.
 	 * @return A boolean value that is true if the {@link Autnum} exists.
 	 */
-	public boolean existByRange(Long autnumValue) throws RdapDatabaseException;
+	public boolean existByRange(Long autnumValue) throws RdapDataAccessException;
 
 }

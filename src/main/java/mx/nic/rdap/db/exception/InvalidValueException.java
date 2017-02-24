@@ -3,7 +3,7 @@ package mx.nic.rdap.db.exception;
 /**
  * Problems when a value isn't valid
  */
-public class InvalidValueException extends RdapDatabaseException {
+public class InvalidValueException extends RdapDataAccessException {
 
 	private static final long serialVersionUID = 1L;
 

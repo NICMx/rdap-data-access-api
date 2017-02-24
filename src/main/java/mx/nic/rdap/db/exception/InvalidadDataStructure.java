@@ -4,7 +4,7 @@ package mx.nic.rdap.db.exception;
  * Invalidad structure found
  * 
  */
-public class InvalidadDataStructure extends RdapDatabaseException {
+public class InvalidadDataStructure extends RdapDataAccessException {
 
 	private static final long serialVersionUID = 1L;
 

@@ -1,14 +1,14 @@
 package mx.nic.rdap.db.spi;
 
 import mx.nic.rdap.core.db.Entity;
-import mx.nic.rdap.db.exception.RdapDatabaseException;
+import mx.nic.rdap.db.exception.RdapDataAccessException;
 import mx.nic.rdap.db.struct.SearchResultStruct;
 
 /**
  * Interface for {@link Entity} DAO functions.
  * 
  */
-public interface EntitySpi {
+public interface EntityDAO {
 
 	/**
 	 * Gets an {@link Entity} object by its handle.
@@ -19,7 +19,7 @@ public interface EntitySpi {
 	 * @return The {@link Entity} object related to the
 	 *         <code>entityHanlde</code>.
 	 */
-	public Entity getByHandle(String entityHandle) throws RdapDatabaseException;
+	public Entity getByHandle(String entityHandle) throws RdapDataAccessException;
 
 	/**
 	 * Gets a List of {@link Entity} objects using a search pattern referring to
@@ -34,7 +34,7 @@ public interface EntitySpi {
 	 * @return A List of {@link Entity} objects related to the
 	 *         <code>handle</code>.
 	 */
-	public SearchResultStruct<Entity> searchByHandle(String handle, Integer resultLimit) throws RdapDatabaseException;
+	public SearchResultStruct<Entity> searchByHandle(String handle, Integer resultLimit) throws RdapDataAccessException;
 
 	/**
 	 * Gets a List of {@link Entity} objects using a search pattern referring to
@@ -50,7 +50,7 @@ public interface EntitySpi {
 	 *         objects related to the <code>vCardName</code>.
 	 */
 	public SearchResultStruct<Entity> searchByVCardName(String vCardName, Integer resultLimit)
-			throws RdapDatabaseException;
+			throws RdapDataAccessException;
 
 	/**
 	 * Gets a List of {@link Entity} objects using a regular expression
@@ -65,7 +65,7 @@ public interface EntitySpi {
 	 *         objects related to the <code>regexHandle</code>.
 	 */
 	public SearchResultStruct<Entity> searchByRegexHandle(String regexHandle, Integer resultLimit)
-			throws RdapDatabaseException;
+			throws RdapDataAccessException;
 
 	/**
 	 * Gets a List of {@link Entity} objects using a regular expression
@@ -80,7 +80,7 @@ public interface EntitySpi {
 	 *         objects related to the <code>vCardName</code>.
 	 */
 	public SearchResultStruct<Entity> searchByRegexVCardName(String vCardName, Integer resultLimit)
-			throws RdapDatabaseException;
+			throws RdapDataAccessException;
 
 	/**
 	 * Verifies if an {@link Entity} object exists by it's handle.
@@ -90,6 +90,6 @@ public interface EntitySpi {
 	 *            entity.
 	 * @return A boolean value that is true if the {@link Entity} exists.
 	 */
-	public boolean existByHandle(String entityHandle) throws RdapDatabaseException;
+	public boolean existByHandle(String entityHandle) throws RdapDataAccessException;
 
 }

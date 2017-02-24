@@ -2,13 +2,13 @@ package mx.nic.rdap.db.spi;
 
 import mx.nic.rdap.core.db.IpAddress;
 import mx.nic.rdap.core.db.IpNetwork;
-import mx.nic.rdap.db.exception.RdapDatabaseException;
+import mx.nic.rdap.db.exception.RdapDataAccessException;
 
 /**
  * Interface for {@link IpNetwork} DAO functions.
  * 
  */
-public interface IpNetworkSpi {
+public interface IpNetworkDAO {
 
 	/**
 	 * Gets an {@link IpNetwork} object by its ipAddress.
@@ -19,7 +19,7 @@ public interface IpNetworkSpi {
 	 * @return The {@link IpAddress} object related to the
 	 *         <code>ipAddress</code>.
 	 */
-	public IpNetwork getByInetAddress(String ipAddress) throws RdapDatabaseException;
+	public IpNetwork getByInetAddress(String ipAddress) throws RdapDataAccessException;
 
 	/**
 	 * Gets an {@link IpNetwork} object by its ipAddress and validates if it has
@@ -34,7 +34,7 @@ public interface IpNetworkSpi {
 	 * @return The {@link IpAddress} object related to the
 	 *         <code>ipAddress</code>.
 	 */
-	public IpNetwork getByInetAddress(String ipAddress, Integer cidr) throws RdapDatabaseException;
+	public IpNetwork getByInetAddress(String ipAddress, Integer cidr) throws RdapDataAccessException;
 
 	/**
 	 * Verifies if an {@link IpNetwork} object exist by it's ipAddress.
@@ -45,7 +45,7 @@ public interface IpNetworkSpi {
 	 * @return A boolean value which is true if the {@link IpNetwork} exists in
 	 *         the database.
 	 */
-	public boolean existByInetAddress(String ipAddress, Integer cidr) throws RdapDatabaseException;
+	public boolean existByInetAddress(String ipAddress, Integer cidr) throws RdapDataAccessException;
 
 	/**
 	 * Verifies if an {@link IpNetwork} object exist by it's ipAddress and CIDR.
@@ -59,6 +59,6 @@ public interface IpNetworkSpi {
 	 * @return A boolean value which is true if the {@link IpNetwork} exists in
 	 *         the database and it has a valid CIDR.
 	 */
-	public boolean existByInetAddress(String ipAddress) throws RdapDatabaseException;
+	public boolean existByInetAddress(String ipAddress) throws RdapDataAccessException;
 
 }

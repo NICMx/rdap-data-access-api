@@ -4,7 +4,7 @@ package mx.nic.rdap.db.exception;
  * An error signaling that the object the user requested was not found in the
  * database. Going to become an HTTP 404.
  */
-public class ObjectNotFoundException extends RdapDatabaseException {
+public class ObjectNotFoundException extends RdapDataAccessException {
 
 	private static final long serialVersionUID = 1L;
 

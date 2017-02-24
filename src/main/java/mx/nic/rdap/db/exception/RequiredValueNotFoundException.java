@@ -3,7 +3,7 @@ package mx.nic.rdap.db.exception;
 /**
  * Problems when a necessary value wasn't set
  */
-public class RequiredValueNotFoundException extends RdapDatabaseException {
+public class RequiredValueNotFoundException extends RdapDataAccessException {
 
 	private static final long serialVersionUID = 1L;
 
