@@ -1,14 +1,12 @@
 package mx.nic.rdap.db.service;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import mx.nic.rdap.db.exception.InitializationException;
 import mx.nic.rdap.db.spi.AutnumDAO;
 import mx.nic.rdap.db.spi.DataAccessImplementation;
 import mx.nic.rdap.db.spi.DomainDAO;
@@ -26,20 +24,26 @@ public class DataAccessService {
 	private static final Logger logger = Logger.getLogger(DataAccessService.class.getName());
 
 	/**
-	 * Name of the file where the user will configure this class.
+	 * Name of the configuration property that points to the class that should
+	 * be loaded into {@link #implementation}.
 	 * <p>
 	 * This might seem like redundant configuration, since META-INF/services is
 	 * roughly the same thing. Thing is, META-INF is supposed to be jar meta
 	 * stuff, so the *intent* is different. META-INF/services defines the
-	 * providers present in a particular jar, whereas {@value #CONFIG_FILE} is
-	 * the actual provider the user wants.
+	 * providers present in a particular jar, whereas this value is the actual
+	 * provider the user wants.
 	 */
-	private static final String CONFIG_FILE = "data-access.properties";
+	private static final String CLASSNAME_PROPERTY = "data-access-implementation";
 	/** The implementation that was loaded. */
-	private static final DataAccessImplementation implementation = loadImplementation();
+	private static DataAccessImplementation implementation;
 
-	private static DataAccessImplementation loadImplementation() {
-		DataAccessImplementation result = loadImplementationFromProperties();
+	public static void initialize(Properties config) throws InitializationException {
+		implementation = loadImplementation(config);
+		implementation.init(config);
+	}
+
+	private static DataAccessImplementation loadImplementation(Properties config) {
+		DataAccessImplementation result = loadImplementationFromProperties(config);
 		if (result != null) {
 			return result;
 		}
@@ -53,18 +57,11 @@ public class DataAccessService {
 	 * <p>
 	 * Returns null if the user didn't set up the file or the property.
 	 */
-	private static DataAccessImplementation loadImplementationFromProperties() {
-		Properties config = new Properties();
-		try (FileInputStream in = new FileInputStream(CONFIG_FILE)) {
-			config.load(in);
-		} catch (FileNotFoundException e) {
-			return null;
-		} catch (IOException e) {
-			throw new RuntimeException("Trouble found reading the " + CONFIG_FILE + " file.", e);
-		}
-
-		String className = config.getProperty("implementation");
+	private static DataAccessImplementation loadImplementationFromProperties(Properties config) {
+		String className = config.getProperty(CLASSNAME_PROPERTY);
 		if (className == null) {
+			logger.info("The '" + CLASSNAME_PROPERTY + "' property is absent from the configuration. "
+					+ "Falling back to explore the classpath.");
 			return null;
 		}
 
@@ -137,7 +134,7 @@ public class DataAccessService {
 		if (loaderIterator.hasNext()) {
 			StringBuilder errorMsg = new StringBuilder();
 			errorMsg.append("There is more than one data access implementation in the classpath.\n");
-			errorMsg.append("Please remove redundant ones or specify the one you want in " + CONFIG_FILE + ".\n");
+			errorMsg.append("Please remove redundant ones or specify the one you want in the configuration.\n");
 			errorMsg.append("FYI, I found:\n");
 			errorMsg.append("- ").append(result.getClass().getName()).append("\n");
 			do {
@@ -146,36 +143,41 @@ public class DataAccessService {
 			throw new RuntimeException(errorMsg.toString());
 		}
 
-		logger.log(Level.INFO, "Data access implementation loaded: " + result.getClass().getName());
+		logger.log(Level.INFO, "Found a data access implementation in the classpath: " + result.getClass().getName());
 		return result;
 	}
 
 	public static DataAccessImplementation getImplementation() {
+		if (implementation == null) {
+			throw new NullPointerException("The Data Access Implementation hasn't been initialized. "
+					+ "Please call DataAccessService#initialize(Properties) before trying to use this API.");
+		}
+
 		return implementation;
 	}
 
 	public static AutnumDAO getAutnumDAO() {
-		return implementation.getAutnumDAO();
+		return getImplementation().getAutnumDAO();
 	}
 
 	public static DomainDAO getDomainDAO() {
-		return implementation.getDomainDAO();
+		return getImplementation().getDomainDAO();
 	}
 
 	public static EntityDAO getEntityDAO() {
-		return implementation.getEntityDAO();
+		return getImplementation().getEntityDAO();
 	}
 
 	public static IpNetworkDAO getIpNetworkDAO() {
-		return implementation.getIpNetworkDAO();
+		return getImplementation().getIpNetworkDAO();
 	}
 
 	public static NameserverDAO getNameserverDAO() {
-		return implementation.getNameserverDAO();
+		return getImplementation().getNameserverDAO();
 	}
 
 	public static RdapUserDAO getRdapUserDAO() {
-		return implementation.getRdapUserDAO();
+		return getImplementation().getRdapUserDAO();
 	}
 
 }
