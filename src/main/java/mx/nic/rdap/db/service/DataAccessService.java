@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import mx.nic.rdap.db.exception.InitializationException;
+import mx.nic.rdap.db.exception.RdapDataAccessException;
 import mx.nic.rdap.db.spi.AutnumDAO;
 import mx.nic.rdap.db.spi.DataAccessImplementation;
 import mx.nic.rdap.db.spi.DomainDAO;
@@ -156,27 +157,27 @@ public class DataAccessService {
 		return implementation;
 	}
 
-	public static AutnumDAO getAutnumDAO() {
+	public static AutnumDAO getAutnumDAO() throws RdapDataAccessException {
 		return getImplementation().getAutnumDAO();
 	}
 
-	public static DomainDAO getDomainDAO() {
+	public static DomainDAO getDomainDAO() throws RdapDataAccessException {
 		return getImplementation().getDomainDAO();
 	}
 
-	public static EntityDAO getEntityDAO() {
+	public static EntityDAO getEntityDAO() throws RdapDataAccessException {
 		return getImplementation().getEntityDAO();
 	}
 
-	public static IpNetworkDAO getIpNetworkDAO() {
+	public static IpNetworkDAO getIpNetworkDAO() throws RdapDataAccessException {
 		return getImplementation().getIpNetworkDAO();
 	}
 
-	public static NameserverDAO getNameserverDAO() {
+	public static NameserverDAO getNameserverDAO() throws RdapDataAccessException {
 		return getImplementation().getNameserverDAO();
 	}
 
-	public static RdapUserDAO getRdapUserDAO() {
+	public static RdapUserDAO getRdapUserDAO() throws RdapDataAccessException {
 		return getImplementation().getRdapUserDAO();
 	}
 

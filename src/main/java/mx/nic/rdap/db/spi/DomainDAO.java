@@ -8,7 +8,7 @@ import mx.nic.rdap.db.struct.SearchResultStruct;
 /**
  * Interface for {@link Domain} DAO functions.
  */
-public interface DomainDAO {
+public interface DomainDAO extends DataAccessDAO {
 
 
 	/**

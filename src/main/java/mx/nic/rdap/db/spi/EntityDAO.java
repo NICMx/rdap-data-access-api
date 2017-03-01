@@ -8,7 +8,7 @@ import mx.nic.rdap.db.struct.SearchResultStruct;
  * Interface for {@link Entity} DAO functions.
  * 
  */
-public interface EntityDAO {
+public interface EntityDAO extends DataAccessDAO {
 
 	/**
 	 * Gets an {@link Entity} object by its handle.

@@ -6,7 +6,7 @@ import mx.nic.rdap.db.exception.RdapDataAccessException;
 /**
  * Interface for {@link Autnum} DAO functions.
  */
-public interface AutnumDAO {
+public interface AutnumDAO extends DataAccessDAO {
 
 	/**
 	 * Gets an {@link Autnum} object by its registered block.
