@@ -101,24 +101,6 @@ public interface DomainDAO extends DataAccessDAO {
 			throws RdapDataAccessException;
 
 	/**
-	 * Search for domains by their nameserver's name using a regular expression.
-	 * 
-	 * @param regexNsName
-	 *            A regular expression representing a pattern for a domain's
-	 *            nameserver name.
-	 * @param resultLimit
-	 *            Maximum number of results.
-	 * @param useNsAsAttribute
-	 *            Boolean value which defines if nameservers are being used as
-	 *            attributes or as objects.
-	 * @return A {@link SearchResultStruct} containing a list of {@link Domain}
-	 *         objects related to the <code>regexNsName</code>
-	 * @throws RdapDataAccessException
-	 */
-	public SearchResultStruct<Domain> searchByRegexNsName(String regexNsName, Integer resultLimit,
-			boolean useNsAsAttribute) throws RdapDataAccessException;
-
-	/**
 	 * Search for domains by their nameserver's ip address using a regular
 	 * expression.
 	 * 
