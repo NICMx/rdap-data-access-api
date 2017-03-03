@@ -18,14 +18,4 @@ public interface AutnumDAO extends DataAccessDAO {
 	 */
 	public Autnum getByRange(Long autnumValue) throws RdapDataAccessException;
 
-	/**
-	 * Verifies if an {@link Autnum} object exists by it's registered block.
-	 * 
-	 * @param autnumValue
-	 *            The Autonomous System Number in the range of it´s registered
-	 *            block.
-	 * @return A boolean value that is true if the {@link Autnum} exists.
-	 */
-	public boolean existByRange(Long autnumValue) throws RdapDataAccessException;
-
 }

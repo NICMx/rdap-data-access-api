@@ -119,13 +119,4 @@ public interface DomainDAO extends DataAccessDAO {
 	public SearchResultStruct<Domain> searchByRegexNsIp(String ip, Integer resultLimit, boolean useNsAsAttribute)
 			throws RdapDataAccessException;
 
-	/**
-	 * Verifies if a {@link Domain} object exists by it's name.
-	 * 
-	 * @param domainName
-	 *            A string representing a domain´s name.
-	 * @return A boolean value that is true if the {@link Domain} exists.
-	 * @throws RdapDataAccessException
-	 */
-	public boolean existByName(String domainName) throws RdapDataAccessException;
 }

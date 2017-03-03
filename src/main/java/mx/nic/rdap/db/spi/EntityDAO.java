@@ -82,14 +82,4 @@ public interface EntityDAO extends DataAccessDAO {
 	public SearchResultStruct<Entity> searchByRegexVCardName(String vCardName, Integer resultLimit)
 			throws RdapDataAccessException;
 
-	/**
-	 * Verifies if an {@link Entity} object exists by it's handle.
-	 * 
-	 * @param entityHandle
-	 *            A string representing a registry unique identifier of the
-	 *            entity.
-	 * @return A boolean value that is true if the {@link Entity} exists.
-	 */
-	public boolean existByHandle(String entityHandle) throws RdapDataAccessException;
-
 }

@@ -36,29 +36,4 @@ public interface IpNetworkDAO extends DataAccessDAO {
 	 */
 	public IpNetwork getByInetAddress(String ipAddress, Integer cidr) throws RdapDataAccessException;
 
-	/**
-	 * Verifies if an {@link IpNetwork} object exist by it's ipAddress.
-	 * 
-	 * @param ipAddress
-	 *            A string representing an ipNetwork ipAddress. This ip address
-	 *            can also be in it's decimal equivalent.
-	 * @return A boolean value which is true if the {@link IpNetwork} exists in
-	 *         the database.
-	 */
-	public boolean existByInetAddress(String ipAddress, Integer cidr) throws RdapDataAccessException;
-
-	/**
-	 * Verifies if an {@link IpNetwork} object exist by it's ipAddress and CIDR.
-	 * 
-	 * @param ipAddress
-	 *            A String representing an ipNetwork's ipAddress. This ip
-	 *            address can also be in it's decimal equivalent.
-	 * @param cidr
-	 *            An Integer containing the CIDR value of the {@link IpNetwork}
-	 *            object.
-	 * @return A boolean value which is true if the {@link IpNetwork} exists in
-	 *         the database and it has a valid CIDR.
-	 */
-	public boolean existByInetAddress(String ipAddress) throws RdapDataAccessException;
-
 }

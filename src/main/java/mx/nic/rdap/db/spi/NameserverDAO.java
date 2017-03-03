@@ -80,13 +80,4 @@ public interface NameserverDAO extends DataAccessDAO {
 	public SearchResultStruct<Nameserver> searchByRegexIp(String ipaddressPattern, Integer resultLimit)
 			throws RdapDataAccessException;
 
-	/**
-	 * Verifies if a {@link Nameserver} object exists by it's name.
-	 * 
-	 * @param name
-	 *            A string representing a nameserver´s name.
-	 * @return A boolean value that is true if the {@link Nameserver} exists.
-	 */
-	public boolean existByName(String name) throws RdapDataAccessException;
-
 }
