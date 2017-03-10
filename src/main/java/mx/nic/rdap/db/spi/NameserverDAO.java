@@ -8,7 +8,7 @@ import mx.nic.rdap.db.struct.SearchResultStruct;
  * Model for the {@link Nameserver} Object
  * 
  */
-public interface NameserverDAO extends DataAccessDAO {
+public interface NameserverDAO extends DAO {
 
 	/**
 	 * Gets a {@link Nameserver} object by its name.

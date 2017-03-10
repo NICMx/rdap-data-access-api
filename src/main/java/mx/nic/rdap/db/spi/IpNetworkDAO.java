@@ -8,7 +8,7 @@ import mx.nic.rdap.db.exception.RdapDataAccessException;
  * Interface for {@link IpNetwork} DAO functions.
  * 
  */
-public interface IpNetworkDAO extends DataAccessDAO {
+public interface IpNetworkDAO extends DAO {
 
 	/**
 	 * Gets an {@link IpNetwork} object by its ipAddress.
