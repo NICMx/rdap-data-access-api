@@ -11,71 +11,106 @@ import mx.nic.rdap.db.struct.SearchResultStruct;
 public interface NameserverDAO extends DAO {
 
 	/**
-	 * Gets a {@link Nameserver} object by its name.
+	 * Retrieves a {@link Nameserver} object by name.
 	 * 
 	 * @param name
-	 *            A string containing the name of the nameserver.
-	 * @return The {@link Nameserver} object related to the <code>name</code>.
-	 * @throws RdapDataAccessException
+	 *            Fully qualified host name of the nameserver being looked up.
+	 * @return The {@link Nameserver} object whose fully qualified host name is
+	 *         <code>name</code>.
 	 */
 	public Nameserver getByName(String name) throws RdapDataAccessException;
 
 	/**
-	 * Gets a List of {@link Nameserver} objects using a search pattern
+	 * Gets a list of {@link Nameserver} objects using a search pattern
 	 * referring to their names or their full name.
 	 * 
 	 * @param namePattern
-	 *            A search pattern representing a nameserver's name, it can
+	 *            A search pattern representing a nameserver's name. It can
 	 *            contain an asterisk '*' to match zero or more trailing
 	 *            characters at the end.
 	 * @param resultLimit
-	 *            Maximum number of results.
-	 * @return A {@link SearchResultStruct} with a List of {@link Nameserver}
-	 *         objects related to the <code>namePattern</code>.
-	 * @throws RdapDataAccessException
+	 *            Maximum number of nameservers that should be listed in the
+	 *            resulting {@link SearchResultStruct}. The implementation of
+	 *            this method can choose to stop adding up nameservers when this
+	 *            limit is reached for the sake of performance, but if not, the
+	 *            caller is expected truncate the response accordingly.
+	 *            <p>
+	 *            Even though this value is an {@link Integer}, it cannot be
+	 *            <code>null</code>.
+	 * @return {@link Nameserver}s that match <code>namePattern</code>.
+	 *         <p>
+	 *         Empty result sets can be expressed by <code>null</code> or an
+	 *         empty {@link SearchResultStruct}.
 	 */
 	public SearchResultStruct<Nameserver> searchByName(String namePattern, Integer resultLimit)
 			throws RdapDataAccessException;
 
 	/**
-	 * Gets a List of {@link Nameserver} objects using their ip addresses
+	 * Gets a list of {@link Nameserver} objects using their IP addresses.
 	 * 
 	 * @param ipaddressPattern
-	 *            A search pattern representing a nameserver's ip address.
+	 *            A search pattern representing a nameserver's IP address.
 	 * @param resultLimit
-	 *            Maximum number of results.
-	 * @return A {@link SearchResultStruct} with a List of {@link Nameserver}
-	 *         objects related to the <code>ipaddressPattern</code>.
+	 *            Maximum number of nameservers that should be listed in the
+	 *            resulting {@link SearchResultStruct}. The implementation of
+	 *            this method can choose to stop adding up nameservers when this
+	 *            limit is reached for the sake of performance, but if not, the
+	 *            caller is expected truncate the response accordingly.
+	 *            <p>
+	 *            Even though this value is an {@link Integer}, it cannot be
+	 *            <code>null</code>.
+	 * @return {@link Nameserver}s that match <code>ipaddressPattern</code>.
+	 *         <p>
+	 *         Empty result sets can be expressed by <code>null</code> or an
+	 *         empty {@link SearchResultStruct}.
 	 */
 	public SearchResultStruct<Nameserver> searchByIp(String ipaddressPattern, Integer resultLimit)
 			throws RdapDataAccessException;
 
 	/**
-	 * Gets a List of {@link Nameserver} objects using a regular expression
+	 * Gets a list of {@link Nameserver} objects using a regular expression
 	 * referring to their names.
 	 * 
 	 * @param namePattern
 	 *            A regular expression representing a pattern for nameserver's
 	 *            name.
 	 * @param resultLimit
-	 *            Maximum number of results.
-	 * @return A {@link SearchResultStruct} with a List of {@link Nameserver}
-	 *         objects related to the <code>namePattern</code>.
+	 *            Maximum number of nameservers that should be listed in the
+	 *            resulting {@link SearchResultStruct}. The implementation of
+	 *            this method can choose to stop adding up nameservers when this
+	 *            limit is reached for the sake of performance, but if not, the
+	 *            caller is expected truncate the response accordingly.
+	 *            <p>
+	 *            Even though this value is an {@link Integer}, it cannot be
+	 *            <code>null</code>.
+	 * @return {@link Nameserver}s that match <code>namePattern</code>.
+	 *         <p>
+	 *         Empty result sets can be expressed by <code>null</code> or an
+	 *         empty {@link SearchResultStruct}.
 	 */
 	public SearchResultStruct<Nameserver> searchByRegexName(String namePattern, Integer resultLimit)
 			throws RdapDataAccessException;
 
 	/**
-	 * Gets a List of {@link Nameserver} objects using a regular expression
-	 * referring to their ip addresses.
+	 * Gets a list of {@link Nameserver} objects using a regular expression
+	 * referring to their IP addresses.
 	 * 
 	 * @param ipaddressPattern
 	 *            A regular expression representing a pattern for nameserver's
 	 *            ip address.
 	 * @param resultLimit
-	 *            Maximum number of results.
-	 * @return A {@link SearchResultStruct} with a List of {@link Nameserver}
-	 *         objects related to the <code>ipaddressPattern</code>.
+	 *            Maximum number of nameservers that should be listed in the
+	 *            resulting {@link SearchResultStruct}. The implementation of
+	 *            this method can choose to stop adding up nameservers when this
+	 *            limit is reached for the sake of performance, but if not, the
+	 *            caller is expected truncate the response accordingly.
+	 *            <p>
+	 *            Even though this value is an {@link Integer}, it cannot be
+	 *            <code>null</code>.
+	 * @return {@link Nameserver}s that match <code>ipaddressPattern</code>.
+	 *         <p>
+	 *         Empty result sets can be expressed by <code>null</code> or an
+	 *         empty {@link SearchResultStruct}.
 	 */
 	public SearchResultStruct<Nameserver> searchByRegexIp(String ipaddressPattern, Integer resultLimit)
 			throws RdapDataAccessException;

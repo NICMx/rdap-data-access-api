@@ -47,4 +47,17 @@ public class SearchResultStruct<T extends RdapObject> {
 		this.searchResultsLimitForUser = searchResultsLimitForUser;
 	}
 
+	/**
+	 * Truncates the inner list to the specified amount of elements.
+	 * 
+	 * This needs to be called by the RDAP server after every search function in
+	 * case the implementation was too lazy to truncate it itself.
+	 * 
+	 * @param resultLimit
+	 *            maximum number of elements we should return to the user.
+	 */
+	public void truncate(Integer resultLimit) {
+		results = results.subList(0, resultLimit);
+	}
+
 }

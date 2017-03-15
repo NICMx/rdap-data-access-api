@@ -9,13 +9,17 @@ import mx.nic.rdap.db.exception.RdapDataAccessException;
 public interface AutnumDAO extends DAO {
 
 	/**
-	 * Gets an {@link Autnum} object by its registered block.
+	 * Returns the {@link Autnum} block that contains Autonomous System Number
+	 * (ASN) <code>autnum</code>.
 	 * 
-	 * @param autnumValue
-	 *            An Autonomous System Number in the range of it´s registered
-	 *            block.
-	 * @return The {@link Autnum} object related to <code>autnumValue</code>.
+	 * @param autnum
+	 *            The ASN, or one of the ASNs, contained in the {@link Autnum}
+	 *            block desired.
+	 * @return The {@link Autnum} block that contains ASN <code>autnum</code>.
+	 *         <p>
+	 *         This function can return <code>null</code> to express that none
+	 *         of the registered blocks contain <code>autnum</code>.
 	 */
-	public Autnum getByRange(Long autnumValue) throws RdapDataAccessException;
+	public Autnum getByRange(Long autnum) throws RdapDataAccessException;
 
 }

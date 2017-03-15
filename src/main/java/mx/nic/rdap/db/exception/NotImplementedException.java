@@ -1,8 +1,10 @@
 package mx.nic.rdap.db.exception;
 
 /**
- * An error signaling that the method the user requested is not implemented
- * database. Going to become an HTTP 501.
+ * Any method from a data access implementation can throw this exception to
+ * signal that the Registry does not intend to provide the relevant
+ * functionality, and as such the RDAP server should respond HTTP 501 whenever
+ * it is queried for it.
  */
 public class NotImplementedException extends RdapDataAccessException {
 
@@ -14,6 +16,10 @@ public class NotImplementedException extends RdapDataAccessException {
 	public NotImplementedException() {
 	}
 
+	/**
+	 * @param message
+	 *            This text is going to be included in the 501's error message.
+	 */
 	public NotImplementedException(String message) {
 		super(message);
 	}
@@ -22,6 +28,10 @@ public class NotImplementedException extends RdapDataAccessException {
 		super(cause);
 	}
 
+	/**
+	 * @param message
+	 *            This text is going to be included in the 501's error message.
+	 */
 	public NotImplementedException(String message, Throwable cause) {
 		super(message, cause);
 	}

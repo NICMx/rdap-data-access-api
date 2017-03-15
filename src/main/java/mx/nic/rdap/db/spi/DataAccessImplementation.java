@@ -3,6 +3,7 @@ package mx.nic.rdap.db.spi;
 import java.util.Properties;
 
 import mx.nic.rdap.db.exception.InitializationException;
+import mx.nic.rdap.db.exception.NotImplementedException;
 import mx.nic.rdap.db.exception.RdapDataAccessException;
 import mx.nic.rdap.db.service.DataAccessService;
 
@@ -30,7 +31,8 @@ public interface DataAccessImplementation {
 	 * System Number data from whatever source the implementation is wrapping.
 	 * <p>
 	 * Not all implementations are expected to provide ASN data. In such cases,
-	 * this function is expected to return <code>null</code>.
+	 * this function is expected to either return <code>null</code> or throw a
+	 * {@link NotImplementedException}.
 	 */
 	public AutnumDAO getAutnumDAO() throws RdapDataAccessException;
 
@@ -38,8 +40,9 @@ public interface DataAccessImplementation {
 	 * Returns an instance of the implementation class that retrieves domain
 	 * data from whatever source the implementation is wrapping.
 	 * <p>
-	 * Not all implementations are expected to provide domain data. In such
-	 * cases, this function is expected to return <code>null</code>.
+	 * Not all implementations are expected to provide domain data.In such
+	 * cases, this function is expected to either return <code>null</code> or
+	 * throw a {@link NotImplementedException}.
 	 */
 	public DomainDAO getDomainDAO() throws RdapDataAccessException;
 
@@ -48,7 +51,8 @@ public interface DataAccessImplementation {
 	 * data from whatever source the implementation is wrapping.
 	 * <p>
 	 * Not all implementations are expected to provide entity data. In such
-	 * cases, this function is expected to return <code>null</code>.
+	 * cases, this function is expected to either return <code>null</code> or
+	 * throw a {@link NotImplementedException}.
 	 */
 	public EntityDAO getEntityDAO() throws RdapDataAccessException;
 
@@ -57,7 +61,8 @@ public interface DataAccessImplementation {
 	 * data from whatever source the implementation is wrapping.
 	 * <p>
 	 * Not all implementations are expected to provide IP network data. In such
-	 * cases, this function is expected to return <code>null</code>.
+	 * cases, this function is expected to either return <code>null</code> or
+	 * throw a {@link NotImplementedException}.
 	 */
 	public IpNetworkDAO getIpNetworkDAO() throws RdapDataAccessException;
 
@@ -66,7 +71,8 @@ public interface DataAccessImplementation {
 	 * data from whatever source the implementation is wrapping.
 	 * <p>
 	 * Not all implementations are expected to provide nameserver data. In such
-	 * cases, this function is expected to return <code>null</code>.
+	 * cases, this function is expected to either return <code>null</code> or
+	 * throw a {@link NotImplementedException}.
 	 */
 	public NameserverDAO getNameserverDAO() throws RdapDataAccessException;
 
@@ -75,7 +81,8 @@ public interface DataAccessImplementation {
 	 * from whatever source the implementation is wrapping.
 	 * <p>
 	 * Not all implementations are expected to provide user data. In such cases,
-	 * this function is expected to return <code>null</code>.
+	 * this function is expected to either return <code>null</code> or throw a
+	 * {@link NotImplementedException}.
 	 */
 	public RdapUserDAO getRdapUserDAO() throws RdapDataAccessException;
 
