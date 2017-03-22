@@ -34,15 +34,12 @@ public interface NameserverDAO extends DAO {
 	 *            this method can choose to stop adding up nameservers when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return {@link Nameserver}s that match <code>namePattern</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Nameserver> searchByName(String namePattern, Integer resultLimit)
+	public SearchResultStruct<Nameserver> searchByName(String namePattern, int resultLimit)
 			throws RdapDataAccessException;
 
 	/**
@@ -56,15 +53,12 @@ public interface NameserverDAO extends DAO {
 	 *            this method can choose to stop adding up nameservers when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return {@link Nameserver}s that match <code>ipaddressPattern</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Nameserver> searchByIp(String ipaddressPattern, Integer resultLimit)
+	public SearchResultStruct<Nameserver> searchByIp(String ipaddressPattern, int resultLimit)
 			throws RdapDataAccessException;
 
 	/**
@@ -80,15 +74,12 @@ public interface NameserverDAO extends DAO {
 	 *            this method can choose to stop adding up nameservers when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return {@link Nameserver}s that match <code>namePattern</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Nameserver> searchByRegexName(String namePattern, Integer resultLimit)
+	public SearchResultStruct<Nameserver> searchByRegexName(String namePattern, int resultLimit)
 			throws RdapDataAccessException;
 
 	/**
@@ -104,15 +95,12 @@ public interface NameserverDAO extends DAO {
 	 *            this method can choose to stop adding up nameservers when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return {@link Nameserver}s that match <code>ipaddressPattern</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Nameserver> searchByRegexIp(String ipaddressPattern, Integer resultLimit)
+	public SearchResultStruct<Nameserver> searchByRegexIp(String ipaddressPattern, int resultLimit)
 			throws RdapDataAccessException;
 
 }

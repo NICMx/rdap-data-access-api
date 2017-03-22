@@ -36,15 +36,12 @@ public interface EntityDAO extends DAO {
 	 *            this method can choose to stop adding up entities when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return Entities that match <code>handle</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Entity> searchByHandle(String handle, Integer resultLimit) throws RdapDataAccessException;
+	public SearchResultStruct<Entity> searchByHandle(String handle, int resultLimit) throws RdapDataAccessException;
 
 	/**
 	 * Searches for entities using a search pattern referring to their names.
@@ -59,15 +56,12 @@ public interface EntityDAO extends DAO {
 	 *            this method can choose to stop adding up entities when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return Entities that match <code>vCardName</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Entity> searchByVCardName(String vCardName, Integer resultLimit)
+	public SearchResultStruct<Entity> searchByVCardName(String vCardName, int resultLimit)
 			throws RdapDataAccessException;
 
 	/**
@@ -83,15 +77,12 @@ public interface EntityDAO extends DAO {
 	 *            this method can choose to stop adding up entities when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return Entities that match <code>regexHandle</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Entity> searchByRegexHandle(String regexHandle, Integer resultLimit)
+	public SearchResultStruct<Entity> searchByRegexHandle(String regexHandle, int resultLimit)
 			throws RdapDataAccessException;
 
 	/**
@@ -107,15 +98,12 @@ public interface EntityDAO extends DAO {
 	 *            this method can choose to stop adding up entities when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return Entities that match <code>vCardName</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Entity> searchByRegexVCardName(String vCardName, Integer resultLimit)
+	public SearchResultStruct<Entity> searchByRegexVCardName(String vCardName, int resultLimit)
 			throws RdapDataAccessException;
 
 }

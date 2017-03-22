@@ -20,6 +20,6 @@ public interface AutnumDAO extends DAO {
 	 *         This function can return <code>null</code> to express that none
 	 *         of the registered blocks contain <code>autnum</code>.
 	 */
-	public Autnum getByRange(Long autnum) throws RdapDataAccessException;
+	public Autnum getByRange(long autnum) throws RdapDataAccessException;
 
 }

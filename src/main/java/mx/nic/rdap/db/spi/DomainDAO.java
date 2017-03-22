@@ -19,7 +19,7 @@ public interface DomainDAO extends DAO {
 	 *         This function can return <code>null</code> to express that the
 	 *         domain was not found.
 	 */
-	public Domain getByName(String domainName, Boolean useNsAsAttribute) throws RdapDataAccessException;
+	public Domain getByName(String domainName) throws RdapDataAccessException;
 
 	/**
 	 * Searches for domains by a ldhName in full or partial form.
@@ -34,16 +34,12 @@ public interface DomainDAO extends DAO {
 	 *            this method can choose to stop adding up domains when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return {@link Domain}s that match <code>namePattern</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Domain> searchByName(String namePattern, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDataAccessException;
+	public SearchResultStruct<Domain> searchByName(String namePattern, int resultLimit) throws RdapDataAccessException;
 
 	/**
 	 * Searches for domains by their nameserver's name in full or partial form.
@@ -58,17 +54,13 @@ public interface DomainDAO extends DAO {
 	 *            this method can choose to stop adding up domains when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return {@link Domain}s whose nameservers' names match
 	 *         <code>nsName</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Domain> searchByNsName(String nsName, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDataAccessException;
+	public SearchResultStruct<Domain> searchByNsName(String nsName, int resultLimit) throws RdapDataAccessException;
 
 	/**
 	 * Searches for domains by nameserver IP in full or partial form.
@@ -82,17 +74,13 @@ public interface DomainDAO extends DAO {
 	 *            this method can choose to stop adding up domains when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return {@link Domain}s that contain at least one nameserver whose IP
 	 *         address matches <code>ip</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Domain> searchByNsIp(String ip, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDataAccessException;
+	public SearchResultStruct<Domain> searchByNsIp(String ip, int resultLimit) throws RdapDataAccessException;
 
 	/**
 	 * Searches for domains by their names, either unicode or ldh, using a
@@ -107,15 +95,12 @@ public interface DomainDAO extends DAO {
 	 *            this method can choose to stop adding up domains when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return {@link Domain}s that match <code>regexName</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Domain> searchByRegexName(String regexName, Integer resultLimit, boolean useNsAsAttribute)
+	public SearchResultStruct<Domain> searchByRegexName(String regexName, int resultLimit)
 			throws RdapDataAccessException;
 
 	/**
@@ -131,17 +116,14 @@ public interface DomainDAO extends DAO {
 	 *            this method can choose to stop adding up domains when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return {@link Domain}s whose nameservers' names match
 	 *         <code>regexNsName</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Domain> searchByRegexNsName(String regexNsName, Integer resultLimit,
-			boolean useNsAsAttribute) throws RdapDataAccessException;
+	public SearchResultStruct<Domain> searchByRegexNsName(String regexNsName, int resultLimit)
+			throws RdapDataAccessException;
 
 	/**
 	 * Searches for domains by their nameserver's IP address using a regular
@@ -156,16 +138,12 @@ public interface DomainDAO extends DAO {
 	 *            this method can choose to stop adding up domains when this
 	 *            limit is reached for the sake of performance, but if not, the
 	 *            caller is expected truncate the response accordingly.
-	 *            <p>
-	 *            Even though this value is an {@link Integer}, it cannot be
-	 *            <code>null</code>.
 	 * @return {@link Domain}s that contain at least one nameserver whose IP
 	 *         address matches <code>ip</code>.
 	 *         <p>
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Domain> searchByRegexNsIp(String ip, Integer resultLimit, boolean useNsAsAttribute)
-			throws RdapDataAccessException;
+	public SearchResultStruct<Domain> searchByRegexNsIp(String ip, int resultLimit) throws RdapDataAccessException;
 
 }

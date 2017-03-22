@@ -22,7 +22,9 @@ public interface DataAccessImplementation {
 	 * {@link DataAccessService#initialize(Properties)} instead.
 	 * 
 	 * @param properties
-	 *            user-supplied configuration.
+	 *            User-supplied configuration. The implementation defines the
+	 *            properties that should be present here, according to its
+	 *            needs.
 	 */
 	public void init(Properties properties) throws InitializationException;
 
