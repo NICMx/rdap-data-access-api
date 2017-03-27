@@ -3,8 +3,8 @@ package mx.nic.rdap.db.spi;
 import java.util.Properties;
 
 import mx.nic.rdap.db.exception.InitializationException;
-import mx.nic.rdap.db.exception.NotImplementedException;
 import mx.nic.rdap.db.exception.RdapDataAccessException;
+import mx.nic.rdap.db.exception.http.NotImplementedException;
 import mx.nic.rdap.db.service.DataAccessService;
 
 /**

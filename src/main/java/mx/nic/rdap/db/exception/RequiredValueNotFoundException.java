@@ -1,7 +1,11 @@
 package mx.nic.rdap.db.exception;
 
 /**
- * Problems when a necessary value wasn't set
+ * Problems when a necessary value wasn'tset
+ * <p>
+ * TODO this exception has nothing to do with data access. It should probably
+ * extend from InitializationException, moved to some other project or be
+ * removed altogether.
  */
 public class RequiredValueNotFoundException extends RdapDataAccessException {
 

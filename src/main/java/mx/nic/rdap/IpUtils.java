@@ -6,12 +6,12 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import mx.nic.rdap.db.exception.InvalidValueException;
+import mx.nic.rdap.db.exception.IpAddressFormatException;
+import mx.nic.rdap.db.exception.http.BadRequestException;
 
 public class IpUtils {
 
@@ -118,33 +118,46 @@ public class IpUtils {
 	}
 
 	public static InetAddress numberToInet6(String upperPartNumber, String lowerPartNumber)
-			throws UnknownHostException {
-		long upper = Long.parseUnsignedLong(upperPartNumber);
-		long lower = Long.parseUnsignedLong(lowerPartNumber);
+			throws IpAddressFormatException {
+		long upper;
+		long lower;
+		try {
+			upper = Long.parseUnsignedLong(upperPartNumber);
+			lower = Long.parseUnsignedLong(lowerPartNumber);
+		} catch (NumberFormatException e) {
+			throw new IpAddressFormatException("Invalid IPv6 address.", e);
+		}
 
 		ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES * 2);
 		buffer.putLong(upper);
 		buffer.putLong(lower);
 
-		return InetAddress.getByAddress(buffer.array());
+		try {
+			return InetAddress.getByAddress(buffer.array());
+		} catch (UnknownHostException e) {
+			throw new RuntimeException("Programming error: Automatically-generated array has an invalid length.", e);
+		}
 	}
 
-	public static InetAddress numberToInet4(String ipv4Number) throws UnknownHostException {
-
+	public static InetAddress numberToInet4(String ipv4Number) throws IpAddressFormatException {
 		BigInteger ipNumber = new BigInteger(ipv4Number);
 		if (ipNumber.compareTo(IPV4_MAX_VALUE) > 0) {
-			throw new UnknownHostException("Invalid IPv4 address: " + ipv4Number);
+			throw new IpAddressFormatException("Invalid IPv4 address: " + ipv4Number);
 		}
 
-		return InetAddress.getByName(ipv4Number);
+		try {
+			return InetAddress.getByName(ipv4Number);
+		} catch (UnknownHostException e) {
+			throw new RuntimeException("Programming error: Integer-formatted address triggered a lookup.", e);
+		}
 	}
 
-	public static void validateIpCidr(String ip, int cidr) throws InvalidValueException {
+	public static void validateIpCidr(String ip, int cidr) throws BadRequestException {
 		InetAddress inetAddress = validateIpAddress(ip);
 		validateIpCidr(inetAddress, cidr);
 	}
 
-	public static void validateIpCidr(InetAddress inetAddress, int cidr) throws InvalidValueException {
+	public static void validateIpCidr(InetAddress inetAddress, int cidr) throws BadRequestException {
 		if (inetAddress instanceof Inet4Address) {
 			validateIpCidr(inetAddress, cidr, MAX_IPV4_CIDR);
 		} else if (inetAddress instanceof Inet6Address) {
@@ -154,7 +167,7 @@ public class IpUtils {
 		}
 	}
 
-	private static void validateIpCidr(InetAddress inetAddress, int cidr, int maxCidr) throws InvalidValueException {
+	private static void validateIpCidr(InetAddress inetAddress, int cidr, int maxCidr) throws BadRequestException {
 		validateCidr(cidr, maxCidr);
 		if (cidr == maxCidr) {
 			return;
@@ -169,14 +182,14 @@ public class IpUtils {
 	}
 
 	private static void checkBits(byte[] address, int activeOctectBits, int startOctectToCheck)
-			throws InvalidValueException {
+			throws BadRequestException {
 		if ((address[startOctectToCheck] & getBitMask(activeOctectBits)) != address[startOctectToCheck]) {
-			throw new InvalidValueException("The 'IP' address is not the first IP of the network for the 'CIDR'");
+			throw new BadRequestException("The 'IP' address is not the first IP of the network for the 'CIDR'");
 		}
 
 		for (int i = startOctectToCheck + 1; i < address.length; i++) {
 			if (address[i] != ZERO_BIT_MASK) {
-				throw new InvalidValueException("The 'IP' address is not the first IP of the network for the 'CIDR'");
+				throw new BadRequestException("The 'IP' address is not the first IP of the network for the 'CIDR'");
 			}
 		}
 	}
@@ -200,12 +213,12 @@ public class IpUtils {
 		case 7:
 			return SEVEN_BIT_MASK;
 		default:
-			throw new InvalidParameterException("Invalid active octect bits: " + activeOctectBits);
+			throw new RuntimeException("Programming error. Invalid active octect bits: " + activeOctectBits);
 		}
 	}
 
 	public static InetAddress getLastAddressFromNetwork(InetAddress inetAddress, int cidr)
-			throws UnknownHostException, InvalidValueException {
+			throws BadRequestException {
 		if (inetAddress instanceof Inet4Address) {
 			return getLastAddressFromNetwork(inetAddress, cidr, MAX_IPV4_CIDR);
 		} else if (inetAddress instanceof Inet6Address) {
@@ -216,7 +229,7 @@ public class IpUtils {
 	}
 
 	private static InetAddress getLastAddressFromNetwork(InetAddress inetAddress, int cidr, int maxCidr)
-			throws UnknownHostException, InvalidValueException {
+			throws BadRequestException {
 		validateCidr(cidr, maxCidr);
 		if (cidr == maxCidr) {
 			return inetAddress;
@@ -226,7 +239,11 @@ public class IpUtils {
 		int startOctectToCheck = cidr / OCTECT_SIZE;
 
 		byte[] lastAddressBytes = transformBytes(inetAddress, activeOctectBits, startOctectToCheck);
-		return InetAddress.getByAddress(lastAddressBytes);
+		try {
+			return InetAddress.getByAddress(lastAddressBytes);
+		} catch (UnknownHostException e) {
+			throw new RuntimeException("Programming error: Automatically-generated array has an invalid length.", e);
+		}
 	}
 
 	private static byte[] transformBytes(InetAddress inetAddress, int activeOctectBits, int startOctectToCheck) {
@@ -267,16 +284,16 @@ public class IpUtils {
 		case 8:
 			return EIGHT_BIT_WILDCARD;
 		default:
-			throw new InvalidParameterException("Invalid active octect bits: " + activeOctectBits);
+			throw new RuntimeException("Programming error. Invalid active octect bits: " + activeOctectBits);
 		}
 	}
 
-	public static void validateLastIpCidr(String ip, int cidr) throws InvalidValueException {
+	public static void validateLastIpCidr(String ip, int cidr) throws BadRequestException {
 		InetAddress inetAddress = validateIpAddress(ip);
 		validateLastIpCidr(inetAddress, cidr);
 	}
 
-	public static void validateLastIpCidr(InetAddress inetAddress, int cidr) throws InvalidValueException {
+	public static void validateLastIpCidr(InetAddress inetAddress, int cidr) throws BadRequestException {
 		if (inetAddress instanceof Inet4Address) {
 			validateLastIpCidr(inetAddress, cidr, MAX_IPV4_CIDR);
 		} else if (inetAddress instanceof Inet6Address) {
@@ -287,7 +304,7 @@ public class IpUtils {
 	}
 
 	private static void validateLastIpCidr(InetAddress inetAddress, int cidr, int maxCidr)
-			throws InvalidValueException {
+			throws BadRequestException {
 		validateCidr(cidr, maxCidr);
 		if (cidr == maxCidr) {
 			return;
@@ -313,34 +330,38 @@ public class IpUtils {
 	/**
 	 * Validates if an String representing an InetAddress is valid, and if it is
 	 * valid, return it as {@link InetAddress}
+	 * <p>
+	 * (From ydahhrk: I don't think the point of this function is to "validate"
+	 * ipAddress. The point is to convert it to an InetAddress preventing DNS
+	 * lookups.)
 	 */
-	public static InetAddress validateIpAddress(String ipAddress) throws InvalidValueException {
+	public static InetAddress validateIpAddress(String ipAddress) throws BadRequestException {
 		// if the ipAddress contains ':' then InetAddress will try to parse it
 		// like IPv6 address without doing a lookup to DNS.
 		if (ipAddress.contains(":")) {
 			try {
 				return InetAddress.getByName(ipAddress);
 			} catch (UnknownHostException e) {
-				throw new InvalidValueException("Invalid IPv6 address : " + ipAddress);
+				throw new BadRequestException("Invalid IPv6 address : " + ipAddress);
 			}
 		}
 
 		if (ipAddress.startsWith(".") || !IP4_GENERIC_PATTERN.matcher(ipAddress).matches()) {
-			throw new InvalidValueException("Invalid IPv4 address : " + ipAddress);
+			throw new BadRequestException("Invalid IPv4 address : " + ipAddress);
 		}
 
 		String[] split = ipAddress.split("\\.");
 
 		int arraySize = split.length;
 		if (arraySize > IPV4_ADDRESS_ARRAY_SIZE) {
-			throw new InvalidValueException("Invalid IPv4 address : " + ipAddress);
+			throw new BadRequestException("Invalid IPv4 address : " + ipAddress);
 		}
 
 		BigInteger finalOctectValue;
 		try {
 			finalOctectValue = new BigInteger(split[arraySize - 1]);
 		} catch (NumberFormatException e) {
-			throw new InvalidValueException("Invalid IPv4 address : " + ipAddress);
+			throw new BadRequestException("Invalid IPv4 address : " + ipAddress);
 		}
 
 		BigInteger limitValue = null;
@@ -360,22 +381,26 @@ public class IpUtils {
 		}
 
 		if (limitValue.compareTo(finalOctectValue) < 0) {
-			throw new InvalidValueException("Invalid IPv4 address : " + ipAddress);
+			throw new BadRequestException("Invalid IPv4 address : " + ipAddress);
 		}
 
 		try {
 			return InetAddress.getByName(ipAddress);
 		} catch (UnknownHostException e) {
-			throw new InvalidValueException("Invalid IPv4 address : " + ipAddress);
+			throw new BadRequestException("Invalid IPv4 address : " + ipAddress);
 		}
 
 	}
 
-	public static InetAddress getInetAddress(String ipNumber) throws UnknownHostException, InvalidValueException {
+	public static InetAddress getInetAddress(String ipNumber) throws BadRequestException {
 		BigInteger bigInteger = new BigInteger(ipNumber);
 
 		if (IPV4_MAX_VALUE.compareTo(bigInteger) <= 0) {
-			return InetAddress.getByName(ipNumber);
+			try {
+				return InetAddress.getByName(ipNumber);
+			} catch (UnknownHostException e) {
+				throw new RuntimeException("Programming error: Integer-formatted address triggered a lookup.", e);
+			}
 		}
 
 		return bigIntegerToInet6Address(bigInteger);
@@ -392,15 +417,19 @@ public class IpUtils {
 	}
 
 	public static InetAddress bigIntegerToInet6Address(BigInteger bigInteger)
-			throws UnknownHostException, InvalidValueException {
+			throws BadRequestException {
 		byte[] src = bigInteger.toByteArray();
 
 		if (src.length > IPV6_ADDRESS_ARRAY_SIZE + 1 || (src.length == IPV6_ADDRESS_ARRAY_SIZE + 1 && src[0] != 0)) {
-			throw new InvalidValueException("Invalid number for an IPv6 address : " + bigInteger.toString());
+			throw new BadRequestException("Invalid number for an IPv6 address : " + bigInteger.toString());
 		}
 
 		if (src.length == IPV6_ADDRESS_ARRAY_SIZE) {
-			return InetAddress.getByAddress(src);
+			try {
+				return InetAddress.getByAddress(src);
+			} catch (UnknownHostException e) {
+				throw new RuntimeException("Programming error: Validated array has an invalid length.", e);
+			}
 		}
 
 		int srcPos;
@@ -419,13 +448,17 @@ public class IpUtils {
 		byte[] dest = new byte[16];
 		System.arraycopy(src, srcPos, dest, destPos, length);
 
-		return InetAddress.getByAddress(dest);
+		try {
+			return InetAddress.getByAddress(dest);
+		} catch (UnknownHostException e) {
+			throw new RuntimeException("Programming error: Automatically-generated array has an invalid length.", e);
+		}
 	}
 
 	public static Short getCidrLenghtFromInetAddress(InetAddress startAddress, InetAddress endAddress)
-			throws InvalidValueException {
+			throws BadRequestException {
 		if (startAddress == null || endAddress == null) {
-			throw new InvalidValueException("Address cannot be null.");
+			throw new BadRequestException("Address cannot be null.");
 		}
 		BigInteger hostNumbers = null;
 		Map<BigInteger, Short> ipCidrMap = null;
@@ -441,30 +474,30 @@ public class IpUtils {
 			hostNumbers = end.subtract(start).add(BigInteger.ONE);
 			ipCidrMap = ipv6CidrMap;
 		} else {
-			throw new InvalidValueException("Both InetAddress must be the Inet4Address or Inet6Address. StartAddress :'"
+			throw new BadRequestException("Both InetAddress must be the Inet4Address or Inet6Address. StartAddress :'"
 					+ startAddress.getHostAddress() + "', EndAddress : '" + endAddress.getHostAddress() + "'");
 		}
 
 		Short result = ipCidrMap.get(hostNumbers);
 		if (result == null) {
-			throw new InvalidValueException("InetAddresses are not a valid range. StartAddress :'"
+			throw new BadRequestException("InetAddresses are not a valid range. StartAddress :'"
 					+ startAddress.getHostAddress() + "', EndAddress : '" + endAddress.getHostAddress() + "'");
 		}
 
 		return result;
 	}
 
-	public static void validateIpv4Cidr(int cidr) throws InvalidValueException {
+	public static void validateIpv4Cidr(int cidr) throws BadRequestException {
 		validateCidr(cidr, MAX_IPV4_CIDR);
 	}
 
-	public static void validateIpv6Cidr(int cidr) throws InvalidValueException {
+	public static void validateIpv6Cidr(int cidr) throws BadRequestException {
 		validateCidr(cidr, MAX_IPV6_CIDR);
 	}
 
-	private static void validateCidr(int cidr, int maxCidr) throws InvalidValueException {
+	private static void validateCidr(int cidr, int maxCidr) throws BadRequestException {
 		if (cidr > maxCidr || cidr < MIN_CIRD) {
-			throw new InvalidValueException("Invalid cidr,  max valid : " + maxCidr + ", input : " + cidr);
+			throw new BadRequestException("Invalid cidr,  max valid : " + maxCidr + ", input : " + cidr);
 		}
 	}
 }
