@@ -11,12 +11,12 @@ import mx.nic.rdap.core.db.RdapObject;
  */
 public class SearchResultStruct<T extends RdapObject> {
 
-	List<T> results;
+	private List<T> results;
 
 	// The search limit param did its job?
-	Boolean resultSetWasLimitedByUserConfiguration;
+	private Boolean resultSetWasLimitedByUserConfiguration;
 
-	Integer searchResultsLimitForUser;
+	private Integer searchResultsLimitForUser;
 
 	public SearchResultStruct() {
 		results = new ArrayList<T>();
