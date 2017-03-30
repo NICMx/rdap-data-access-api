@@ -1,6 +1,6 @@
 package mx.nic.rdap.db.exception.http;
 
-import mx.nic.rdap.db.exception.IpAddressFormatException;
+import mx.nic.rdap.core.ip.IpAddressFormatException;
 
 /**
  * An HTTP 400 error.
@@ -29,8 +29,6 @@ public class BadRequestException extends HttpException {
 		super(CODE, DEFAULT_MSG, cause);
 	}
 
-	// TODO use this more (or less, depending on whether you come up with
-	// something better).
 	public BadRequestException(IpAddressFormatException e) {
 		super(CODE, e.getMessage(), e);
 	}

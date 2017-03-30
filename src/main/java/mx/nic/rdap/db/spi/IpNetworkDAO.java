@@ -1,8 +1,8 @@
 package mx.nic.rdap.db.spi;
 
 import mx.nic.rdap.core.db.IpNetwork;
+import mx.nic.rdap.core.ip.AddressBlock;
 import mx.nic.rdap.db.exception.RdapDataAccessException;
-import mx.nic.rdap.db.struct.AddressBlock;
 
 /**
  * Interface for {@link IpNetwork} DAO functions.
