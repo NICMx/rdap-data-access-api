@@ -57,6 +57,9 @@ public class SearchResultStruct<T extends RdapObject> {
 	 *            maximum number of elements we should return to the user.
 	 */
 	public void truncate(int resultLimit) {
+		if (resultLimit >= results.size()) {
+			return;
+		}
 		results = results.subList(0, resultLimit);
 	}
 
