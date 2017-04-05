@@ -1,5 +1,6 @@
 package mx.nic.rdap.db.spi;
 
+import mx.nic.rdap.core.db.DomainLabel;
 import mx.nic.rdap.core.db.Nameserver;
 import mx.nic.rdap.db.exception.RdapDataAccessException;
 import mx.nic.rdap.db.struct.SearchResultStruct;
@@ -18,7 +19,7 @@ public interface NameserverDAO extends DAO {
 	 * @return The {@link Nameserver} object whose fully qualified host name is
 	 *         <code>name</code>.
 	 */
-	public Nameserver getByName(String name) throws RdapDataAccessException;
+	public Nameserver getByName(DomainLabel name) throws RdapDataAccessException;
 
 	/**
 	 * Gets a list of {@link Nameserver} objects using a search pattern
@@ -27,7 +28,7 @@ public interface NameserverDAO extends DAO {
 	 * @param namePattern
 	 *            A search pattern representing a nameserver's name. It can
 	 *            contain an asterisk '*' to match zero or more trailing
-	 *            characters at the end.
+	 *            characters.
 	 * @param resultLimit
 	 *            Maximum number of nameservers that should be listed in the
 	 *            resulting {@link SearchResultStruct}. The implementation of
@@ -39,7 +40,7 @@ public interface NameserverDAO extends DAO {
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Nameserver> searchByName(String namePattern, int resultLimit)
+	public SearchResultStruct<Nameserver> searchByName(DomainLabel namePattern, int resultLimit)
 			throws RdapDataAccessException;
 
 	/**

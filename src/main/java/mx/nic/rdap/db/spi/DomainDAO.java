@@ -1,6 +1,7 @@
 package mx.nic.rdap.db.spi;
 
 import mx.nic.rdap.core.db.Domain;
+import mx.nic.rdap.core.db.DomainLabel;
 import mx.nic.rdap.db.exception.RdapDataAccessException;
 import mx.nic.rdap.db.struct.SearchResultStruct;
 
@@ -12,22 +13,21 @@ public interface DomainDAO extends DAO {
 	/**
 	 * Retrieves a {@link Domain} by Fully Qualified Domain Name (FQDN).
 	 * 
-	 * @param domainName
+	 * @param domainLabel
 	 *            the FQDN of the desired domain.
 	 * @return The {@link Domain} whose FQDN is <code>domainName</code>.
 	 *         <p>
 	 *         This function can return <code>null</code> to express that the
 	 *         domain was not found.
 	 */
-	public Domain getByName(String domainName) throws RdapDataAccessException;
+	public Domain getByName(DomainLabel domainLabel) throws RdapDataAccessException;
 
 	/**
 	 * Searches for domains by a ldhName in full or partial form.
 	 * 
 	 * @param namePattern
 	 *            A search pattern representing a domain's name. It can contain
-	 *            an asterisk '*' to match zero or more trailing characters at
-	 *            the end.
+	 *            an asterisk '*' to match zero or more trailing characters.
 	 * @param resultLimit
 	 *            Maximum number of domains that should be listed in the
 	 *            resulting {@link SearchResultStruct}. The implementation of
@@ -39,7 +39,8 @@ public interface DomainDAO extends DAO {
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Domain> searchByName(String namePattern, int resultLimit) throws RdapDataAccessException;
+	public SearchResultStruct<Domain> searchByName(DomainLabel namePattern, int resultLimit)
+			throws RdapDataAccessException;
 
 	/**
 	 * Searches for domains by their nameserver's name in full or partial form.
@@ -47,7 +48,7 @@ public interface DomainDAO extends DAO {
 	 * @param nsName
 	 *            A search pattern representing a domain's nameserver name. It
 	 *            can contain an asterisk '*' to match zero or more trailing
-	 *            characters at the end.
+	 *            characters.
 	 * @param resultLimit
 	 *            Maximum number of domains that should be listed in the
 	 *            resulting {@link SearchResultStruct}. The implementation of
@@ -60,7 +61,8 @@ public interface DomainDAO extends DAO {
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Domain> searchByNsName(String nsName, int resultLimit) throws RdapDataAccessException;
+	public SearchResultStruct<Domain> searchByNsLDHName(DomainLabel nsName, int resultLimit)
+			throws RdapDataAccessException;
 
 	/**
 	 * Searches for domains by nameserver IP in full or partial form.
@@ -122,7 +124,7 @@ public interface DomainDAO extends DAO {
 	 *         Empty result sets can be expressed by <code>null</code> or an
 	 *         empty {@link SearchResultStruct}.
 	 */
-	public SearchResultStruct<Domain> searchByRegexNsName(String regexNsName, int resultLimit)
+	public SearchResultStruct<Domain> searchByRegexNsLDHName(String regexNsName, int resultLimit)
 			throws RdapDataAccessException;
 
 	/**
