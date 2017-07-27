@@ -1,4 +1,4 @@
-package mx.nic.rdap.db;
+package mx.nic.rdap.core;
 
 import org.junit.Assert;
 import org.junit.Test;

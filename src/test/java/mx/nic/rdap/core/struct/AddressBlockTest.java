@@ -1,4 +1,4 @@
-package mx.nic.rdap.db.struct;
+package mx.nic.rdap.core.struct;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
