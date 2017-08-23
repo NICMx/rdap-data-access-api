@@ -60,13 +60,14 @@ public class DataAccessService {
 	 */
 	private static DataAccessImplementation loadImplementationFromProperties(Properties config) {
 		String className = config.getProperty(CLASSNAME_PROPERTY);
-		if (className == null) {
+		if (className == null || className.isEmpty()) {
 			logger.info("The '" + CLASSNAME_PROPERTY + "' property is absent from the configuration. "
 					+ "Falling back to explore the classpath.");
 			return null;
 		}
 
 		DataAccessImplementation result;
+		className = className.trim();
 		try {
 			result = (DataAccessImplementation) Class.forName(className).newInstance();
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
