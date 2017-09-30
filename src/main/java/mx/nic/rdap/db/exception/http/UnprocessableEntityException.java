@@ -8,7 +8,7 @@ public class UnprocessableEntityException extends HttpException {
 
 	private static final long serialVersionUID = 1L;
 	private static final int CODE = 422;
-	private static final String DEFAULT_MSG = "Unprocessable Entity";
+	private static final String DEFAULT_MSG = "Unprocessable HTTP Entity";
 
 	public UnprocessableEntityException() {
 		super(CODE, DEFAULT_MSG);
