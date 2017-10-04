@@ -1,5 +1,8 @@
 package mx.nic.rdap.db;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Data access class for the RDAPUser. The object is a data structure of an rdap
  * user information
@@ -11,12 +14,13 @@ public class RdapUser {
 	private String name;
 	private String pass;
 	private Integer maxSearchResults;
-	private RdapUserRole userRole;
+	private Set<String> accessRoles;
 
 	/**
 	 * Default constructor
 	 */
 	public RdapUser() {
+		accessRoles = new HashSet<String>();
 	}
 
 	@Override
@@ -123,19 +127,18 @@ public class RdapUser {
 	}
 
 	/**
-	 * @return the userRole
+	 * @return the accessRoles
 	 */
-	public RdapUserRole getUserRole() {
-		return userRole;
+	public Set<String> getAccessRoles() {
+		return accessRoles;
 	}
 
 	/**
-	 * @param userRole
-	 *            the userRole to set
+	 * @param accessRoles
+	 *            the accessRoles to set
 	 */
-	public void setUserRole(RdapUserRole userRole) {
-		this.userRole = userRole;
-		this.userRole.setUserName(this.getName());
+	public void setAccessRoles(Set<String> accessRoles) {
+		this.accessRoles = accessRoles;
 	}
 
 }
